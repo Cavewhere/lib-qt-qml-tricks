@@ -30,7 +30,7 @@ public:
     QObjectList            m_items;
     QHash<int, QByteArray> m_roles;
     QHash<int, int>        m_signalIdxToRole;
-    QQmlObjectListModel  * d_func;
+    QQmlObjectListModel  * m_publicObject;
 };
 
 #endif // QQMLOBJECTLISTMODEL_P_H

@@ -3,23 +3,16 @@
 
 QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
     : QAbstractListModel (parent)
-    , d_ptr (new QQmlObjectListModelPrivate (this))
+    , m_privateImpl (new QQmlObjectListModelPrivate (this))
 {
-    d_ptr->m_metaObj = metaObj;
-    d_ptr->m_roles.insert (0, "qtObject");
-    for (int i = 0; i < d_ptr->m_metaObj.propertyCount (); i++) {
-        int role = i+1;
-        QMetaProperty metaProp = d_ptr->m_metaObj.property (i);
-        d_ptr->m_roles.insert (role, metaProp.name ());
+    m_privateImpl->m_metaObj = metaObj;
+    m_privateImpl->m_roles.insert (0, "qtObject");
+    for (int propertyIdx = 0; propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++) {
+        int role = (propertyIdx +1);
+        QMetaProperty metaProp = m_privateImpl->m_metaObj.property (propertyIdx);
+        m_privateImpl->m_roles.insert (role, metaProp.name ());
         if (metaProp.hasNotifySignal ()) {
-            d_ptr->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
-        }
-    }
-    for (int j = 0; j < d_ptr->metaObject ()->methodCount (); j++) {
-        QMetaMethod metaMethod = d_ptr->metaObject ()->method (j);
-        if (metaMethod.name () == "onItemPropertyChanged") {
-            d_ptr->m_handler = metaMethod;
-            break;
+            m_privateImpl->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
         }
     }
 }
@@ -27,7 +20,7 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
 int QQmlObjectListModel::rowCount (const QModelIndex & parent) const
 {
     Q_UNUSED (parent);
-    return d_ptr->m_items.count ();
+    return m_privateImpl->m_items.count ();
 }
 
 QVariant QQmlObjectListModel::data (const QModelIndex & index, int role) const
@@ -35,14 +28,14 @@ QVariant QQmlObjectListModel::data (const QModelIndex & index, int role) const
     QVariant ret;
     QObject * item = get (index.row ());
     if (item != NULL) {
-        ret.setValue (role > 0 ? item->property (d_ptr->m_roles.value (role)) : QVariant::fromValue (item));
+        ret.setValue (role > 0 ? item->property (m_privateImpl->m_roles.value (role)) : QVariant::fromValue (item));
     }
     return ret;
 }
 
 QHash<int, QByteArray> QQmlObjectListModel::roleNames () const
 {
-    return d_ptr->m_roles;
+    return m_privateImpl->m_roles;
 }
 
 bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & value, int role)
@@ -50,39 +43,39 @@ bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & v
     bool ret = false;
     QObject * item = get (index.row ());
     if (item != NULL && role > 0) {
-        ret = item->setProperty (d_ptr->m_roles.value (role), value);
+        ret = item->setProperty (m_privateImpl->m_roles.value (role), value);
     }
     return ret;
 }
 
 int QQmlObjectListModel::roleForName (QByteArray name) const
 {
-    return d_ptr->m_roles.key (name, -1);
+    return m_privateImpl->m_roles.key (name, -1);
 }
 
 int QQmlObjectListModel::count () const
 {
-    return d_ptr->m_items.size ();
+    return m_privateImpl->m_items.size ();
 }
 
 void QQmlObjectListModel::clear () {
     beginResetModel ();
-    foreach (QObject * item, d_ptr->m_items)
+    foreach (QObject * item, m_privateImpl->m_items)
     {
         if (item != NULL) {
             item->deleteLater ();
         }
     }
-    d_ptr->m_items.clear ();
+    m_privateImpl->m_items.clear ();
     endResetModel ();
 }
 
 void QQmlObjectListModel::append (QObject * item)
 {
     if (item != NULL) {
-        beginInsertRows (QModelIndex (), d_ptr->m_items.count (), d_ptr->m_items.count ());
-        d_ptr->m_items.append (item);
-        d_ptr->prepareItem (item);
+        beginInsertRows (QModelIndex (), m_privateImpl->m_items.count (), m_privateImpl->m_items.count ());
+        m_privateImpl->m_items.append (item);
+        m_privateImpl->prepareItem (item);
         endInsertRows ();
     }
 }
@@ -91,8 +84,8 @@ void QQmlObjectListModel::prepend (QObject * item)
 {
     if (item != NULL) {
         beginInsertRows (QModelIndex (), 0, 0);
-        d_ptr->m_items.prepend (item);
-        d_ptr->prepareItem (item);
+        m_privateImpl->m_items.prepend (item);
+        m_privateImpl->prepareItem (item);
         endInsertRows ();
     }
 }
@@ -101,8 +94,8 @@ void QQmlObjectListModel::insert (int idx, QObject * item)
 {
     if (item != NULL) {
         beginInsertRows (QModelIndex (), idx, idx);
-        d_ptr->m_items.insert (idx, item);
-        d_ptr->prepareItem (item);
+        m_privateImpl->m_items.insert (idx, item);
+        m_privateImpl->prepareItem (item);
         endInsertRows ();
     }
 }
@@ -110,16 +103,16 @@ void QQmlObjectListModel::insert (int idx, QObject * item)
 void QQmlObjectListModel::remove (QObject * item)
 {
     if (item != NULL) {
-        int idx = d_ptr->m_items.indexOf (item);
+        int idx = m_privateImpl->m_items.indexOf (item);
         remove (idx);
     }
 }
 
 void QQmlObjectListModel::remove (int idx)
 {
-    if (idx >= 0 && idx < d_ptr->m_items.size ()) {
+    if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
         beginRemoveRows (QModelIndex (), idx, idx);
-        QObject * item = d_ptr->m_items.takeAt (idx);
+        QObject * item = m_privateImpl->m_items.takeAt (idx);
         if (item != NULL) {
             item->disconnect ();
             item->deleteLater ();
@@ -131,17 +124,23 @@ void QQmlObjectListModel::remove (int idx)
 QObject * QQmlObjectListModel::get (int idx) const
 {
     QObject * ret = NULL;
-    if (idx >= 0 && idx < d_ptr->m_items.size ()) {
-        ret = d_ptr->m_items.value (idx);
+    if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
+        ret = m_privateImpl->m_items.value (idx);
     }
     return ret;
 }
 
 QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * parent)
     : QObject (parent)
-    , d_func (parent)
+    , m_publicObject  (parent)
 {
-
+    for (int methodIdx = 0; methodIdx < metaObject ()->methodCount (); methodIdx++) {
+        QMetaMethod metaMethod = metaObject ()->method (methodIdx);
+        if (metaMethod.name () == "onItemPropertyChanged") { // FIXME : maybe find a cleaner way to get it
+            m_handler = metaMethod;
+            break;
+        }
+    }
 }
 
 void QQmlObjectListModelPrivate::onItemPropertyChanged ()
@@ -149,8 +148,8 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     int row = m_items.indexOf (sender ());
     int role = m_signalIdxToRole.key (senderSignalIndex ());
     if (row >= 0 && role >= 0) {
-        QModelIndex idx = d_func->index (row, 0, QModelIndex ());
-        emit d_func->dataChanged (idx, idx, QVector<int> () << role);
+        QModelIndex idx = m_publicObject->index (row, 0, QModelIndex ());
+        emit m_publicObject->dataChanged (idx, idx, QVector<int> () << role);
     }
 }
 

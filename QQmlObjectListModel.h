@@ -35,7 +35,7 @@ public slots: // public API
     QObject * get (int idx) const;
 
 private:
-    QQmlObjectListModelPrivate * d_ptr;
+    QQmlObjectListModelPrivate * m_privateImpl;
 };
 
 #endif // QQMLOBJECTLISTMODEL_H
