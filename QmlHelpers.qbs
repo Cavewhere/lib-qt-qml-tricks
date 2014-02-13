@@ -3,7 +3,7 @@ import qbs 1.0;
 Project {
     name: "The QML Helpers Library";
 
-    DynamicLibrary {
+    StaticLibrary {
         name: "lib-qml-helpers";
         targetName: "QmlHelpers";
 
