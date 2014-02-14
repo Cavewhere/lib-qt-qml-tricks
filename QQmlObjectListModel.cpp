@@ -112,6 +112,14 @@ void QQmlObjectListModel::insert (int idx, QObject * item)
     }
 }
 
+void QQmlObjectListModel::move (int idx, int pos)
+{
+    QModelIndex noParent;
+    beginMoveRows (noParent, idx, idx, noParent, pos);
+    m_privateImpl->m_items.move (idx, pos);
+    endMoveRows ();
+}
+
 void QQmlObjectListModel::remove (QObject * item)
 {
     if (item != NULL) {

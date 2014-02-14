@@ -44,6 +44,7 @@ public slots: // public API
     void append (QObject * item);
     void prepend (QObject * item);
     void insert (int idx, QObject * item);
+    void move (int idx, int pos);
     void remove (int idx);
     void remove (QObject * item);
     QObject * get (int idx) const;
