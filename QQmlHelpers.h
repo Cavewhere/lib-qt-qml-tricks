@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#define QML_PUBLIC_PROPERTY(type, name) \
+#define QML_WRITABLE_PROPERTY(type, name) \
     protected: \
         Q_PROPERTY (type name READ get_##name WRITE set_##name NOTIFY name##Changed) \
     private: \

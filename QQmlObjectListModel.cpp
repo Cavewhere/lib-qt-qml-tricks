@@ -58,6 +58,21 @@ int QQmlObjectListModel::count () const
     return m_privateImpl->m_items.size ();
 }
 
+bool QQmlObjectListModel::isEmpty () const
+{
+    return m_privateImpl->m_items.isEmpty ();
+}
+
+bool QQmlObjectListModel::contains (QObject * item) const
+{
+    return m_privateImpl->m_items.contains (item);
+}
+
+int QQmlObjectListModel::indexOf (QObject * item) const
+{
+    return m_privateImpl->m_items.indexOf (item);
+}
+
 void QQmlObjectListModel::clear () {
     beginResetModel ();
     foreach (QObject * item, m_privateImpl->m_items)
@@ -115,7 +130,9 @@ void QQmlObjectListModel::remove (int idx)
         QObject * item = m_privateImpl->m_items.takeAt (idx);
         if (item != NULL) {
             item->disconnect ();
-            item->deleteLater ();
+            if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
+                item->deleteLater ();
+            }
         }
         endRemoveRows ();
     }
@@ -130,9 +147,13 @@ QObject * QQmlObjectListModel::get (int idx) const
     return ret;
 }
 
+QObjectList QQmlObjectListModel::list () const {
+    return m_privateImpl->m_items;
+}
+
 QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * parent)
     : QObject (parent)
-    , m_publicObject  (parent)
+    , m_publicObject (parent)
 {
     for (int methodIdx = 0; methodIdx < metaObject ()->methodCount (); methodIdx++) {
         QMetaMethod metaMethod = metaObject ()->method (methodIdx);

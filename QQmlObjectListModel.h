@@ -2,6 +2,7 @@
 #define QQMLOBJECTLISTMODEL_H
 
 #include <QObject>
+#include <QList>
 #include <QAbstractListModel>
 
 class QQmlObjectListModelPrivate;
@@ -9,9 +10,19 @@ class QQmlObjectListModelPrivate;
 class QQmlObjectListModel : public QAbstractListModel {
     Q_OBJECT
 
-public: // public factory
+public: // public factory and casts
     template <class ItemType> static QQmlObjectListModel * create (QObject * parent = NULL) {
         return new QQmlObjectListModel (ItemType::staticMetaObject, parent);
+    }
+    template <class ItemType> ItemType * getAs (int idx) const {
+        return qobject_cast<ItemType *> (get (idx));
+    }
+    template <class ItemType> QList<ItemType *> listAs () const {
+        QList<ItemType *> ret;
+        for (int idx = 0; idx < count (); idx++) {
+            ret.append (qobject_cast<ItemType *> (get (idx)));
+        }
+        return ret;
     }
 
 protected: // protected constructor
@@ -26,6 +37,9 @@ public: // QAbstractItemModel interface reimplemented
 public slots: // public API
     void clear ();
     int count () const;
+    bool isEmpty () const;
+    bool contains (QObject * item) const;
+    int indexOf (QObject * item) const;
     int roleForName (QByteArray name) const;
     void append (QObject * item);
     void prepend (QObject * item);
@@ -33,6 +47,7 @@ public slots: // public API
     void remove (int idx);
     void remove (QObject * item);
     QObject * get (int idx) const;
+    QObjectList list () const;
 
 private:
     QQmlObjectListModelPrivate * m_privateImpl;
