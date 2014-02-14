@@ -11,4 +11,19 @@ Rectangle {
         }
         anchors.fill: parent;
     }
+    Timer {
+        repeat: true;
+        running: true;
+        interval: 2000;
+        onTriggered: {
+            if (listOperations.length) {
+                listOperations.shift () ();
+            }
+        }
+
+        property var listOperations : [
+            function () { testModel.remove (3); },
+            function () { testModel.move   (100, 1); },
+        ];
+    }
 }
