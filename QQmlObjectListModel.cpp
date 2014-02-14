@@ -157,13 +157,7 @@ QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * pa
     : QObject (parent)
     , m_publicObject (parent)
 {
-    for (int methodIdx = 0; methodIdx < metaObject ()->methodCount (); methodIdx++) {
-        QMetaMethod metaMethod = metaObject ()->method (methodIdx);
-        if (metaMethod.name () == "onItemPropertyChanged") { // FIXME : maybe find a cleaner way to get it like QMetaMethod::fromSignal (&MyClass:mySignal) but for slots
-            m_handler = metaMethod;
-            break;
-        }
-    }
+    m_handler = metaObject ()->method (metaObject ()->indexOfMethod ("onItemPropertyChanged()"));
 }
 
 void QQmlObjectListModelPrivate::onItemPropertyChanged ()
