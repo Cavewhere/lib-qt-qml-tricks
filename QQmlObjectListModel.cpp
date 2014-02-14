@@ -73,7 +73,8 @@ int QQmlObjectListModel::indexOf (QObject * item) const
     return m_privateImpl->m_items.indexOf (item);
 }
 
-void QQmlObjectListModel::clear () {
+void QQmlObjectListModel::clear ()
+{
     beginResetModel ();
     foreach (QObject * item, m_privateImpl->m_items) {
         m_privateImpl->dereferenceItem (item);
@@ -147,7 +148,8 @@ QObject * QQmlObjectListModel::get (int idx) const
     return ret;
 }
 
-QObjectList QQmlObjectListModel::list () const {
+QObjectList QQmlObjectListModel::list () const
+{
     return m_privateImpl->m_items;
 }
 
@@ -157,7 +159,7 @@ QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * pa
 {
     for (int methodIdx = 0; methodIdx < metaObject ()->methodCount (); methodIdx++) {
         QMetaMethod metaMethod = metaObject ()->method (methodIdx);
-        if (metaMethod.name () == "onItemPropertyChanged") { // FIXME : maybe find a cleaner way to get it
+        if (metaMethod.name () == "onItemPropertyChanged") { // FIXME : maybe find a cleaner way to get it like QMetaMethod::fromSignal (&MyClass:mySignal) but for slots
             m_handler = metaMethod;
             break;
         }
