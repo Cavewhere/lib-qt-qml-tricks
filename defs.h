@@ -10,8 +10,8 @@ QML_ENUM_CLASS (MyEnum, Unknown = 0, First, Second, Third, Fourth, Fifth, Sixth,
 
 class MyItem : public QObject {
     Q_OBJECT
-    QML_PUBLIC_PROPERTY   (int,      foo)
-    QML_PUBLIC_PROPERTY   (QString,  bar)
+    QML_WRITABLE_PROPERTY (int,      foo)
+    QML_WRITABLE_PROPERTY (QString,  bar)
     QML_READONLY_PROPERTY (MyEnum::Type, test)
     QML_CONSTANT_PROPERTY (QString,  type)
 

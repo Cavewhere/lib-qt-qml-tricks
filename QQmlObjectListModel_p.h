@@ -23,7 +23,8 @@ public:
 
     Q_SLOT void onItemPropertyChanged ();
 
-    void prepareItem (QObject * item);
+    void referenceItem   (QObject * item);
+    void dereferenceItem (QObject * item);
 
     QMetaObject            m_metaObj;
     QMetaMethod            m_handler;

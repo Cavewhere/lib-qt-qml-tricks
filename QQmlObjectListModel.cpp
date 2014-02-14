@@ -75,11 +75,8 @@ int QQmlObjectListModel::indexOf (QObject * item) const
 
 void QQmlObjectListModel::clear () {
     beginResetModel ();
-    foreach (QObject * item, m_privateImpl->m_items)
-    {
-        if (item != NULL) {
-            item->deleteLater ();
-        }
+    foreach (QObject * item, m_privateImpl->m_items) {
+        m_privateImpl->dereferenceItem (item);
     }
     m_privateImpl->m_items.clear ();
     endResetModel ();
@@ -90,7 +87,7 @@ void QQmlObjectListModel::append (QObject * item)
     if (item != NULL) {
         beginInsertRows (QModelIndex (), m_privateImpl->m_items.count (), m_privateImpl->m_items.count ());
         m_privateImpl->m_items.append (item);
-        m_privateImpl->prepareItem (item);
+        m_privateImpl->referenceItem (item);
         endInsertRows ();
     }
 }
@@ -100,7 +97,7 @@ void QQmlObjectListModel::prepend (QObject * item)
     if (item != NULL) {
         beginInsertRows (QModelIndex (), 0, 0);
         m_privateImpl->m_items.prepend (item);
-        m_privateImpl->prepareItem (item);
+        m_privateImpl->referenceItem (item);
         endInsertRows ();
     }
 }
@@ -110,7 +107,7 @@ void QQmlObjectListModel::insert (int idx, QObject * item)
     if (item != NULL) {
         beginInsertRows (QModelIndex (), idx, idx);
         m_privateImpl->m_items.insert (idx, item);
-        m_privateImpl->prepareItem (item);
+        m_privateImpl->referenceItem (item);
         endInsertRows ();
     }
 }
@@ -128,12 +125,7 @@ void QQmlObjectListModel::remove (int idx)
     if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
         beginRemoveRows (QModelIndex (), idx, idx);
         QObject * item = m_privateImpl->m_items.takeAt (idx);
-        if (item != NULL) {
-            item->disconnect ();
-            if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
-                item->deleteLater ();
-            }
-        }
+        m_privateImpl->dereferenceItem (item);
         endRemoveRows ();
     }
 }
@@ -174,7 +166,7 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     }
 }
 
-void QQmlObjectListModelPrivate::prepareItem (QObject * item)
+void QQmlObjectListModelPrivate::referenceItem (QObject * item)
 {
     if (item != NULL) {
         if (item->parent () == NULL) {
@@ -185,6 +177,16 @@ void QQmlObjectListModelPrivate::prepareItem (QObject * item)
             QObject::connect (item, notifier,
                               this, m_handler,
                               (Qt::ConnectionType) (Qt::DirectConnection | Qt::UniqueConnection));
+        }
+    }
+}
+
+void QQmlObjectListModelPrivate::dereferenceItem (QObject * item)
+{
+    if (item != NULL) {
+        item->disconnect ();
+        if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
+            item->deleteLater ();
         }
     }
 }
