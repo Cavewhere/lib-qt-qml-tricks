@@ -93,14 +93,7 @@ QQmlObjectListModel::~QQmlObjectListModel ()
 }
 
 /*!
-    \details Returns the row count in a given parent.
-
-    Reimplemented for QAbstractListModel.
-
-    \param parent The parent item (invalid for 1st-level items)
-    \return The row count in the item
-
-    \b Note : parent is irrelevant for QQmlObjectListModel (never used).
+    \internal
 */
 int QQmlObjectListModel::rowCount (const QModelIndex & parent) const
 {
