@@ -6,7 +6,7 @@
 #include <QUrl>
 #include <QDateTime>
 
-#include "QQmlObjectListModel.h"
+#include <QQmlObjectListModel>
 
 #include "defs.h"
 

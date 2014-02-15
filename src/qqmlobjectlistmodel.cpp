@@ -1,5 +1,5 @@
-#include "QQmlObjectListModel.h"
-#include "QQmlObjectListModel_p.h"
+#include "qqmlobjectlistmodel.h"
+#include "qqmlobjectlistmodel_p.h"
 
 QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
     : QAbstractListModel (parent)

@@ -13,7 +13,7 @@
 #include <QVariant>
 #include <QVector>
 
-#include "QQmlObjectListModel.h"
+class QQmlObjectListModel;
 
 class QQmlObjectListModelPrivate : public QObject {
     Q_OBJECT
