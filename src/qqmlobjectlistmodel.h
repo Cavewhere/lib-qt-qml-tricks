@@ -27,9 +27,10 @@ public: // public factory and casts
 
 protected: // protected constructor
     explicit QQmlObjectListModel (QMetaObject metaObj, QObject * parent);
+    virtual ~QQmlObjectListModel ();
 
 public: // QAbstractItemModel interface reimplemented
-    virtual int rowCount (const QModelIndex & parent) const;
+    virtual int rowCount (const QModelIndex & parent = QModelIndex ()) const;
     virtual bool setData (const QModelIndex & index, const QVariant & value, int role);
     virtual QVariant data (const QModelIndex & index, int role) const;
     virtual QHash<int, QByteArray> roleNames () const;
@@ -44,6 +45,9 @@ public slots: // public API
     void append (QObject * item);
     void prepend (QObject * item);
     void insert (int idx, QObject * item);
+    void append (QObjectList itemList);
+    void prepend (QObjectList itemList);
+    void insert (int idx, QObjectList itemList);
     void move (int idx, int pos);
     void remove (int idx);
     void remove (QObject * item);
