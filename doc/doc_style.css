@@ -1,7 +1,8 @@
 /* The standard CSS for doxygen 1.8.5 */
 
 body, table, div, p, dl {
-    font: 400 14px/22px Roboto,sans-serif;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
 /* @group Heading Levels */
@@ -11,9 +12,8 @@ h1.groupheader {
 }
 
 .title {
-    font: 400 14px/28px Roboto,sans-serif;
-    font-size: 150%;
-    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 18px;
     margin: 10px 2px;
 }
 
@@ -90,7 +90,6 @@ h3.version {
 
 div.qindex, div.navtab{
     background-color: #E4E9F7;
-    border: 1px solid #819DDE;
     text-align: center;
 }
 
@@ -230,15 +229,9 @@ div.ah {
     margin-bottom: 3px;
     margin-top: 3px;
     padding: 0.2em;
-    border: solid thin #333;
     border-radius: 0.5em;
     -webkit-border-radius: .5em;
     -moz-border-radius: .5em;
-    box-shadow: 2px 2px 3px #999;
-    -webkit-box-shadow: 2px 2px 3px #999;
-    -moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 2px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#000),color-stop(0.3, #444));
-    background-image: -moz-linear-gradient(center top, #eee 0%, #444 40%, #000);
 }
 
 div.groupHeader {
@@ -333,7 +326,7 @@ span.keywordflow {
 }
 
 span.comment {
-    color: #800000
+    color: #A9A9A9
 }
 
 span.preprocessor {
@@ -635,11 +628,7 @@ span.mlabels {
 }
 
 span.mlabel {
-        background-color: #416BCE;
-        border-top:1px solid #2E55B1;
-        border-left:1px solid #2E55B1;
-        border-right:1px solid #AEBFEA;
-        border-bottom:1px solid #AEBFEA;
+    background-color: #416BCE;
     text-shadow: none;
     color: white;
     margin-right: 4px;
@@ -860,7 +849,7 @@ table.fieldtable {
     text-decoration: none;
     outline: none;
     color: #13244C;
-    font-family: 'Lucida Grande',Geneva,Helvetica,Arial,sans-serif;
+    font-family: sans-serif;
     text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.9);
     text-decoration: none;
 }
@@ -1011,21 +1000,24 @@ dl.section dd {
 
 #projectname
 {
-    font: 300% Tahoma, Arial,sans-serif;
+    font-family: sans-serif;
+    font-size: 40px;
     margin: 0px;
     padding: 2px 0px;
 }
 
 #projectbrief
 {
-    font: 120% Tahoma, Arial,sans-serif;
+    font-family: sans-serif;
+    font-size: 20px;
     margin: 0px;
     padding: 0px;
 }
 
 #projectnumber
 {
-    font: 50% Tahoma, Arial,sans-serif;
+    font-family: sans-serif;
+    font-size: 30px;
     margin: 0px;
     padding: 0px;
 }
@@ -1081,35 +1073,38 @@ dl.citelist dd {
 }
 
 div.toc {
-        padding: 14px 25px;
-        background-color: #F0F3FB;
-        border: 1px solid #C9D5F0;
-        border-radius: 7px 7px 7px 7px;
-        float: right;
-        height: auto;
-        margin: 0 20px 10px 10px;
-        width: 200px;
+    padding: 14px 25px;
+    background-color: #F0F3FB;
+    border: 1px solid #C9D5F0;
+    border-radius: 7px 7px 7px 7px;
+    float: right;
+    height: auto;
+    margin: 0 20px 10px 10px;
+    width: 200px;
 }
 
 div.toc li {
-        background: url("bdwn.png") no-repeat scroll 0 5px transparent;
-        font: 10px/1.2 Verdana,DejaVu Sans,Geneva,sans-serif;
-        margin-top: 5px;
-        padding-left: 10px;
-        padding-top: 2px;
+    background: url("bdwn.png") no-repeat scroll 0 5px transparent;
+    font-size: 10px;
+    font-family: sans-serif;
+    margin-top: 5px;
+    padding-left: 10px;
+    padding-top: 2px;
 }
 
 div.toc h3 {
-        font: bold 12px/1.2 Arial,FreeSans,sans-serif;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 12px;
     color: #274998;
-        border-bottom: 0 none;
-        margin: 0;
+    border-bottom: 0 none;
+    margin: 0;
 }
 
 div.toc ul {
-        list-style: none outside none;
-        border: medium none;
-        padding: 0px;
+    list-style: none outside none;
+    border: medium none;
+    padding: 0px;
 }
 
 div.toc li.level1 {
@@ -1196,7 +1191,7 @@ tr.heading h2 {
 #powerTip div {
         margin: 0px;
         padding: 0px;
-        font: 12px/16px Roboto,sans-serif;
+        font: 12px/16px sans-serif;
 }
 
 #powerTip:before, #powerTip:after {
