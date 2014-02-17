@@ -1,10 +1,12 @@
 
-_The **QtQmlTricks** library contains usefull classes and macros. It also has _Doxygen_ documentation with configuration files to generate it (support for QtDoc format too) and some test cases and examples._
+_The **QtQmlTricks** library contains usefull classes and macros. It also has some test cases and examples._
+
 
 ###Why this project ?
 All the people out there who have done / are doing a mixed C++ / QML project, have surely been thinking that it needs too much code on C++ side, and that this code is often not that easy to do right. So here is the solution :
 
 **A nice library of classes and helpers that have been designed to simplify as much as possible the C++ side, so that it's finally not harder than QML side (which is nice enough already).**
+
 
 ###What does it bring at the moment ?
 
@@ -20,7 +22,9 @@ It also strouts a pack of helper C++ **macros** :
 * `QML_CONSTANT_PROPERTY` : a simplified version of the previous macros, that exposes a constant property with no getter and no setter, from C++ or QML side.
 * `QML_ENUM_CLASS` : a macro to declare a `QObject` class that only contains a `Q_ENUM` and can be exposed as is to QML.
 
-All these API are documented using Doxygen so that one can easily generate HTML documentation or even Qt Help file.
+
+**Note :** All these API are documented using _Doxygen_ so that one can easily generate HTML documentation or even Qt Help file (.qch).
+
 
 ###What are the plans for later ?
 
@@ -29,5 +33,6 @@ First we want to add a lot of new classes and helpers for common use.
 Next, add some helpers for QML / JavaScript side too.
 
 And maybe then, propose this for integration into standard Qt module QtCore, if it's really useful to people !
+
 
 **Enjoy !**
