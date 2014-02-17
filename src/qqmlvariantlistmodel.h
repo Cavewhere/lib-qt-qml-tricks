@@ -29,6 +29,7 @@ public slots: // public API
     void insert (int idx, QVariant item);
     void append (QVariantList itemList);
     void prepend (QVariantList itemList);
+    void replace (int pos, QVariant item);
     void insert (int idx, QVariantList itemList);
     void move (int idx, int pos);
     void remove (int idx);

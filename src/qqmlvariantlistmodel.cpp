@@ -193,6 +193,23 @@ void QQmlVariantListModel::insert (int idx, QVariant item)
 }
 
 /*!
+    \details Replace the variant at a certain position in the model with another value.
+
+    \param pos The position where the item must be replaced
+    \param item The variant value
+
+    \b Note : this is the regular way in C++ to modify the variant value.
+*/
+void QQmlVariantListModel::replace (int pos, QVariant item)
+{
+    if (pos >= 0 && pos < count ()) {
+        m_privateImpl->m_items.replace (pos, item);
+        QModelIndex idx = index (pos, 0, NO_PARENT);
+        emit dataChanged (idx, idx, QVector<int> () << 0);
+    }
+}
+
+/*!
     \details Adds the given list of items at the end of the model.
 
     \param itemList The list of items
