@@ -2,6 +2,10 @@
 
 /*!
     \defgroup QT_QML_HELPERS Qt helper macros
+
+    Brings a couple of macros that can help saving development time,
+    by avoiding manual code duplication, often leading to heavy copy-and-paste,
+    which is largely error-prone and not productive at all.
 */
 
 
