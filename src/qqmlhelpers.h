@@ -62,6 +62,6 @@
         Q_ENUMS (Type) \
     };
 
-class DumbClass : public QObject { Q_OBJECT }; // FIXME : to avoid "no suitable class found" MOC note
+class QmlProperty : public QObject { Q_OBJECT }; // FIXME : to avoid "no suitable class found" MOC note
 
 #endif // QQMLHELPERS_H

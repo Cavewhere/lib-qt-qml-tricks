@@ -2,7 +2,14 @@
 #include "qqmlobjectlistmodel_p.h"
 
 /*!
+    \defgroup QT_QML_MODELS Qt models for QML
+
+*/
+
+/*!
     \class QQmlObjectListModel
+
+    \ingroup QT_QML_MODELS
 
     \brief Provides a generic way to generate a list model from QObject derived class, suitable for QML
 
