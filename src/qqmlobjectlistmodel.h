@@ -24,10 +24,10 @@ public: // public factory and casts
         }
         return ret;
     }
+    virtual ~QQmlObjectListModel ();
 
 protected: // protected constructor
     explicit QQmlObjectListModel (QMetaObject metaObj, QObject * parent);
-    virtual ~QQmlObjectListModel ();
 
 public: // QAbstractItemModel interface reimplemented
     virtual int rowCount (const QModelIndex & parent = QModelIndex ()) const;

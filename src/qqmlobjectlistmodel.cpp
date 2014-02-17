@@ -1,14 +1,6 @@
 #include "qqmlobjectlistmodel.h"
 #include "qqmlobjectlistmodel_p.h"
-
-/*!
-    \defgroup QT_QML_MODELS Qt models for QML
-
-    Brings a bunch of ready-to-use C++ models for usual use cases in C++/QML apps :
-    \li Exposing a list of QObject-derived objects to QML while supporting dynamic changes
-    \li Using a simple list of QVariant / QVariantMap just as easy as plain QML ListModel item
-    \li etc...
-*/
+#include "qqmlmodels.h"
 
 /*!
     \class QQmlObjectListModel
@@ -29,7 +21,7 @@
 
     \b Note : Simply needs that the class used for items inherits \c QObject and has Qt Meta Properties.
 
-    \sa QAbstractListModel
+    \sa QQmlVariantListModel
 */
 
 
@@ -247,7 +239,7 @@ void QQmlObjectListModel::append (QObject * item)
 {
     if (item != NULL) {
         int pos = m_privateImpl->m_items.count ();
-        beginInsertRows (QModelIndex (), pos, pos);
+        beginInsertRows (NO_PARENT, pos, pos);
         m_privateImpl->m_items.append (item);
         m_privateImpl->referenceItem (item);
         endInsertRows ();
@@ -264,7 +256,7 @@ void QQmlObjectListModel::append (QObject * item)
 void QQmlObjectListModel::prepend (QObject * item)
 {
     if (item != NULL) {
-        beginInsertRows (QModelIndex (), 0, 0);
+        beginInsertRows (NO_PARENT, 0, 0);
         m_privateImpl->m_items.prepend (item);
         m_privateImpl->referenceItem (item);
         endInsertRows ();
@@ -282,7 +274,7 @@ void QQmlObjectListModel::prepend (QObject * item)
 void QQmlObjectListModel::insert (int idx, QObject * item)
 {
     if (item != NULL) {
-        beginInsertRows (QModelIndex (), idx, idx);
+        beginInsertRows (NO_PARENT, idx, idx);
         m_privateImpl->m_items.insert (idx, item);
         m_privateImpl->referenceItem (item);
         endInsertRows ();
@@ -301,7 +293,7 @@ void QQmlObjectListModel::append (QObjectList itemList)
     itemList.removeAll (NULL);
     if (!itemList.isEmpty ()) {
         int pos = m_privateImpl->m_items.count ();
-        beginInsertRows (QModelIndex (), pos, pos + itemList.count ());
+        beginInsertRows (NO_PARENT, pos, pos + itemList.count ());
         m_privateImpl->m_items.append (itemList);
         foreach (QObject * item, itemList) {
             m_privateImpl->referenceItem (item);
@@ -321,7 +313,7 @@ void QQmlObjectListModel::prepend (QObjectList itemList)
 {
     itemList.removeAll (NULL);
     if (!itemList.isEmpty ()) {
-        beginInsertRows (QModelIndex (), 0, itemList.count ());
+        beginInsertRows (NO_PARENT, 0, itemList.count ());
         int offset = 0;
         foreach (QObject * item, itemList) {
             m_privateImpl->m_items.insert (offset, item);
@@ -343,7 +335,7 @@ void QQmlObjectListModel::insert (int idx, QObjectList itemList)
 {
     itemList.removeAll (NULL);
     if (!itemList.isEmpty ()) {
-        beginInsertRows (QModelIndex (), idx, idx + itemList.count ());
+        beginInsertRows (NO_PARENT, idx, idx + itemList.count ());
         int offset = 0;
         foreach (QObject * item, itemList) {
             m_privateImpl->m_items.insert (idx + offset, item);
@@ -362,8 +354,7 @@ void QQmlObjectListModel::insert (int idx, QObjectList itemList)
 */
 void QQmlObjectListModel::move (int idx, int pos)
 {
-    QModelIndex noParent;
-    beginMoveRows (noParent, idx, idx, noParent, pos);
+    beginMoveRows (NO_PARENT, idx, idx, NO_PARENT, pos);
     m_privateImpl->m_items.move (idx, pos);
     endMoveRows ();
 }
@@ -389,7 +380,7 @@ void QQmlObjectListModel::remove (QObject * item)
 void QQmlObjectListModel::remove (int idx)
 {
     if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
-        beginRemoveRows (QModelIndex (), idx, idx);
+        beginRemoveRows (NO_PARENT, idx, idx);
         QObject * item = m_privateImpl->m_items.takeAt (idx);
         m_privateImpl->dereferenceItem (item);
         endRemoveRows ();
@@ -443,7 +434,7 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     int row = m_items.indexOf (sender ());
     int role = m_signalIdxToRole.key (senderSignalIndex ());
     if (row >= 0 && role >= 0) {
-        QModelIndex idx = m_publicObject->index (row, 0, QModelIndex ());
+        QModelIndex idx = m_publicObject->index (row, 0, NO_PARENT);
         emit m_publicObject->dataChanged (idx, idx, QVector<int> () << role);
     }
 }

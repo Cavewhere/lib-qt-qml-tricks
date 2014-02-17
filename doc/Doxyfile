@@ -1093,7 +1093,7 @@ QCH_FILE               = ../qthelp/qt-qml-tricks.qch
 # Qt Help Project output. For more information please see 
 # http://doc.trolltech.com/qthelpproject.html#namespace
 
-QHP_NAMESPACE          = org.unique-conception.labs
+QHP_NAMESPACE          = org.unique-conception.labs.qt-qml-tricks
 
 # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating 
 # Qt Help Project output. For more information please see 
@@ -1127,7 +1127,7 @@ QHP_SECT_FILTER_ATTRS  =
 # If non-empty doxygen will try to run qhelpgenerator on the generated 
 # .qhp file.
 
-QHG_LOCATION           = qhelpgenerator
+QHG_LOCATION           = /home/tboutroue/QtSDK/5.2.1/gcc/bin/qhelpgenerator
 
 # If the GENERATE_ECLIPSEHELP tag is set to YES, additional index files  
 # will be generated, which together with the HTML files, form an Eclipse help 

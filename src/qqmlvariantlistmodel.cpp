@@ -1,0 +1,312 @@
+#include "qqmlvariantlistmodel.h"
+#include "qqmlvariantlistmodel_p.h"
+#include "qqmlmodels.h"
+
+/*!
+    \class QQmlVariantListModel
+
+    \ingroup QT_QML_MODELS
+
+    \brief Provides a generic way to generate a list model from QVariant, suitable for QML
+
+    QQmlVariantListModel is a convenience subclass \c QAbstractListModel that makes use of the versatile
+    nature of QVariant to allow creating a list model from every type :
+    \li Booleans
+    \li Numbers
+    \li Strings
+    \li Lists
+    \li Maps
+    \li Object pointers
+    \li etc...
+
+    This is a far better way than to expose directly a \c QList<____> inside a \c QVariant.
+
+    And this is far simpler than doing all Qt model stuff manually : no subclassing or reimplementing need.
+
+    The class was designed so that most of the added API is really common with \c QList one.
+
+    \b Note : Simply needs that the type items inherits is handled by Qt MetaType system and \c QVariant.
+
+    \sa QQmlObjectListModel
+*/
+
+
+/*!
+    \details Constructs a new model that will hold QVariant as items.
+
+    \param parent The parent object for the model memory management
+*/
+QQmlVariantListModel::QQmlVariantListModel (QObject * parent)
+    : QAbstractListModel (parent)
+    , m_privateImpl (new QQmlVariantListModelPrivate (this))
+{
+    m_privateImpl->m_roles.insert (0, "qtVariant");
+}
+
+/*!
+    \internal
+*/
+QQmlVariantListModel::~QQmlVariantListModel ()
+{
+    clear ();
+}
+
+/*!
+    \internal
+*/
+int QQmlVariantListModel::rowCount (const QModelIndex & parent) const
+{
+    Q_UNUSED (parent);
+    return m_privateImpl->m_items.count ();
+}
+
+/*!
+    \details Returns the data in a specific index for a given role.
+
+    Reimplemented for QAbstractItemModel.
+
+    \param index The item index (row, column and parent)
+    \param role The role
+    \return The data in the role
+
+    \b Note : the \c 0 role contains the QVariant itself.
+*/
+QVariant QQmlVariantListModel::data (const QModelIndex & index, int role) const
+{
+    QVariant ret;
+    int idx = index.row ();
+    if (idx >= 0 && idx < count () && role == 0) {
+        ret = m_privateImpl->m_items.value (idx);
+    }
+    return ret;
+}
+
+/*!
+    \details Returns the roles available in the model.
+
+    Reimplemented for QAbstractItemModel.
+
+    \return The hash table of role to name matching
+
+    \b Note : the only role is \c 'qtVariant'.
+*/
+QHash<int, QByteArray> QQmlVariantListModel::roleNames () const
+{
+    return m_privateImpl->m_roles;
+}
+
+/*!
+    \details Modifies the data in a specific index for a given role.
+
+    Reimplemented for QAbstractItemModel.
+
+    \param index The item index (row, column and parent)
+    \param value The data to write
+    \param role The role
+    \return Weither the modification was done
+
+    \b Note : as the only role is \c 0 ('qtVariant'), it replaces the QVariant value
+*/
+bool QQmlVariantListModel::setData (const QModelIndex & index, const QVariant & value, int role)
+{
+    bool ret = false;
+    int idx = index.row ();
+    if (idx >= 0 && idx < count () && role == 0) {
+        m_privateImpl->m_items.replace (idx, value);
+        ret = true;
+    }
+    return ret;
+}
+
+/*!
+    \details Counts the items in the model.
+
+    \return The count of items in the model
+*/
+int QQmlVariantListModel::count () const
+{
+    return m_privateImpl->m_items.size ();
+}
+
+/*!
+    \details Tests the content of the model.
+
+    \return Whether the model contains no item
+*/
+bool QQmlVariantListModel::isEmpty () const
+{
+    return m_privateImpl->m_items.isEmpty ();
+}
+
+/*!
+    \details Delete all the items in the model.
+*/
+void QQmlVariantListModel::clear ()
+{
+    beginResetModel ();
+    m_privateImpl->m_items.clear ();
+    endResetModel ();
+}
+
+/*!
+    \details Adds the given item at the end of the model.
+
+    \param item The variant value
+
+    \sa prepend(QVariant), insert(int,QVariant)
+*/
+void QQmlVariantListModel::append (QVariant item)
+{
+    int pos = m_privateImpl->m_items.count ();
+    beginInsertRows (NO_PARENT, pos, pos);
+    m_privateImpl->m_items.append (item);
+    endInsertRows ();
+}
+
+/*!
+    \details Adds the given item at the beginning of the model.
+
+    \param item The variant value
+
+    \sa append(QVariant), insert(int,QVariant)
+*/
+void QQmlVariantListModel::prepend (QVariant item)
+{
+    beginInsertRows (NO_PARENT, 0, 0);
+    m_privateImpl->m_items.prepend (item);
+    endInsertRows ();
+}
+
+/*!
+    \details Adds the given item at a certain position in the model.
+
+    \param idx The position where the item must be added
+    \param item The variant value
+
+    \sa append(QVariant), prepend(QVariant)
+*/
+void QQmlVariantListModel::insert (int idx, QVariant item)
+{
+    beginInsertRows (NO_PARENT, idx, idx);
+    m_privateImpl->m_items.insert (idx, item);
+    endInsertRows ();
+}
+
+/*!
+    \details Adds the given list of items at the end of the model.
+
+    \param itemList The list of items
+
+    \sa prepend(QVariantList), insert(int, QVariantList)
+*/
+void QQmlVariantListModel::append (QVariantList itemList)
+{
+    if (!itemList.isEmpty ()) {
+        int pos = m_privateImpl->m_items.count ();
+        beginInsertRows (NO_PARENT, pos, pos + itemList.count ());
+        m_privateImpl->m_items.append (itemList);
+        endInsertRows ();
+    }
+}
+
+/*!
+    \details Adds the given list of items at the beginning of the model.
+
+    \param itemList The list of items
+
+    \sa append(QVariantList), insert(int, QVariantList)
+*/
+void QQmlVariantListModel::prepend (QVariantList itemList)
+{
+    if (!itemList.isEmpty ()) {
+        beginInsertRows (NO_PARENT, 0, itemList.count ());
+        int offset = 0;
+        foreach (QVariant item, itemList) {
+            m_privateImpl->m_items.insert (offset, item);
+        }
+        endInsertRows ();
+    }
+}
+
+/*!
+    \details Adds the given list of items at a certain position in the model.
+
+    \param idx The position where the items must be added
+    \param itemList The list of items
+
+    \sa append(QVariantList), prepend(QVariantList)
+*/
+void QQmlVariantListModel::insert (int idx, QVariantList itemList)
+{
+    if (!itemList.isEmpty ()) {
+        beginInsertRows (NO_PARENT, idx, idx + itemList.count ());
+        int offset = 0;
+        foreach (QVariant item, itemList) {
+            m_privateImpl->m_items.insert (idx + offset, item);
+            offset++;
+        }
+        endInsertRows ();
+    }
+}
+
+/*!
+    \details Moves an item from the model to another position.
+
+    \param idx The current position of the item
+    \param pos The position where it willl be after the move
+*/
+void QQmlVariantListModel::move (int idx, int pos)
+{
+    beginMoveRows (NO_PARENT, idx, idx, NO_PARENT, pos);
+    m_privateImpl->m_items.move (idx, pos);
+    endMoveRows ();
+}
+
+/*!
+    \details Remove an item from the model.
+
+    \param idx The position of the item in the model
+*/
+void QQmlVariantListModel::remove (int idx)
+{
+    if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
+        beginRemoveRows (NO_PARENT, idx, idx);
+        m_privateImpl->m_items.removeAt (idx);
+        endRemoveRows ();
+    }
+}
+
+/*!
+    \details Retreives a model item as a standard Qt variant object.
+
+    \param idx The position of the item in the model
+    \return A variant containing the item
+*/
+QVariant QQmlVariantListModel::get (int idx) const
+{
+    QVariant ret;
+    if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
+        ret = m_privateImpl->m_items.value (idx);
+    }
+    return ret;
+}
+
+/*!
+    \details Retreives all the items of the model as a standard Qt variant list.
+
+    \return A \c QVariantList containing all the variants
+*/
+QVariantList QQmlVariantListModel::list () const
+{
+    return m_privateImpl->m_items;
+}
+
+/*!
+    \internal
+*/
+QQmlVariantListModelPrivate::QQmlVariantListModelPrivate (QQmlVariantListModel * parent)
+    : QObject (parent)
+    , m_publicObject (parent)
+{
+
+}

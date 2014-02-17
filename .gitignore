@@ -6,3 +6,4 @@ Makefile
 *.autosave
 *.save
 doc/html/
+doc/qthelp/
