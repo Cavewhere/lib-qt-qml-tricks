@@ -113,6 +113,8 @@ bool QQmlVariantListModel::setData (const QModelIndex & index, const QVariant & 
     int idx = index.row ();
     if (idx >= 0 && idx < count () && role == 0) {
         m_privateImpl->m_items.replace (idx, value);
+        QModelIndex item = QAbstractListModel::index (idx, 0, NO_PARENT);
+        emit dataChanged (item, item, QVector<int> () << role);
         ret = true;
     }
     return ret;
@@ -204,8 +206,8 @@ void QQmlVariantListModel::replace (int pos, QVariant item)
 {
     if (pos >= 0 && pos < count ()) {
         m_privateImpl->m_items.replace (pos, item);
-        QModelIndex idx = index (pos, 0, NO_PARENT);
-        emit dataChanged (idx, idx, QVector<int> () << 0);
+        QModelIndex index = QAbstractListModel::index (pos, 0, NO_PARENT);
+        emit dataChanged (index, index, QVector<int> () << 0);
     }
 }
 

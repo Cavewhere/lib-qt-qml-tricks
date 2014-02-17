@@ -434,8 +434,8 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     int row = m_items.indexOf (sender ());
     int role = m_signalIdxToRole.key (senderSignalIndex ());
     if (row >= 0 && role >= 0) {
-        QModelIndex idx = m_publicObject->index (row, 0, NO_PARENT);
-        emit m_publicObject->dataChanged (idx, idx, QVector<int> () << role);
+        QModelIndex index = m_publicObject->index (row, 0, NO_PARENT);
+        emit m_publicObject->dataChanged (index, index, QVector<int> () << role);
     }
 }
 
