@@ -13,10 +13,14 @@ StaticLibrary {
     Group {
         name: "C++ sources";
         files: "*.cpp";
+        fileTags: "source";
+        overrideTags: false;
     }
     Group {
         name: "C++ headers";
         files: "*.h";
+        fileTags: "source";
+        overrideTags: false;
     }
     Group {
         name: "Includes";

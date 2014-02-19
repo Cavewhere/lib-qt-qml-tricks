@@ -1,4 +1,5 @@
 import qbs 1.0;
+import qbs.Process;
 
 Project {
     name: "The QML Helpers Library";
@@ -14,6 +15,8 @@ Project {
         Group {
             name: "MarkDown documents";
             files: "*.md";
+            fileTags: "markdown";
+            overrideTags: false;
         }
         Group {
             name: "Git files";

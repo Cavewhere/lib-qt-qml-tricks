@@ -7,14 +7,18 @@ Product {
     Group {
         name: "Doyxgen config";
         files: "Doxyfile";
-        fileTags: ["dox"];
+        fileTags: "doxyconf";
+        overrideTags: false;
     }
     Group {
         name: "CSS style";
         files: "*.css";
+        fileTags: "style";
+        overrideTags: false;
     }
-    Transformer {
-        inputs: "Doxyfile";
+    Rule {
+        inputs: "doxyconf";
+        auxiliaryInputs: ["source", "style", "markdown"];
         prepare: {
             var cmd = new JavaScriptCommand ();
             var list = input.fileName.split ("/");
@@ -29,8 +33,7 @@ Product {
         }
 
         Artifact {
-            fileTags: ['doc'];
-            fileName: "test.doc";
+            alwaysUpdated: true;
         }
     }
 }
