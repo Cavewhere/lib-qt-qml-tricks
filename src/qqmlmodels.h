@@ -1,3 +1,10 @@
+
+#include <QObject>
+#include <QList>
+#include <QAbstractListModel>
+
+#define NO_PARENT QModelIndex ()
+
 /*!
     \defgroup QT_QML_MODELS Qt models for QML
 
@@ -6,6 +13,3 @@
     \li Using a simple list of QVariant / QVariantMap just as easy as the plain QML ListModel item
     \li etc...
 */
-
-
-#define NO_PARENT QModelIndex ()

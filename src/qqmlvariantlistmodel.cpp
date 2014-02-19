@@ -1,6 +1,5 @@
 #include "qqmlvariantlistmodel.h"
 #include "qqmlvariantlistmodel_p.h"
-#include "qqmlmodels.h"
 
 /*!
     \class QQmlVariantListModel

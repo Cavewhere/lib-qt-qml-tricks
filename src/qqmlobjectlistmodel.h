@@ -1,9 +1,7 @@
 #ifndef QQMLOBJECTLISTMODEL_H
 #define QQMLOBJECTLISTMODEL_H
 
-#include <QObject>
-#include <QList>
-#include <QAbstractListModel>
+#include "qqmlmodels.h"
 
 class QQmlObjectListModelPrivate;
 

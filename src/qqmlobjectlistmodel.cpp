@@ -1,6 +1,5 @@
 #include "qqmlobjectlistmodel.h"
 #include "qqmlobjectlistmodel_p.h"
-#include "qqmlmodels.h"
 
 /*!
     \class QQmlObjectListModel
