@@ -3,18 +3,17 @@ import qbs.Process;
 
 Product {
     name: "qdoc-doxygen";
+    type: "docs";
 
     Group {
         name: "Doyxgen config";
         files: "Doxyfile";
         fileTags: "doxyconf";
-        overrideTags: false;
     }
     Group {
         name: "CSS style";
         files: "*.css";
         fileTags: "style";
-        overrideTags: false;
     }
     Rule {
         inputs: "doxyconf";
@@ -33,6 +32,8 @@ Product {
         }
 
         Artifact {
+            fileTags: "docs";
+            fileName: "force.doc";
             alwaysUpdated: true;
         }
     }

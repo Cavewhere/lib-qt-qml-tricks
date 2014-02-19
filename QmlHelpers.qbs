@@ -16,13 +16,10 @@ Project {
             name: "MarkDown documents";
             files: "*.md";
             fileTags: "markdown";
-            overrideTags: false;
         }
         Group {
             name: "Git files";
-            files: [
-                ".gitignore"
-            ];
+            files: ".gitignore";
         }
     }
 }
