@@ -2,25 +2,48 @@
 
 body, table, div, p, dl {
     font-family: sans-serif;
-    font-size: 14px;
+    font-size: medium;
+    line-height: 1.35;
+}
+
+tt, code, pre {
+    background-color: #FAFBFD;
+    border: 1px solid #AEBFEA;
+    padding: 1px;
+    border-radius: 3px;
+    font-size: larger;
+}
+
+#MSearchField {
+    display: block;
+    position: absolute;
+    height: 19px;
+    border: none;
+    width: 111px;
+    margin-left: 20px;
+    padding-left: 4px;
+    color: #909090;
+    outline: none;
+    font-family: sans-serif;
+    font-size: small;
 }
 
 /* @group Heading Levels */
 
 h1.groupheader {
-    font-size: 150%;
+    font-size: large;
 }
 
 .title {
     font-family: sans-serif;
-    font-size: 18px;
+    font-size: x-large;
     margin: 10px 2px;
 }
 
 h2.groupheader {
     border-bottom: 1px solid #5C80D5;
     color: #1B336B;
-    font-size: 150%;
+    font-size: large;
     font-weight: normal;
     margin-top: 1.75em;
     padding-top: 8px;
@@ -29,7 +52,7 @@ h2.groupheader {
 }
 
 h3.groupheader {
-    font-size: 100%;
+    font-size: medium;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -79,12 +102,12 @@ caption {
 }
 
 span.legend {
-    font-size: 70%;
+    font-size: x-small;
     text-align: center;
 }
 
 h3.version {
-    font-size: 90%;
+    font-size: small;
     text-align: center;
 }
 
@@ -161,10 +184,9 @@ pre.fragment {
     margin: 4px 8px 4px 2px;
     overflow: auto;
     word-wrap: break-word;
-    font-size:  9pt;
+    font-size:  medium;
     line-height: 125%;
     font-family: monospace, fixed;
-    font-size: 105%;
 }
 
 div.fragment {
@@ -172,13 +194,13 @@ div.fragment {
     margin: 0px;
     background-color: #FAFBFD;
     border: 1px solid #AEBFEA;
+    border-radius: 3px;
 }
 
 div.line {
     font-family: monospace, fixed;
-    font-size: 13px;
-    min-height: 13px;
-    line-height: 1.0;
+    font-size: medium;
+    line-height: 1.35;
     text-wrap: unrestricted;
     white-space: -moz-pre-wrap; /* Moz */
     white-space: -pre-wrap;     /* Opera 4-6 */
@@ -386,7 +408,7 @@ input.search {
 */
 
 td.tiny {
-    font-size: 75%;
+    font-size: x-small;
 }
 
 .dirtab {
@@ -467,7 +489,7 @@ table.memberdecls {
 .memTemplParams {
     color: #274998;
     white-space: nowrap;
-    font-size: 80%;
+    font-size: small;
 }
 
 /* @end */
@@ -477,7 +499,7 @@ table.memberdecls {
 /* Styles for detailed member documentation */
 
 .memtemplate {
-    font-size: 80%;
+    font-size: small;
     color: #274998;
     font-weight: normal;
     margin-left: 9px;
@@ -634,7 +656,7 @@ span.mlabel {
     margin-right: 4px;
     padding: 2px 3px;
     border-radius: 3px;
-    font-size: 7pt;
+    font-size: x-small;
     white-space: nowrap;
     vertical-align: middle;
 }
@@ -695,7 +717,7 @@ div.directory {
     white-space: nowrap;
     width: 100%;
     text-align: right;
-    font-size: 9pt;
+    font-size: small;
 }
 
 .directory .levels span {
@@ -734,7 +756,7 @@ table.doxtable td, table.doxtable th {
 table.doxtable th {
     background-color: #1D3670;
     color: #FFFFFF;
-    font-size: 110%;
+    font-size: medium;
     padding-bottom: 4px;
     padding-top: 5px;
 }
@@ -788,7 +810,7 @@ table.fieldtable {
     background-image:url('nav_f.png');
     background-repeat:repeat-x;
     background-color: #D7E0F4;
-    font-size: 90%;
+    font-size: medium;
     color: #112044;
     padding-bottom: 4px;
     padding-top: 5px;
@@ -809,7 +831,7 @@ table.fieldtable {
     background-image: url('tab_b.png');
     z-index: 101;
     overflow: hidden;
-    font-size: 13px;
+    font-size: medium;
 }
 
 .tabs, .tabs2, .tabs3 {
@@ -818,7 +840,7 @@ table.fieldtable {
     border-bottom: 1px solid #2E55B1;
     width: 100%;
     z-index: 101;
-    font-size: 13px;
+    font-size: small;
     font-family: sans-serif;
 }
 
@@ -857,7 +879,7 @@ table.fieldtable {
 }
 
 .navpath ul {
-    font-size: 11px;
+    font-size: small;
     background-image:url('tab_b.png');
     background-repeat:repeat-x;
     background-position: 0 -5px;
@@ -905,12 +927,12 @@ table.fieldtable {
     background-repeat:no-repeat;
     background-position:right;
     color:#1C346D;
-    font-size: 8pt;
+    font-size: x-small;
 }
 
 div.summary {
     float: right;
-    font-size: 8pt;
+    font-size: x-small;
     padding-right: 5px;
     width: 50%;
     text-align: right;
@@ -921,7 +943,7 @@ div.summary a {
 }
 
 div.ingroups {
-    font-size: 8pt;
+    font-size: x-small;
     width: 50%;
     text-align: left;
 }
@@ -1017,21 +1039,21 @@ dl.section dd {
 
 #projectname {
     font-family: sans-serif;
-    font-size: 40px;
+    font-size: xx-large;
     margin: 0px;
     padding: 2px 0px;
 }
 
 #projectbrief {
     font-family: sans-serif;
-    font-size: 20px;
+    font-size: x-large;
     margin: 0px;
     padding: 0px;
 }
 
 #projectnumber {
     font-family: sans-serif;
-    font-size: 30px;
+    font-size: x-large;
     margin: 0px;
     padding: 0px;
 }
@@ -1093,7 +1115,7 @@ div.toc {
 
 div.toc li {
     background: url("bdwn.png") no-repeat scroll 0 5px transparent;
-    font-size: 10px;
+    font-size: small;
     font-family: sans-serif;
     margin-top: 5px;
     padding-left: 10px;
@@ -1103,7 +1125,7 @@ div.toc li {
 div.toc h3 {
     font-family: sans-serif;
     font-weight: bold;
-    font-size: 12px;
+    font-size: medium;
     color: #274998;
     border-bottom: 0 none;
     margin: 0;
@@ -1171,7 +1193,7 @@ tr.heading h2 {
     border-radius: 4px 4px 4px 4px;
     box-shadow: 1px 1px 7px gray;
     display: none;
-    font-size: smaller;
+    font-size: small;
     max-width: 80%;
     opacity: 0.9;
     padding: 1ex 1em 1em;
