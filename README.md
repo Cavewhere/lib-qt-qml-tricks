@@ -1,3 +1,5 @@
+About the project       {#index}
+=================
 
 _The **QtQmlTricks** library contains useful classes and macros. It also has some test cases and examples._
 
