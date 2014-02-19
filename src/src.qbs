@@ -1,8 +1,8 @@
 import qbs 1.0;
 
 StaticLibrary {
-    name: "lib-qt-tricks";
-    targetName: "QmlHelpers";
+    name: "lib-qt-qml-tricks";
+    targetName: "QtQmlTricks";
 
     Export {
         Depends { name: "cpp"; }

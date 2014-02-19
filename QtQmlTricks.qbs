@@ -2,7 +2,7 @@ import qbs 1.0;
 import qbs.Process;
 
 Project {
-    name: "The QML Helpers Library";
+    name: "The Qt QML Tricks";
     references: [
         "src/src.qbs",
         "test/test.qbs"

@@ -2,14 +2,14 @@ import qbs 1.0;
 
 Application {
     name: "test-app";
-    targetName: "testQmlHelpers";
+    targetName: "testQtQmlTricks";
 
     Depends { name: "cpp"; }
     Depends {
         name: "Qt";
         submodules: ["core", "gui", "network", "qml", "quick"];
     }
-    Depends { name: "lib-qt-tricks"; }
+    Depends { name: "lib-qt-qml-tricks"; }
     Group {
         name: "C++ sources";
         files: "*.cpp";
