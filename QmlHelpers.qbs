@@ -5,21 +5,65 @@ Project {
     name: "The QML Helpers Library";
     references: [
         "src/src.qbs",
-        "doc/doc.qbs",
         "test/test.qbs"
     ];
 
     Product {
         name: "project-utils";
+        type: "docs";
 
         Group {
-            name: "MarkDown documents";
-            files: "*.md";
-            fileTags: "markdown";
+            name: "Git files";
+            files: [
+                ".gitignore"
+            ];
         }
         Group {
-            name: "Git files";
-            files: ".gitignore";
+            name: "Doyxgen config";
+            prefix: "doc/"
+            files: ["Doxyfile"];
+            fileTags: "doxyconf";
+        }
+        Group {
+            name: "CSS style";
+            prefix: "doc/"
+            files: ["*.css"];
+            fileTags: "style";
+        }
+        Group {
+            name: "C++ & JavaScript & QML inputs";
+            prefix: "src/**/";
+            files: ["*.h", "*.cpp", "*.qml", "*.js"];
+            fileTags: "source";
+        }
+        Group {
+            name: "MarkDown documents";
+            files: ["*.md"];
+            fileTags: "markdown";
+        }
+        Rule {
+            inputs: ["doxyconf", "source", "style", "markdown"];
+            multiplex: "true";
+            prepare: {
+                var cmd = new JavaScriptCommand ();
+                cmd.description = "generating documentation from doxygen config";
+                cmd.highlight   = "doxygen";
+                cmd.sourceCode  = function () {
+                    for (var idx = 0; idx < inputs ["doxyconf"].length; idx++) {
+                        var file = inputs ["doxyconf"][idx].fileName;
+                        var proc    = new Process ();
+                        proc.setWorkingDirectory (product.sourceDirectory + "/doc");
+                        proc.exec ("doxygen", [file]);
+                    }
+                }
+                return cmd;
+            }
+
+            Artifact {
+                fileTags: "docs";
+                fileName: "force.doc";
+                alwaysUpdated: true;
+            }
         }
     }
 }

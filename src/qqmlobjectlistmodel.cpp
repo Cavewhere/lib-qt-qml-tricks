@@ -216,7 +216,7 @@ int QQmlObjectListModel::indexOf (QObject * item) const
     \details Delete all the items in the model.
 
     \b Note : The items objects will be removed from the model but they will be destructed
-    only if they have no parent (because the model have taken the ownership).
+    only if they have no parent (because the model took the ownership).
 */
 void QQmlObjectListModel::clear ()
 {
@@ -388,7 +388,7 @@ void QQmlObjectListModel::remove (int idx)
 }
 
 /*!
-    \details Retreives a model item as a standard Qt object pointer.
+    \details Retreives a model item as standard Qt object pointer.
 
     \param idx The position of the item in the model
     \return A pointer to the \c QObject
