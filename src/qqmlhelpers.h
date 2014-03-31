@@ -22,7 +22,8 @@
             return ret; \
         } \
     Q_SIGNALS: \
-        void name##Changed (type name);
+        void name##Changed (type name); \
+    private:
 
 #define QML_READONLY_PROPERTY(type, name) \
     protected: \
@@ -42,7 +43,8 @@
             return ret; \
         } \
     Q_SIGNALS: \
-        void name##Changed (type name);
+        void name##Changed (type name); \
+    private:
 
 #define QML_CONSTANT_PROPERTY(type, name) \
     protected: \
@@ -52,7 +54,8 @@
     public: \
         type get_##name () const { \
             return m_##name ; \
-        }
+        } \
+    private:
 
 #define QML_ENUM_CLASS(name, ...) \
     class name : public QObject { \

@@ -50,7 +50,7 @@ Project {
                 cmd.highlight   = "doxygen";
                 cmd.sourceCode  = function () {
                     for (var idx = 0; idx < inputs ["doxyconf"].length; idx++) {
-                        var file = inputs ["doxyconf"][idx].fileName;
+                        var file = inputs ["doxyconf"][idx].filePath;
                         var proc    = new Process ();
                         proc.setWorkingDirectory (product.sourceDirectory + "/doc");
                         proc.exec ("doxygen", [file]);

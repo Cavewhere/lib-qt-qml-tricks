@@ -77,7 +77,7 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
     m_privateImpl->m_metaObj = metaObj;
     m_privateImpl->m_roles.insert (0, "qtObject");
     for (int propertyIdx = 0; propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++) {
-        int role = (propertyIdx +1);
+        int role = m_privateImpl->m_roles.count ();
         QMetaProperty metaProp = m_privateImpl->m_metaObj.property (propertyIdx);
         m_privateImpl->m_roles.insert (role, metaProp.name ());
         if (metaProp.hasNotifySignal ()) {
@@ -431,7 +431,7 @@ QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * pa
 void QQmlObjectListModelPrivate::onItemPropertyChanged ()
 {
     int row = m_items.indexOf (sender ());
-    int role = m_signalIdxToRole.key (senderSignalIndex ());
+    int role = m_signalIdxToRole.value (senderSignalIndex ());
     if (row >= 0 && role >= 0) {
         QModelIndex index = m_publicObject->index (row, 0, NO_PARENT);
         emit m_publicObject->dataChanged (index, index, QVector<int> () << role);
