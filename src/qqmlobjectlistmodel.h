@@ -57,6 +57,8 @@ slots: // public API
     void remove (int idx);
     void remove (QObject * item);
     QObject * get (int idx) const;
+    QObject * first () const;
+    QObject * last () const;
     QObjectList list () const;
 
 private:

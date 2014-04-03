@@ -84,6 +84,12 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
             m_privateImpl->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
         }
     }
+//    qWarning () << "roles=" << m_privateImpl->m_roles;
+//    qWarning () << "notifiers=" << m_privateImpl->m_signalIdxToRole;
+//    foreach (int sigIdx, m_privateImpl->m_signalIdxToRole.keys ()) {
+//        int role = m_privateImpl->m_signalIdxToRole.value (sigIdx);
+//        qWarning () << "sigIdx=" << sigIdx << m_privateImpl->m_metaObj.method (sigIdx).name () << "role=" << role << m_privateImpl->m_roles.value (role);
+//    }
 }
 
 /*!
@@ -403,6 +409,16 @@ QObject * QQmlObjectListModel::get (int idx) const
     return ret;
 }
 
+QObject * QQmlObjectListModel::first () const
+{
+    return m_privateImpl->m_items.first ();
+}
+
+QObject * QQmlObjectListModel::last () const
+{
+    return m_privateImpl->m_items.last ();
+}
+
 /*!
     \details Retreives all the items of the model as a standard Qt object pointer list.
 
@@ -431,10 +447,14 @@ QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * pa
 void QQmlObjectListModelPrivate::onItemPropertyChanged ()
 {
     int row = m_items.indexOf (sender ());
-    int role = m_signalIdxToRole.value (senderSignalIndex ());
+    int sig = senderSignalIndex ();
+    int role = m_signalIdxToRole.value (sig);
     if (row >= 0 && role >= 0) {
         QModelIndex index = m_publicObject->index (row, 0, NO_PARENT);
-        emit m_publicObject->dataChanged (index, index, QVector<int> () << role);
+        QVector<int> vec;
+        vec << role;
+        //qWarning () << "onItemPropertyChanged" << "row=" << row << "sig=" << sig << m_metaObj.method (sig).name () << "vec=" << vec << m_roles.value (role);
+        emit m_publicObject->dataChanged (index, index, vec);
     }
 }
 
