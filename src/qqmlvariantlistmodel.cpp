@@ -39,7 +39,7 @@ QQmlVariantListModel::QQmlVariantListModel (QObject * parent)
     : QAbstractListModel (parent)
     , m_privateImpl (new QQmlVariantListModelPrivate (this))
 {
-    m_privateImpl->m_roles.insert (0, "qtVariant");
+    m_privateImpl->m_roles.insert (0, QByteArrayLiteral ("qtVariant"));
 }
 
 /*!
