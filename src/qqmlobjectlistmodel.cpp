@@ -453,7 +453,6 @@ QObject * QQmlObjectListModel::getByUid (QString uid) const
     return m_privateImpl->m_indexByUid.value (uid, NULL);
 }
 
-
 /*!
     \details Sets which property of the items will be used as an index key.
     This can be used or not, but if not, getByUid() won't work.

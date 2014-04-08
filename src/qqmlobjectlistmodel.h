@@ -9,18 +9,15 @@ class QQmlObjectListModel : public QAbstractListModel {
     Q_OBJECT
 
 public: // public factory and casts
-    template <class ItemType>
-    static QQmlObjectListModel * create (QObject * parent = NULL)
+    template <class ItemType> static QQmlObjectListModel * create (QObject * parent = NULL)
     {
         return new QQmlObjectListModel (ItemType::staticMetaObject, parent);
     }
-    template <class ItemType>
-    ItemType* getAs (int idx) const
+    template <class ItemType> ItemType * getAs (int idx) const
     {
         return qobject_cast<ItemType *> (get (idx));
     }
-    template <class ItemType>
-    QList<ItemType *> listAs () const
+    template <class ItemType> QList<ItemType *> listAs () const
     {
         QList<ItemType *> ret;
         for (int idx = 0; idx < count (); idx++) {
