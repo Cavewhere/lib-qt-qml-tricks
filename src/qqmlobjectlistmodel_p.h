@@ -26,12 +26,14 @@ public:
     void referenceItem   (QObject * item);
     void dereferenceItem (QObject * item);
 
-    QMetaObject            m_metaObj;
-    QMetaMethod            m_handler;
-    QObjectList            m_items;
-    QHash<int, QByteArray> m_roles;
-    QHash<int, int>        m_signalIdxToRole;
-    QQmlObjectListModel  * m_publicObject;
+    QByteArray                m_uidRoleName;
+    QMetaObject               m_metaObj;
+    QMetaMethod               m_handler;
+    QObjectList               m_items;
+    QHash<int, QByteArray>    m_roles;
+    QHash<int, int>           m_signalIdxToRole;
+    QHash<QString, QObject *> m_indexByUid;
+    QQmlObjectListModel    *  m_publicObject;
 };
 
 #endif // QQMLOBJECTLISTMODEL_P_H

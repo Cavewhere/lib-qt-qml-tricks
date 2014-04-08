@@ -4,6 +4,10 @@ Rectangle {
     id: window;
     width: 600;
     height: 400;
+    Component.onCompleted: {
+        var obj = testModel.getByUid ("mardi 8 avril 2014");
+        console.log ("obj=", obj, obj.foo, obj.bar);
+    }
 
     Flickable {
         id: flicker;
