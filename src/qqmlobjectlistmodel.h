@@ -37,7 +37,7 @@ public: // QAbstractItemModel interface reimplemented
     virtual QVariant data (const QModelIndex & index, int role) const;
     virtual QHash<int, QByteArray> roleNames () const;
 
-public slots: // public API
+public slots: // public methods API
     void clear ();
     int count () const;
     bool isEmpty () const;
@@ -60,10 +60,10 @@ public slots: // public API
     QObject * getByUid (QString uid) const;
     void setRoleNameForUid (QByteArray name);
 
-signals:
+signals: // notifiers
     void countChanged (int count);
 
-private:
+private: // pimpl
     QQmlObjectListModelPrivate * m_privateImpl;
 };
 

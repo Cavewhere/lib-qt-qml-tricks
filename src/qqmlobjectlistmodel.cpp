@@ -501,10 +501,7 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     int role = m_signalIdxToRole.value (sig);
     if (row >= 0 && role >= 0) {
         QModelIndex index = m_publicObject->index (row, 0, NO_PARENT);
-        QVector<int> vec;
-        vec << role;
-        //qWarning () << "onItemPropertyChanged" << "row=" << row << "sig=" << sig << m_metaObj.method (sig).name () << "vec=" << vec << m_roles.value (role);
-        emit m_publicObject->dataChanged (index, index, vec);
+        emit m_publicObject->dataChanged (index, index, QVector<int> (1, role));
     }
     if (!m_uidRoleName.isEmpty ()) {
         QByteArray roleName = m_roles.value (role, QByteArrayLiteral ("N/A"));
