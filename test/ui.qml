@@ -5,8 +5,8 @@ Rectangle {
     width: 600;
     height: 400;
     Component.onCompleted: {
-        var obj = testModel.getByUid ("mardi 8 avril 2014");
-        console.log ("obj=", obj, obj.foo, obj.bar);
+        var obj = testModel.getByUid ("2014-04-08");
+        console.log ("obj=", obj, obj.bar);
     }
 
     Flickable {

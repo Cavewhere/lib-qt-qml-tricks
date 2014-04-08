@@ -21,7 +21,7 @@ int main (int argc, char * argv []) {
     while (date.year () == year) {
         MyItem * item = new MyItem;
         item->set_foo (date.dayOfYear ());
-        item->set_bar (date.toString (Qt::DefaultLocaleLongDate));
+        item->set_bar (date.toString ("yyyy-MM-dd"));
         item->update_test (MyEnum::Type (date.dayOfWeek ()));
         testModel->append (item);
         date = date.addDays (1);
