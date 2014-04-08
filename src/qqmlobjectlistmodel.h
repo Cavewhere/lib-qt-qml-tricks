@@ -7,6 +7,7 @@ class QQmlObjectListModelPrivate;
 
 class QQmlObjectListModel : public QAbstractListModel {
     Q_OBJECT
+    Q_PROPERTY (int count READ count NOTIFY countChanged)
 
 public: // public factory and casts
     template <class ItemType> static QQmlObjectListModel * create (QObject * parent = NULL)
@@ -58,6 +59,9 @@ public slots: // public API
     QObjectList list () const;
     QObject * getByUid (QString uid) const;
     void setRoleNameForUid (QByteArray name);
+
+signals:
+    void countChanged (int count);
 
 private:
     QQmlObjectListModelPrivate * m_privateImpl;

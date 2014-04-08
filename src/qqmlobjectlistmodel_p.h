@@ -23,9 +23,12 @@ public:
 
     Q_SLOT void onItemPropertyChanged ();
 
+    void updateCounter ();
+
     void referenceItem   (QObject * item);
     void dereferenceItem (QObject * item);
 
+    int                       m_count;
     QByteArray                m_uidRoleName;
     QMetaObject               m_metaObj;
     QMetaMethod               m_handler;

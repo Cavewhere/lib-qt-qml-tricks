@@ -176,7 +176,7 @@ int QQmlObjectListModel::roleForName (QByteArray name) const
 */
 int QQmlObjectListModel::count () const
 {
-    return m_privateImpl->m_items.size ();
+    return m_privateImpl->m_count;
 }
 
 /*!
@@ -483,6 +483,8 @@ void QQmlObjectListModel::setRoleNameForUid (QByteArray name)
 */
 QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * parent)
     : QObject (parent)
+    , m_count (0)
+    , m_uidRoleName (QByteArrayLiteral (""))
     , m_publicObject (parent)
 {
     m_handler = metaObject ()->method (metaObject ()->indexOfMethod ("onItemPropertyChanged()"));
@@ -519,6 +521,17 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     }
 }
 
+/*
+    \internal
+*/
+void QQmlObjectListModelPrivate::updateCounter ()
+{
+    if (m_count != m_items.count ()) {
+        m_count = m_items.count ();
+        emit m_publicObject->countChanged (m_count);
+    }
+}
+
 /*!
     \internal
 */
@@ -544,6 +557,7 @@ void QQmlObjectListModelPrivate::referenceItem (QObject * item)
                 m_indexByUid.insert (value, item);
             }
         }
+        updateCounter ();
     }
 }
 
@@ -563,5 +577,6 @@ void QQmlObjectListModelPrivate::dereferenceItem (QObject * item)
                 m_indexByUid.remove (key);
             }
         }
+        updateCounter ();
     }
 }
