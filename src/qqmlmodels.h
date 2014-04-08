@@ -4,6 +4,9 @@
 #include <QAbstractListModel>
 
 #define NO_PARENT QModelIndex ()
+#define BASE_ROLE 0
+#define EMPTY_STR QStringLiteral ("")
+#define EMPTY_BA  QByteArrayLiteral ("")
 
 /*!
     \defgroup QT_QML_MODELS Qt models for QML

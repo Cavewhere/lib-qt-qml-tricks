@@ -39,7 +39,7 @@ QQmlVariantListModel::QQmlVariantListModel (QObject * parent)
     : QAbstractListModel (parent)
     , m_privateImpl (new QQmlVariantListModelPrivate (this))
 {
-    m_privateImpl->m_roles.insert (0, QByteArrayLiteral ("qtVariant"));
+    m_privateImpl->m_roles.insert (BASE_ROLE, QByteArrayLiteral ("qtVariant"));
 }
 
 /*!
@@ -74,7 +74,7 @@ QVariant QQmlVariantListModel::data (const QModelIndex & index, int role) const
 {
     QVariant ret;
     int idx = index.row ();
-    if (idx >= 0 && idx < count () && role == 0) {
+    if (idx >= 0 && idx < count () && role == BASE_ROLE) {
         ret = m_privateImpl->m_items.value (idx);
     }
     return ret;
@@ -110,10 +110,10 @@ bool QQmlVariantListModel::setData (const QModelIndex & index, const QVariant & 
 {
     bool ret = false;
     int idx = index.row ();
-    if (idx >= 0 && idx < count () && role == 0) {
+    if (idx >= 0 && idx < count () && role == BASE_ROLE) {
         m_privateImpl->m_items.replace (idx, value);
         QModelIndex item = QAbstractListModel::index (idx, 0, NO_PARENT);
-        emit dataChanged (item, item, QVector<int> () << role);
+        emit dataChanged (item, item, QVector<int> (1, role));
         ret = true;
     }
     return ret;
@@ -206,7 +206,7 @@ void QQmlVariantListModel::replace (int pos, QVariant item)
     if (pos >= 0 && pos < count ()) {
         m_privateImpl->m_items.replace (pos, item);
         QModelIndex index = QAbstractListModel::index (pos, 0, NO_PARENT);
-        emit dataChanged (index, index, QVector<int> () << 0);
+        emit dataChanged (index, index, QVector<int> (1, BASE_ROLE));
     }
 }
 

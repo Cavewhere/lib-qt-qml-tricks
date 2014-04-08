@@ -75,7 +75,7 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
     , m_privateImpl (new QQmlObjectListModelPrivate (this))
 {
     m_privateImpl->m_metaObj = metaObj;
-    m_privateImpl->m_roles.insert (0, QByteArrayLiteral ("qtObject"));
+    m_privateImpl->m_roles.insert (BASE_ROLE, QByteArrayLiteral ("qtObject"));
     for (int propertyIdx = 0; propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++) {
         int role = m_privateImpl->m_roles.count ();
         QMetaProperty metaProp = m_privateImpl->m_metaObj.property (propertyIdx);
@@ -118,8 +118,9 @@ QVariant QQmlObjectListModel::data (const QModelIndex & index, int role) const
 {
     QVariant ret;
     QObject * item = get (index.row ());
-    if (item != NULL) {
-        ret.setValue (role > 0 ? item->property (m_privateImpl->m_roles.value (role)) : QVariant::fromValue (item));
+    QByteArray rolename = m_privateImpl->m_roles.value (role, EMPTY_BA);
+    if (item != NULL && !rolename.isEmpty ()) {
+        ret.setValue (role > BASE_ROLE ? item->property (rolename) : QVariant::fromValue (item));
     }
     return ret;
 }
@@ -152,8 +153,9 @@ bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & v
 {
     bool ret = false;
     QObject * item = get (index.row ());
-    if (item != NULL && role > 0) {
-        ret = item->setProperty (m_privateImpl->m_roles.value (role), value);
+    QByteArray rolename = m_privateImpl->m_roles.value (role, EMPTY_BA);
+    if (item != NULL && role > BASE_ROLE && !rolename.isEmpty ()) {
+        ret = item->setProperty (rolename, value);
     }
     return ret;
 }
@@ -484,7 +486,7 @@ void QQmlObjectListModel::setRoleNameForUid (QByteArray name)
 QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * parent)
     : QObject (parent)
     , m_count (0)
-    , m_uidRoleName (QByteArrayLiteral (""))
+    , m_uidRoleName (EMPTY_BA)
     , m_publicObject (parent)
 {
     m_handler = metaObject ()->method (metaObject ()->indexOfMethod ("onItemPropertyChanged()"));
@@ -498,15 +500,15 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     QObject * item = sender ();
     int row = m_items.indexOf (item);
     int sig = senderSignalIndex ();
-    int role = m_signalIdxToRole.value (sig);
+    int role = m_signalIdxToRole.value (sig, -1);
     if (row >= 0 && role >= 0) {
         QModelIndex index = m_publicObject->index (row, 0, NO_PARENT);
         emit m_publicObject->dataChanged (index, index, QVector<int> (1, role));
     }
     if (!m_uidRoleName.isEmpty ()) {
-        QByteArray roleName = m_roles.value (role, QByteArrayLiteral ("N/A"));
-        if (roleName == m_uidRoleName) {
-            QString key = m_indexByUid.key (item, QStringLiteral (""));
+        QByteArray roleName = m_roles.value (role, EMPTY_BA);
+        if (!roleName.isEmpty () && roleName == m_uidRoleName) {
+            QString key = m_indexByUid.key (item, EMPTY_STR);
             if (!key.isEmpty ()) {
                 m_indexByUid.remove (key);
             }
@@ -545,7 +547,7 @@ void QQmlObjectListModelPrivate::referenceItem (QObject * item)
                               (Qt::ConnectionType) (Qt::DirectConnection | Qt::UniqueConnection));
         }
         if (!m_uidRoleName.isEmpty ()) {
-            QString key = m_indexByUid.key (item, QStringLiteral (""));
+            QString key = m_indexByUid.key (item, EMPTY_STR);
             if (!key.isEmpty ()) {
                 m_indexByUid.remove (key);
             }
@@ -569,7 +571,7 @@ void QQmlObjectListModelPrivate::dereferenceItem (QObject * item)
             item->deleteLater ();
         }
         if (!m_uidRoleName.isEmpty ()) {
-            QString key = m_indexByUid.key (item, QStringLiteral (""));
+            QString key = m_indexByUid.key (item, EMPTY_STR);
             if (!key.isEmpty ()) {
                 m_indexByUid.remove (key);
             }
