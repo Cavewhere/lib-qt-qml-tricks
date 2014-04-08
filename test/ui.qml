@@ -5,6 +5,7 @@ Rectangle {
     width: 600;
     height: 400;
     Component.onCompleted: {
+        console.log ("count=", testModel.count);
         var obj = testModel.getByUid ("2014-04-08");
         console.log ("obj=", obj, obj.bar);
     }
