@@ -542,9 +542,7 @@ void QQmlObjectListModelPrivate::referenceItem (QObject * item)
         }
         foreach (int signalIdx, m_signalIdxToRole.keys ()) {
             QMetaMethod notifier = item->metaObject ()->method (signalIdx);
-            QObject::connect (item, notifier,
-                              this, m_handler,
-                              (Qt::ConnectionType) (Qt::DirectConnection | Qt::UniqueConnection));
+            QObject::connect (item, notifier, this, m_handler, Qt::UniqueConnection);
         }
         if (!m_uidRoleName.isEmpty ()) {
             QString key = m_indexByUid.key (item, EMPTY_STR);
