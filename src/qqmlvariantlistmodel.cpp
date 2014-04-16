@@ -147,6 +147,7 @@ void QQmlVariantListModel::clear ()
     beginResetModel ();
     m_privateImpl->m_items.clear ();
     endResetModel ();
+    m_privateImpl->updateCounter ();
 }
 
 /*!
@@ -162,6 +163,7 @@ void QQmlVariantListModel::append (QVariant item)
     beginInsertRows (NO_PARENT, pos, pos);
     m_privateImpl->m_items.append (item);
     endInsertRows ();
+    m_privateImpl->updateCounter ();
 }
 
 /*!
@@ -176,6 +178,7 @@ void QQmlVariantListModel::prepend (QVariant item)
     beginInsertRows (NO_PARENT, 0, 0);
     m_privateImpl->m_items.prepend (item);
     endInsertRows ();
+    m_privateImpl->updateCounter ();
 }
 
 /*!
@@ -191,6 +194,7 @@ void QQmlVariantListModel::insert (int idx, QVariant item)
     beginInsertRows (NO_PARENT, idx, idx);
     m_privateImpl->m_items.insert (idx, item);
     endInsertRows ();
+    m_privateImpl->updateCounter ();
 }
 
 /*!
@@ -224,6 +228,7 @@ void QQmlVariantListModel::append (QVariantList itemList)
         beginInsertRows (NO_PARENT, pos, pos + itemList.count ());
         m_privateImpl->m_items.append (itemList);
         endInsertRows ();
+        m_privateImpl->updateCounter ();
     }
 }
 
@@ -243,6 +248,7 @@ void QQmlVariantListModel::prepend (QVariantList itemList)
             m_privateImpl->m_items.insert (offset, item);
         }
         endInsertRows ();
+        m_privateImpl->updateCounter ();
     }
 }
 
@@ -264,6 +270,7 @@ void QQmlVariantListModel::insert (int idx, QVariantList itemList)
             offset++;
         }
         endInsertRows ();
+        m_privateImpl->updateCounter ();
     }
 }
 
@@ -291,6 +298,7 @@ void QQmlVariantListModel::remove (int idx)
         beginRemoveRows (NO_PARENT, idx, idx);
         m_privateImpl->m_items.removeAt (idx);
         endRemoveRows ();
+        m_privateImpl->updateCounter ();
     }
 }
 
@@ -317,6 +325,17 @@ QVariant QQmlVariantListModel::get (int idx) const
 QVariantList QQmlVariantListModel::list () const
 {
     return m_privateImpl->m_items;
+}
+
+/*!
+    \internal
+*/
+void QQmlVariantListModelPrivate::updateCounter ()
+{
+    if (m_count != m_items.count ()) {
+        m_count = m_items.count ();
+        emit m_publicObject->countChanged (m_count);
+    }
 }
 
 /*!

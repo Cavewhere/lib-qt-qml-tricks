@@ -18,6 +18,9 @@ class QQmlVariantListModelPrivate : public QObject {
 public:
     explicit QQmlVariantListModelPrivate (QQmlVariantListModel * parent);
 
+    void updateCounter ();
+
+    int                     m_count;
     QVariantList            m_items;
     QHash<int, QByteArray>  m_roles;
     QQmlVariantListModel  * m_publicObject;

@@ -520,7 +520,7 @@ void QQmlObjectListModelPrivate::onItemPropertyChanged ()
     }
 }
 
-/*
+/*!
     \internal
 */
 void QQmlObjectListModelPrivate::updateCounter ()

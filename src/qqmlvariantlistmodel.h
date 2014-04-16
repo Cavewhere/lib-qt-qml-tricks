@@ -7,6 +7,7 @@ class QQmlVariantListModelPrivate;
 
 class QQmlVariantListModel : public QAbstractListModel {
     Q_OBJECT
+    Q_PROPERTY (int count READ count NOTIFY countChanged)
 
 public:
     explicit QQmlVariantListModel (QObject * parent);
@@ -33,6 +34,9 @@ public slots: // public API
     void remove (int idx);
     QVariant get (int idx) const;
     QVariantList list () const;
+
+signals: // notifiers
+    void countChanged (int count);
 
 private:
     QQmlVariantListModelPrivate * m_privateImpl;
