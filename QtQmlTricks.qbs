@@ -5,7 +5,8 @@ Project {
     name: "The Qt QML Tricks";
     references: [
         "src/src.qbs",
-        "test/test.qbs"
+        "test/test.qbs",
+        "import/import.qbs"
     ];
 
     Product {

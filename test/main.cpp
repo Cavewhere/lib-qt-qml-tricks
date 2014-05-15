@@ -30,7 +30,7 @@ int main (int argc, char * argv []) {
     QQuickView view;
     view.rootContext ()->setContextProperty ("testModel", testModel);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/ui.qml"));
+    view.setSource (QUrl ("qrc:/test/ui.qml"));
     view.show ();
 
     return app.exec ();

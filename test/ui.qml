@@ -1,14 +1,10 @@
 import QtQuick 2.1;
+import "../import/QtCoreApi.js" as QtCoreApi;
 
 Rectangle {
     id: window;
     width: 600;
     height: 400;
-    Component.onCompleted: {
-        console.log ("count=", testModel.count);
-        var obj = testModel.getByUid ("2014-04-08");
-        console.log ("obj=", obj, obj.bar);
-    }
 
     Flickable {
         id: flicker;
@@ -35,7 +31,7 @@ Rectangle {
     Timer {
         repeat: true;
         running: true;
-        interval: 2000;
+        interval: 1000;
         onTriggered: {
             if (listOperations.length) {
                 listOperations.shift () ();
@@ -43,8 +39,34 @@ Rectangle {
         }
 
         property var listOperations : [
-            function () { testModel.remove (3); },
-            function () { testModel.move   (100, 1); },
+            function () {
+                console.log ("model count=", testModel.count);
+            },
+            function () {
+                var uid = "2014-04-08";
+                var obj = testModel.getByUid (uid);
+                console.log ("uid=", uid, "obj=", obj, "val=", obj.bar);
+            },
+            function () {
+                console.log ("model remove idx 3=", (testModel.remove (3) || "DONE"));
+            },
+            function () {
+                console.log ("model move idx 100 to position 1=", (testModel.move (100, 1) || "DONE"));
+            },
+            function () {
+                console.log ("'foobar' at 2 :", "foobar".at (2));
+            },
+            function () {
+                var arr = ["fo", "ob", "ar"];
+                console.log ("arr before=", JSON.stringify (arr));
+                console.log ("arr first=", arr.first ());
+                console.log ("arr last=", arr.last ());
+                arr.removeAt (1);
+                console.log ("arr after remove at 1 =", JSON.stringify (arr));
+            },
+            function () {
+                console.log ("remove all 'o' in 'foobar'=", "foobar".remove ('o'));
+            },
         ];
     }
 }

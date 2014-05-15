@@ -24,6 +24,6 @@ Application {
     }
     Group {
         name: "Qt resources";
-        files: "*.qrc";
+        files: "../*.qrc";
     }
 }

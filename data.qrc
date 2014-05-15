@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>test/ui.qml</file>
+        <file>import/QtCoreApi.js</file>
+    </qresource>
+</RCC>
