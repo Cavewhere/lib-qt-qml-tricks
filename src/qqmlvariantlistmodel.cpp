@@ -144,9 +144,9 @@ bool QQmlVariantListModel::isEmpty () const
 */
 void QQmlVariantListModel::clear ()
 {
-    beginResetModel ();
+    beginRemoveRows (NO_PARENT, 0, count () -1);
     m_privateImpl->m_items.clear ();
-    endResetModel ();
+    endRemoveRows ();
     m_privateImpl->updateCounter ();
 }
 
@@ -221,11 +221,11 @@ void QQmlVariantListModel::replace (int pos, QVariant item)
 
     \sa prepend(QVariantList), insert(int, QVariantList)
 */
-void QQmlVariantListModel::append (QVariantList itemList)
+void QQmlVariantListModel::appendList (QVariantList itemList)
 {
     if (!itemList.isEmpty ()) {
         int pos = m_privateImpl->m_items.count ();
-        beginInsertRows (NO_PARENT, pos, pos + itemList.count ());
+        beginInsertRows (NO_PARENT, pos, pos + itemList.count () -1);
         m_privateImpl->m_items.append (itemList);
         endInsertRows ();
         m_privateImpl->updateCounter ();
@@ -239,10 +239,10 @@ void QQmlVariantListModel::append (QVariantList itemList)
 
     \sa append(QVariantList), insert(int, QVariantList)
 */
-void QQmlVariantListModel::prepend (QVariantList itemList)
+void QQmlVariantListModel::prependList (QVariantList itemList)
 {
     if (!itemList.isEmpty ()) {
-        beginInsertRows (NO_PARENT, 0, itemList.count ());
+        beginInsertRows (NO_PARENT, 0, itemList.count () -1);
         int offset = 0;
         foreach (QVariant item, itemList) {
             m_privateImpl->m_items.insert (offset, item);
@@ -260,10 +260,10 @@ void QQmlVariantListModel::prepend (QVariantList itemList)
 
     \sa append(QVariantList), prepend(QVariantList)
 */
-void QQmlVariantListModel::insert (int idx, QVariantList itemList)
+void QQmlVariantListModel::insertList (int idx, QVariantList itemList)
 {
     if (!itemList.isEmpty ()) {
-        beginInsertRows (NO_PARENT, idx, idx + itemList.count ());
+        beginInsertRows (NO_PARENT, idx, idx + itemList.count () -1);
         int offset = 0;
         foreach (QVariant item, itemList) {
             m_privateImpl->m_items.insert (idx + offset, item);

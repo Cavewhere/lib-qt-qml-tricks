@@ -221,12 +221,12 @@ int QQmlObjectListModel::indexOf (QObject * item) const
 */
 void QQmlObjectListModel::clear ()
 {
-    beginResetModel ();
+    beginRemoveRows (NO_PARENT, 0, count () -1);
     foreach (QObject * item, m_privateImpl->m_items) {
         m_privateImpl->dereferenceItem (item);
     }
     m_privateImpl->m_items.clear ();
-    endResetModel ();
+    endRemoveRows ();
 }
 
 /*!
@@ -294,7 +294,7 @@ void QQmlObjectListModel::append (QObjectList itemList)
     itemList.removeAll (NULL);
     if (!itemList.isEmpty ()) {
         int pos = m_privateImpl->m_items.count ();
-        beginInsertRows (NO_PARENT, pos, pos + itemList.count ());
+        beginInsertRows (NO_PARENT, pos, pos + itemList.count () -1);
         m_privateImpl->m_items.append (itemList);
         foreach (QObject * item, itemList) {
             m_privateImpl->referenceItem (item);
@@ -314,7 +314,7 @@ void QQmlObjectListModel::prepend (QObjectList itemList)
 {
     itemList.removeAll (NULL);
     if (!itemList.isEmpty ()) {
-        beginInsertRows (NO_PARENT, 0, itemList.count ());
+        beginInsertRows (NO_PARENT, 0, itemList.count () -1);
         int offset = 0;
         foreach (QObject * item, itemList) {
             m_privateImpl->m_items.insert (offset, item);
@@ -336,7 +336,7 @@ void QQmlObjectListModel::insert (int idx, QObjectList itemList)
 {
     itemList.removeAll (NULL);
     if (!itemList.isEmpty ()) {
-        beginInsertRows (NO_PARENT, idx, idx + itemList.count ());
+        beginInsertRows (NO_PARENT, idx, idx + itemList.count () -1);
         int offset = 0;
         foreach (QObject * item, itemList) {
             m_privateImpl->m_items.insert (idx + offset, item);
