@@ -32,7 +32,7 @@ addMethod (String.prototype, last);
 
 
 function contains (value) {
-    return (!value || this.indexOf (value) >= 0);
+    return (this.indexOf (value) > -1);
 }
 addMethod (Array.prototype,  contains);
 addMethod (String.prototype, contains);
