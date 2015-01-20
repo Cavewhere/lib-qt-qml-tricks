@@ -1,0 +1,5 @@
+module QtQmlTricks
+
+QtCoreApi     1.0 QtCoreApi.js
+RowContainer  1.0 RowContainer.qml
+GridContainer 1.0 GridContainer.qml

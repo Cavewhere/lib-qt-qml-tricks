@@ -1,5 +1,5 @@
 import QtQuick 2.1;
-import "../import/QtCoreApi.js" as QtCoreApi;
+import QtQmlTricks 1.0;
 
 Rectangle {
     id: window;

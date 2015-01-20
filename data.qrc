@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>test/ui.qml</file>
-        <file>import/QtCoreApi.js</file>
+        <file>import/QtQmlTricks/GridContainer.qml</file>
+        <file>import/QtQmlTricks/qmldir</file>
+        <file>import/QtQmlTricks/QtCoreApi.js</file>
+        <file>import/QtQmlTricks/RowContainer.qml</file>
     </qresource>
 </RCC>
