@@ -20,6 +20,16 @@ Rectangle {
                 right: parent.right;
             }
 
+            Image {
+                smooth: false;
+                fillMode: Image.Pad;
+
+                SvgIconHelper on source {
+                    icon: "mark";
+                    size: 64;
+                    color: "orange";
+                }
+            }
             Repeater {
                 model: testModel;
                 delegate: Text {

@@ -5,8 +5,10 @@
 #include <QQmlEngine>
 #include <QUrl>
 #include <QDateTime>
+#include <qqml.h>
 
 #include <QQmlObjectListModel>
+#include <QQmlSvgIconHelper>
 
 #include "defs.h"
 
@@ -26,6 +28,9 @@ int main (int argc, char * argv []) {
         testModel->append (item);
         date = date.addDays (1);
     }
+
+    QQmlSvgIconHelper::setBasePath (":/test");
+    qmlRegisterType<QQmlSvgIconHelper> ("QtQmlTricks", 1, 0, "SvgIconHelper");
 
     QQuickView view;
     view.engine ()->addImportPath ("qrc:/import");

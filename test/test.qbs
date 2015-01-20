@@ -7,7 +7,7 @@ Application {
     Depends { name: "cpp"; }
     Depends {
         name: "Qt";
-        submodules: ["core", "gui", "network", "qml", "quick"];
+        submodules: ["core", "gui", "network", "qml", "quick", "svg"];
     }
     Depends { name: "lib-qt-qml-tricks"; }
     Group {

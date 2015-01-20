@@ -9,7 +9,7 @@ StaticLibrary {
 
         cpp.includePaths: ["."];
     }
-    Depends { name: "Qt.core"; }
+    Depends { name: "Qt"; submodules: ["core", "qml", "gui", "svg"]; }
     Group {
         name: "C++ sources";
         files: "*.cpp";
