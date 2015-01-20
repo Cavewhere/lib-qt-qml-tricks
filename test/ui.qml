@@ -21,12 +21,15 @@ Rectangle {
             }
 
             Image {
+                cache: true;
                 smooth: false;
                 fillMode: Image.Pad;
+                asynchronous: true;
+                antialiasing: false;
 
                 SvgIconHelper on source {
+                    size: 32;
                     icon: "mark";
-                    size: 64;
                     color: "orange";
                 }
             }
