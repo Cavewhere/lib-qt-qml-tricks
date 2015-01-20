@@ -26,6 +26,11 @@ Project {
             fileTags: "doxyconf";
         }
         Group {
+            name: "Schema";
+            prefix: "doc/"
+            files: ["*.svg"];
+        }
+        Group {
             name: "CSS style";
             prefix: "doc/"
             files: ["*.css"];

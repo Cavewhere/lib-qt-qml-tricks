@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="744.09448"
+   height="1052.3622"
+   id="svg2">
+  <defs
+     id="defs4">
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow2Lend"
+       style="overflow:visible">
+      <path
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         id="path3841"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1">
+    <text
+       x="48.263142"
+       y="93.505043"
+       id="text2985"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="48.263142"
+         y="93.505043"
+         id="tspan2987"
+         style="font-size:14px">In most of today's applications and websites, designers have made the choice of using what they call</tspan><tspan
+         x="48.263142"
+         y="111.00504"
+         id="tspan2989"
+         style="font-size:14px">&quot;symbolic icons&quot;. These are really schematic icons, without border or shadow/3D effects, that can be</tspan><tspan
+         x="48.263142"
+         y="128.50504"
+         id="tspan2991"
+         style="font-size:14px">easily scaled to any size, and/or colored into any color (generally to match the color of text near them).</tspan></text>
+    <text
+       x="219.78069"
+       y="58.790752"
+       id="text3012"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Bold"><tspan
+         x="219.78069"
+         y="58.790752"
+         id="tspan3014">Modern Icons Design Guidelines</tspan></text>
+    <text
+       x="48.753143"
+       y="157.07648"
+       id="text3016"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="48.753143"
+         y="157.07648"
+         id="tspan3018"
+         style="font-size:14px">This document tries to expose practical usecases that demonstrate why using symbolic icons can save </tspan><tspan
+         x="48.753143"
+         y="174.57648"
+         id="tspan3020"
+         style="font-size:14px">a LOT of time while developing a new product and the other advantages it brings.</tspan></text>
+    <text
+       x="47.117142"
+       y="254.07648"
+       id="text3022"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="47.117142"
+         y="254.07648"
+         id="tspan3024">1/ Scalability</tspan></text>
+    <text
+       x="47.857143"
+       y="446.07645"
+       id="text3026"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="47.857143"
+         y="446.07645"
+         id="tspan3028">2/ Coloring and contrast</tspan></text>
+    <text
+       x="47.877144"
+       y="708.79077"
+       id="text3030"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="47.877144"
+         y="708.79077"
+         id="tspan3032">3/ Alignment, margins, and size-factor...</tspan></text>
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.22299068,-0.00909828,0.00869067,0.23344931,50.948973,247.26015)"
+       id="path3038"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.66897203,-0.02729484,0.02607201,0.70034794,124.51205,78.551488)"
+       id="path3808"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:none" />
+    <text
+       x="92.714279"
+       y="330.55447"
+       id="text3810"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="92.714279"
+         y="330.55447"
+         id="tspan3812">x3</tspan></text>
+    <path
+       d="m 123.28571,323.6321 23.67527,0"
+       id="path3814"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
+    <text
+       x="233.85715"
+       y="324.50504"
+       id="text4260"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#008000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="233.85715"
+         y="324.50504"
+         id="tspan4262">OK.</tspan></text>
+    <path
+       d="m 297.42857,278.07647 0,90.71428"
+       id="path4264"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.22299068,-0.00909828,0.00869067,0.23344931,316.94897,247.26015)"
+       id="path4266"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:#000000;stroke-width:4.37956285;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.66897203,-0.02729484,0.02607201,0.70034794,394.51205,78.551488)"
+       id="path4268"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:#000000;stroke-width:4.37956285;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <text
+       x="362.71429"
+       y="330.55447"
+       id="text4270"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="362.71429"
+         y="330.55447"
+         id="tspan4272">x3</tspan></text>
+    <path
+       d="m 395.28571,324.20353 23.67527,0"
+       id="path4274"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
+    <text
+       x="506.57147"
+       y="269.79074"
+       id="text4276"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="506.57147"
+         y="269.79074"
+         id="tspan4278">NOT OK !</tspan></text>
+    <text
+       x="507.85718"
+       y="288.50504"
+       id="text4280"
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="507.85718"
+         y="288.50504"
+         id="tspan4284">Here we started with 1px border, </tspan><tspan
+         x="507.85718"
+         y="303.50504"
+         id="tspan4290">and we end up with 3px.</tspan><tspan
+         x="507.85718"
+         y="318.50504"
+         id="tspan4286">That may sound right but it is not :</tspan><tspan
+         x="507.85718"
+         y="333.50504"
+         id="tspan4292">If source/target size was different,</tspan><tspan
+         x="507.85718"
+         y="348.50504"
+         id="tspan4294">we could have different border size</tspan><tspan
+         x="507.85718"
+         y="363.50504"
+         id="tspan4296">between icons, and even have </tspan><tspan
+         x="507.85718"
+         y="378.50504"
+         id="tspan4298">not-integer border (blur rendering).</tspan></text>
+    <text
+       x="165"
+       y="400.79077"
+       id="text4304"
+       xml:space="preserve"
+       style="font-size:12px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Italic"><tspan
+         x="165"
+         y="400.79077"
+         id="tspan4308">(Also, icons with really small details can become unlegible at small size, so prefer using simple symbols.)</tspan></text>
+    <text
+       x="48.57143"
+       y="201.50504"
+       id="text4312"
+       xml:space="preserve"
+       style="font-size:20px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu Italic"><tspan
+         x="48.57143"
+         y="201.50504"
+         id="tspan4314"
+         style="font-size:12px;font-style:italic;-inkscape-font-specification:Ubuntu Italic">NOTE : All this content assumes designer is using a scalable image format (like SVG or EPS). </tspan><tspan
+         x="48.57143"
+         y="216.50504"
+         id="tspan4316"
+         style="font-size:12px;font-style:italic;-inkscape-font-specification:Ubuntu Italic">It seems pointless to argue why scalable is better than pixel maps, so it won't be done here.</tspan></text>
+    <text
+       x="47.857143"
+       y="471.21933"
+       id="text4318"
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="47.857143"
+         y="471.21933"
+         id="tspan4320">It can be really hard to have a good contrast between icons and its background when the icon is complex,</tspan><tspan
+         x="47.857143"
+         y="488.71933"
+         id="tspan4322">because we can't simply change the color, and we often end up creating many variants of the same image,</tspan><tspan
+         x="47.857143"
+         y="506.21933"
+         id="tspan4324">just with color or border changing from one to the other :</tspan></text>
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.22299068,-0.00909828,0.00869067,0.23344931,50.948973,247.26015)"
+       id="path4328"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:none" />
+    <rect
+       width="60"
+       height="60"
+       x="49.476238"
+       y="522.64789"
+       id="rect4326"
+       style="fill:#ffe61f;fill-opacity:1;stroke:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.4236823,-0.01728673,0.01651227,0.44355369,39.975447,407.57464)"
+       id="path4330"
+       style="fill:#ffffff;fill-opacity:1;stroke:#a9a9a9;stroke-width:4.61006594;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       width="60"
+       height="60"
+       x="129.47624"
+       y="522.64789"
+       id="rect4338"
+       style="fill:#00e700;fill-opacity:1;stroke:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.4236823,-0.01728673,0.01651227,0.44355369,119.97545,407.57464)"
+       id="path4340"
+       style="fill:#e0e0e0;fill-opacity:1;stroke:#000000;stroke-width:4.61006594;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       width="60"
+       height="60"
+       x="209.47624"
+       y="522.64789"
+       id="rect4344"
+       style="fill:#000000;fill-opacity:1;stroke:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.4236823,-0.01728673,0.01651227,0.44355369,199.97545,407.57464)"
+       id="path4346"
+       style="fill:#fff8f4;fill-opacity:1;stroke:#808080;stroke-width:4.61006594;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       width="60"
+       height="60"
+       x="289.47623"
+       y="522.64789"
+       id="rect4350"
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.4236823,-0.01728673,0.01651227,0.44355369,279.97544,407.57464)"
+       id="path4352"
+       style="fill:#c0c0c0;fill-opacity:1;stroke:#000000;stroke-width:4.61006594;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       width="60"
+       height="60"
+       x="369.47623"
+       y="522.64789"
+       id="rect4356"
+       style="fill:#0062d8;fill-opacity:1;stroke:none" />
+    <path
+       d="m 125.51559,322.30917 -24.3997,20.3015 4.54816,31.41354 -26.847794,-16.93199 -28.470593,14.03287 7.806853,-30.76604 -22.143954,-22.74075 31.672695,-2.08247 14.784876,-28.08742 11.767948,29.479 z"
+       transform="matrix(0.4236823,-0.01728673,0.01651227,0.44355369,359.97544,407.57464)"
+       id="path4358"
+       style="fill:#b5b5b5;fill-opacity:1;stroke:#ffffff;stroke-width:4.61006594;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <text
+       x="445.71426"
+       y="534.93365"
+       id="text4378"
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="445.71426"
+         y="534.93365"
+         id="tspan4380">None of these images are perfectly contrasted,</tspan><tspan
+         x="445.71426"
+         y="549.93365"
+         id="tspan4384">despite having already multiple variants of it.</tspan><tspan
+         x="445.71426"
+         y="564.93365"
+         id="tspan4382">It would be much simpler to have only one image</tspan><tspan
+         x="445.71426"
+         y="579.93365"
+         id="tspan4386">and use the complementary color of background.</tspan></text>
+    <text
+       x="50"
+       y="611.93359"
+       id="text4388"
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="50"
+         y="611.93359"
+         id="tspan4390">It can get really hard to have a good contrast when having to take in account the 3 background/border/foreground colors.</tspan><tspan
+         x="50"
+         y="626.93359"
+         id="tspan4394">And virtually, we can end up creating all combination of these 3 colors, which can go up to 9 (duplicates ignored...).</tspan></text>
+    <text
+       x="50"
+       y="645.93359"
+       id="text4398"
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="50"
+         y="645.93359"
+         id="tspan4402">Using a monochromatic symbol helps hugely because it can be simply rendered with any color in the palette, and we don't</tspan><tspan
+         x="50"
+         y="660.93359"
+         id="tspan4406">have to care about the border color. It leaves at the same time an infinity of possibilities, and a unique source image !</tspan></text>
+    <text
+       x="50"
+       y="735.64789"
+       id="text4408"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="50"
+         y="735.64789"
+         id="tspan4410"
+         style="font-size:14px">To be able to scale effeciently the symbols and keep the alignments and proportions between icons in </tspan><tspan
+         x="50"
+         y="753.14789"
+         id="tspan4414"
+         style="font-size:14px">a given page, we have to enforce a limited set of size factors (ratio between width and height) and use </tspan><tspan
+         x="50"
+         y="770.64789"
+         id="tspan4416"
+         style="font-size:14px">fixed padding inside the icon source image (to simplify, fit the icon in the image with no margin).</tspan><tspan
+         x="50"
+         y="788.14789"
+         id="tspan4418"
+         style="font-size:14px" /><tspan
+         x="50"
+         y="805.64789"
+         id="tspan4420"
+         style="font-size:14px" /><tspan
+         x="50"
+         y="823.14789"
+         id="tspan4412"
+         style="font-size:14px" /></text>
+    <text
+       x="50"
+       y="797.64789"
+       id="text4422"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="50"
+         y="797.64789"
+         id="tspan4434"
+         style="font-size:14px">Using icons with different size-factors causes a lot of issues when scaling : let's say we decide to give the </tspan><tspan
+         x="50"
+         y="815.14789"
+         id="tspan4456"
+         style="font-size:14px">same height to all icons and keep the ratio for width, we will break alignment between icons on the page.</tspan><tspan
+         x="50"
+         y="832.64789"
+         id="tspan4458"
+         style="font-size:14px">And if we do the opposite, keep same width and apply ratio on the height, we break the size proportions</tspan><tspan
+         x="50"
+         y="850.14789"
+         id="tspan4462"
+         style="font-size:14px">between icons of the page. So basically none of these two options are acceptable.</tspan></text>
+    <text
+       x="47.857143"
+       y="875.36218"
+       id="text4466"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="47.857143"
+         y="875.36218"
+         id="tspan4474"
+         style="font-size:14px">To keep it simple : all icons of the same group must share the same size-factor. And to avoid having to </tspan><tspan
+         x="47.857143"
+         y="892.86218"
+         id="tspan4485"
+         style="font-size:14px">handle tens of factors in the UI, we can simply create 3 groups and enforce the ratio within these groups :</tspan></text>
+    <text
+       x="74.274811"
+       y="964.90674"
+       id="text4489"
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="74.274811"
+         y="964.90674"
+         id="tspan4495"
+         style="font-size:14px;text-align:center;text-anchor:middle">width</tspan><tspan
+         x="74.274811"
+         y="982.40674"
+         id="tspan4547"
+         style="font-size:14px;text-align:center;text-anchor:middle" /><tspan
+         x="74.274811"
+         y="999.90674"
+         id="tspan4493"
+         style="font-size:14px;text-align:center;text-anchor:middle">height</tspan></text>
+    <text
+       x="126.80769"
+       y="926.25079"
+       id="text4497"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="126.80769"
+         y="926.25079"
+         id="tspan4499">Square</tspan></text>
+    <text
+       x="225.28571"
+       y="926.25079"
+       id="text4501"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="225.28571"
+         y="926.25079"
+         id="tspan4503">Horizontal</tspan></text>
+    <text
+       x="356.57141"
+       y="926.25079"
+       id="text4507"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="356.57141"
+         y="926.25079"
+         id="tspan4509">Vertical</tspan></text>
+    <rect
+       width="59"
+       height="59"
+       x="128.72285"
+       y="948.79071"
+       id="rect4511"
+       style="fill:#f4f4f4;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       width="79"
+       height="59"
+       x="233.88181"
+       y="948.79071"
+       id="rect4513"
+       style="fill:#f4f4f4;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <text
+       x="144.04738"
+       y="985.23071"
+       id="text4515"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="144.04738"
+         y="985.23071"
+         id="tspan4521">1.0</tspan></text>
+    <text
+       x="259.43634"
+       y="985.07068"
+       id="text4525"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="259.43634"
+         y="985.07068"
+         id="tspan4529">1.5</tspan></text>
+    <rect
+       width="79"
+       height="59"
+       x="938.79071"
+       y="-420.65363"
+       transform="matrix(0,1,-1,0,0,0)"
+       id="rect4535"
+       style="fill:#f4f4f4;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <text
+       x="371.99359"
+       y="985.23071"
+       id="text4537"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="371.99359"
+         y="985.23071"
+         id="tspan4539">0.65</tspan></text>
+    <path
+       d="m 51.134977,978.29071 47.142863,0"
+       id="path4551"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <text
+       x="456"
+       y="952.64789"
+       id="text4553"
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><tspan
+         x="456"
+         y="952.64789"
+         id="tspan4555">Within these groups, the source image</tspan><tspan
+         x="456"
+         y="967.64789"
+         id="tspan4557">can have any size, as long as the width/height</tspan><tspan
+         x="456"
+         y="982.64789"
+         id="tspan4559">ratio is honored. This ease-up greatly the</tspan><tspan
+         x="456"
+         y="997.64789"
+         id="tspan4561">design process, and also the integration within</tspan><tspan
+         x="456"
+         y="1012.6479"
+         id="tspan4563">the UI later.</tspan></text>
+  </g>
+</svg>
