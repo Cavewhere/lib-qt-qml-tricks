@@ -6,10 +6,12 @@
 #include <QColor>
 #include <QSvgRenderer>
 #include <QQmlProperty>
+#include <QQmlParserStatus>
 #include <QQmlPropertyValueSource>
 
-class QQmlSvgIconHelper : public QObject, public QQmlPropertyValueSource {
+class QQmlSvgIconHelper : public QObject, public QQmlParserStatus, public QQmlPropertyValueSource {
     Q_OBJECT
+    Q_INTERFACES (QQmlParserStatus)
     Q_INTERFACES (QQmlPropertyValueSource)
     Q_PROPERTY (int     size            READ getSize            WRITE setSize            NOTIFY sizeChanged)
     Q_PROPERTY (qreal   verticalRatio   READ getVerticalRatio   WRITE setVerticalRatio   NOTIFY verticalRatioChanged)
@@ -22,6 +24,8 @@ public:
     virtual ~QQmlSvgIconHelper (void);
 
     virtual void setTarget (const QQmlProperty & target);
+    virtual void classBegin (void);
+    virtual void componentComplete (void);
 
     static void setBasePath (const QString & basePath);
 
@@ -50,6 +54,7 @@ protected:
 
 private:
     int     m_size;
+    bool    m_ready;
     qreal   m_verticalRatio;
     qreal   m_horizontalRatio;
     QColor  m_color;

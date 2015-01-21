@@ -19,6 +19,7 @@ QSvgRenderer QQmlSvgIconHelper::s_renderer;
 QQmlSvgIconHelper::QQmlSvgIconHelper (QObject * parent)
     : QObject           (parent)
     , m_size            (0)
+    , m_ready           (false)
     , m_verticalRatio   (1.0)
     , m_horizontalRatio (1.0)
     , m_color           (QColor  ())
@@ -29,6 +30,15 @@ QQmlSvgIconHelper::QQmlSvgIconHelper (QObject * parent)
 
 QQmlSvgIconHelper::~QQmlSvgIconHelper (void) {
 
+}
+
+void QQmlSvgIconHelper::classBegin (void) {
+    m_ready = false;
+}
+
+void QQmlSvgIconHelper::componentComplete (void) {
+    m_ready = true;
+    refresh ();
 }
 
 void QQmlSvgIconHelper::setTarget (const QQmlProperty & target) {
@@ -101,37 +111,43 @@ void QQmlSvgIconHelper::setIcon (QString icon) {
 }
 
 void QQmlSvgIconHelper::refresh (void) {
-    if (!m_icon.isEmpty () && m_size > 0) {
-        QImage image (m_size * m_horizontalRatio, m_size * m_verticalRatio, QImage::Format_ARGB32);
-        QString uri (m_icon
-                     % "?color="  % m_color.name ()
-                     % "&width="  % QString::number (image.width  ())
-                     % "&height=" % QString::number (image.height ()));
-        QString hash (QCryptographicHash::hash (uri.toLocal8Bit (), QCryptographicHash::Md5).toHex ());
-        QString sourcePath (s_basePath  % "/" % m_icon % ".svg");
-        QString cachedPath (s_cachePath % "/" % hash   % ".png");
-        if (!QFile::exists (cachedPath)) {
-            QPainter painter (&image);
-            image.fill (Qt::transparent);
-            painter.setRenderHint (QPainter::Antialiasing,            true);
-            painter.setRenderHint (QPainter::SmoothPixmapTransform,   true);
-            painter.setRenderHint (QPainter::HighQualityAntialiasing, true);
-            s_renderer.load (sourcePath);
-            if (s_renderer.isValid ()) {
-                s_renderer.render (&painter);
-                if (m_color.isValid ()) {
-                    QColor tmp (m_color);
-                    for (int x (0); x < image.width (); x++) {
-                        for (int y (0); y < image.height (); y++) {
-                            tmp.setAlpha (qAlpha (image.pixel (x, y)));
-                            image.setPixel (x, y, tmp.rgba ());
+    if (m_ready) {
+        QUrl url;
+        if (!m_icon.isEmpty () && m_size > 0 && m_horizontalRatio > 0.0 && m_verticalRatio > 0.0) {
+            QImage image (m_size * m_horizontalRatio, m_size * m_verticalRatio, QImage::Format_ARGB32);
+            QString uri (m_icon
+                         % "?color="  % (m_color.isValid () ? m_color.name () : "none")
+                         % "&width="  % QString::number (image.width  ())
+                         % "&height=" % QString::number (image.height ()));
+            QString hash (QCryptographicHash::hash (uri.toLocal8Bit (), QCryptographicHash::Md5).toHex ());
+            QString sourcePath (s_basePath  % "/" % m_icon % ".svg");
+            QString cachedPath (s_cachePath % "/" % hash   % ".png");
+            if (!QFile::exists (cachedPath)) {
+                QPainter painter (&image);
+                image.fill (Qt::transparent);
+                painter.setRenderHint (QPainter::Antialiasing,            true);
+                painter.setRenderHint (QPainter::SmoothPixmapTransform,   true);
+                painter.setRenderHint (QPainter::HighQualityAntialiasing, true);
+                s_renderer.load (sourcePath);
+                if (s_renderer.isValid ()) {
+                    s_renderer.render (&painter);
+                    if (m_color.isValid ()) {
+                        QColor tmp (m_color);
+                        for (int x (0); x < image.width (); x++) {
+                            for (int y (0); y < image.height (); y++) {
+                                tmp.setAlpha (qAlpha (image.pixel (x, y)));
+                                image.setPixel (x, y, tmp.rgba ());
+                            }
                         }
                     }
+                    QDir ().mkpath (s_cachePath);
+                    image.save (cachedPath, "PNG", 0);
                 }
-                QDir ().mkpath (s_cachePath);
-                image.save (cachedPath, "PNG", 0);
             }
+            url = QUrl::fromLocalFile (cachedPath);
         }
-        m_property.write (QUrl::fromLocalFile (cachedPath));
+        if (m_property.isValid () && m_property.isWritable ()) {
+            m_property.write (url);
+        }
     }
 }
