@@ -17,11 +17,12 @@ QString      QQmlSvgIconHelper::s_cachePath = (QStandardPaths::writableLocation 
 QSvgRenderer QQmlSvgIconHelper::s_renderer;
 
 QQmlSvgIconHelper::QQmlSvgIconHelper (QObject * parent)
-    : QObject (parent)
-    , m_size  (0)
-    , m_ratio (1.0)
-    , m_color (QColor ())
-    , m_icon  (QString ())
+    : QObject           (parent)
+    , m_size            (0)
+    , m_verticalRatio   (1.0)
+    , m_horizontalRatio (1.0)
+    , m_color           (QColor  ())
+    , m_icon            (QString ())
 {
 
 }
@@ -43,8 +44,12 @@ int QQmlSvgIconHelper::getSize (void) const {
     return m_size;
 }
 
-qreal QQmlSvgIconHelper::getRatio (void) const {
-    return m_ratio;
+qreal QQmlSvgIconHelper::getVerticalRatio (void) const {
+    return m_verticalRatio;
+}
+
+qreal QQmlSvgIconHelper::getHorizontalRatio (void) const {
+    return m_horizontalRatio;
 }
 
 QColor QQmlSvgIconHelper::getColor (void) const {
@@ -63,11 +68,18 @@ void QQmlSvgIconHelper::setSize (int arg) {
     }
 }
 
-void QQmlSvgIconHelper::setRatio (qreal arg) {
-    if (m_ratio != arg) {
-        m_ratio = arg;
+void QQmlSvgIconHelper::setVerticalRatio (qreal arg) {
+    if (m_verticalRatio != arg) {
+        m_verticalRatio = arg;
         refresh ();
-        emit ratioChanged ();
+        emit verticalRatioChanged ();
+    }
+}
+
+void QQmlSvgIconHelper::setHorizontalRatio (qreal arg) {
+    if (m_horizontalRatio != arg) {
+        m_horizontalRatio = arg;
+        emit horizontalRatioChanged ();
     }
 }
 
@@ -89,7 +101,7 @@ void QQmlSvgIconHelper::setIcon (QString arg) {
 
 void QQmlSvgIconHelper::refresh (void) {
     if (!m_icon.isEmpty () && m_size > 0) {
-        QImage image (m_size, m_size * m_ratio, QImage::Format_ARGB32);
+        QImage image (m_size * m_horizontalRatio, m_size * m_verticalRatio, QImage::Format_ARGB32);
         QString uri (m_icon
                      % "?color=" % m_color.name ()
                      % "&width=" % QString::number (image.width ())
