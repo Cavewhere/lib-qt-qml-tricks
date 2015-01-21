@@ -32,11 +32,11 @@ public:
     QString getIcon             (void) const;
 
 public slots:
-    void setSize            (int     arg);
-    void setVerticalRatio   (qreal   arg);
-    void setHorizontalRatio (qreal   arg);
-    void setColor           (QColor  arg);
-    void setIcon            (QString arg);
+    void setSize            (int     size);
+    void setVerticalRatio   (qreal   ratio);
+    void setHorizontalRatio (qreal   ratio);
+    void setColor           (QColor  color);
+    void setIcon            (QString icon);
 
 signals:
     void sizeChanged            (void);

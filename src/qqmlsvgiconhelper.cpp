@@ -60,40 +60,41 @@ QString QQmlSvgIconHelper::getIcon (void) const {
     return m_icon;
 }
 
-void QQmlSvgIconHelper::setSize (int arg) {
-    if (m_size != arg) {
-        m_size = arg;
+void QQmlSvgIconHelper::setSize (int size) {
+    if (m_size != size) {
+        m_size = size;
         refresh ();
         emit sizeChanged ();
     }
 }
 
-void QQmlSvgIconHelper::setVerticalRatio (qreal arg) {
-    if (m_verticalRatio != arg) {
-        m_verticalRatio = arg;
+void QQmlSvgIconHelper::setVerticalRatio (qreal ratio) {
+    if (m_verticalRatio != ratio) {
+        m_verticalRatio = ratio;
         refresh ();
         emit verticalRatioChanged ();
     }
 }
 
-void QQmlSvgIconHelper::setHorizontalRatio (qreal arg) {
-    if (m_horizontalRatio != arg) {
-        m_horizontalRatio = arg;
+void QQmlSvgIconHelper::setHorizontalRatio (qreal ratio) {
+    if (m_horizontalRatio != ratio) {
+        m_horizontalRatio = ratio;
+        refresh ();
         emit horizontalRatioChanged ();
     }
 }
 
-void QQmlSvgIconHelper::setColor (QColor arg) {
-    if (m_color != arg) {
-        m_color = arg;
+void QQmlSvgIconHelper::setColor (QColor color) {
+    if (m_color != color) {
+        m_color = color;
         refresh ();
         emit colorChanged ();
     }
 }
 
-void QQmlSvgIconHelper::setIcon (QString arg) {
-    if (m_icon != arg) {
-        m_icon = arg;
+void QQmlSvgIconHelper::setIcon (QString icon) {
+    if (m_icon != icon) {
+        m_icon = icon;
         refresh ();
         emit iconChanged ();
     }
@@ -103,8 +104,8 @@ void QQmlSvgIconHelper::refresh (void) {
     if (!m_icon.isEmpty () && m_size > 0) {
         QImage image (m_size * m_horizontalRatio, m_size * m_verticalRatio, QImage::Format_ARGB32);
         QString uri (m_icon
-                     % "?color=" % m_color.name ()
-                     % "&width=" % QString::number (image.width ())
+                     % "?color="  % m_color.name ()
+                     % "&width="  % QString::number (image.width  ())
                      % "&height=" % QString::number (image.height ()));
         QString hash (QCryptographicHash::hash (uri.toLocal8Bit (), QCryptographicHash::Md5).toHex ());
         QString sourcePath (s_basePath  % "/" % m_icon % ".svg");
