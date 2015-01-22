@@ -27,7 +27,8 @@ public:
     virtual void classBegin (void);
     virtual void componentComplete (void);
 
-    static void setBasePath (const QString & basePath);
+    static void setBasePath  (const QString & basePath);
+    static void setCachePath (const QString & cachePath);
 
     int     getSize             (void) const;
     qreal   getVerticalRatio    (void) const;

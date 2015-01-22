@@ -4,16 +4,14 @@
 #include <QUrl>
 #include <QDir>
 #include <QFile>
-#include <QDebug>
 #include <QImage>
 #include <QPainter>
 #include <QStringBuilder>
-#include <QStandardPaths>
 #include <QCoreApplication>
 #include <QCryptographicHash>
 
 QString      QQmlSvgIconHelper::s_basePath;
-QString      QQmlSvgIconHelper::s_cachePath = (QStandardPaths::writableLocation (QStandardPaths::CacheLocation) % "/CachedSvgIcon");
+QString      QQmlSvgIconHelper::s_cachePath;
 QSvgRenderer QQmlSvgIconHelper::s_renderer;
 
 QQmlSvgIconHelper::QQmlSvgIconHelper (QObject * parent)
@@ -25,7 +23,12 @@ QQmlSvgIconHelper::QQmlSvgIconHelper (QObject * parent)
     , m_color           (QColor  ())
     , m_icon            (QString ())
 {
-
+    if (s_basePath.isEmpty ()) {
+        QQmlSvgIconHelper::s_basePath = qApp->applicationDirPath ();
+    }
+    if (s_cachePath.isEmpty ()) {
+         QQmlSvgIconHelper::s_cachePath = (QDir::homePath () % "/.CachedSvgIcon/" % qApp->applicationName ());
+    }
 }
 
 QQmlSvgIconHelper::~QQmlSvgIconHelper (void) {
@@ -48,6 +51,10 @@ void QQmlSvgIconHelper::setTarget (const QQmlProperty & target) {
 
 void QQmlSvgIconHelper::setBasePath (const QString & basePath) {
     QQmlSvgIconHelper::s_basePath = basePath;
+}
+
+void QQmlSvgIconHelper::setCachePath (const QString & cachePath) {
+    QQmlSvgIconHelper::s_cachePath = cachePath;
 }
 
 int QQmlSvgIconHelper::getSize (void) const {
