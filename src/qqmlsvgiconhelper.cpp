@@ -129,14 +129,14 @@ void QQmlSvgIconHelper::refresh (void) {
             QString hash (QCryptographicHash::hash (uri.toLocal8Bit (), QCryptographicHash::Md5).toHex ());
             QString sourcePath (s_basePath  % "/" % m_icon % ".svg");
             QString cachedPath (s_cachePath % "/" % hash   % ".png");
-            if (!QFile::exists (cachedPath)) {
-                QPainter painter (&image);
-                image.fill (Qt::transparent);
-                painter.setRenderHint (QPainter::Antialiasing,            true);
-                painter.setRenderHint (QPainter::SmoothPixmapTransform,   true);
-                painter.setRenderHint (QPainter::HighQualityAntialiasing, true);
+            if (QFile::exists (sourcePath) && !QFile::exists (cachedPath)) {
                 s_renderer.load (sourcePath);
                 if (s_renderer.isValid ()) {
+                    QPainter painter (&image);
+                    image.fill (Qt::transparent);
+                    painter.setRenderHint (QPainter::Antialiasing,            true);
+                    painter.setRenderHint (QPainter::SmoothPixmapTransform,   true);
+                    painter.setRenderHint (QPainter::HighQualityAntialiasing, true);
                     s_renderer.render (&painter);
                     if (m_color.isValid ()) {
                         QColor tmp (m_color);
