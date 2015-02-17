@@ -9,6 +9,7 @@
 
 #include <QQmlObjectListModel>
 #include <QQmlSvgIconHelper>
+#include <QQuickPolygon>
 
 #include "defs.h"
 
@@ -31,6 +32,7 @@ int main (int argc, char * argv []) {
 
     QQmlSvgIconHelper::setBasePath (":/test");
     qmlRegisterType<QQmlSvgIconHelper> ("QtQmlTricks", 1, 0, "SvgIconHelper");
+    qmlRegisterType<QQuickPolygon>     ("QtQmlTricks", 1, 0, "Polygon");
 
     QQuickView view;
     view.engine ()->addImportPath ("qrc:/import");
