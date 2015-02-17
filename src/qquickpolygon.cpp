@@ -30,7 +30,7 @@ QColor QQuickPolygon::getColor (void) const {
 void QQuickPolygon::setPoints (QVariantList points) {
     m_points.clear ();
     foreach (QVariant tmp, points) {
-        m_points.append (tmp.toPointF ());
+        m_points.append (tmp.value<QPointF> ());
     }
     emit pointsChanged ();
     update ();
@@ -88,11 +88,11 @@ bool QQuickPolygon::isInsideTriangle (qreal Ax, qreal Ay, qreal Bx, qreal By, qr
     qreal aCROSSbp (ax * bpy - ay * bpx);
     qreal cCROSSap (cx * apy - cy * apx);
     qreal bCROSScp (bx * cpy - by * cpx);
-    return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
+    return ((aCROSSbp >= 0.0) && (bCROSScp >= 0.0) && (cCROSSap >= 0.0));
 }
 
 bool QQuickPolygon::snip (int u, int v, int w, int n, int * V) {
-    static const qreal EPSILON (0.0000000001f);
+    static const qreal EPSILON (0.0000000001);
     bool ret (false);
     qreal Ax (m_points [V [u]].x ());
     qreal Ay (m_points [V [u]].y ());
@@ -119,17 +119,17 @@ bool QQuickPolygon::snip (int u, int v, int w, int n, int * V) {
 
 QVector<QPointF> QQuickPolygon::processTriangulation (void) {
     QVector<QPointF> triangles;
-    /* allocate and initialize list of Vertices in polygon */
+    // allocate and initialize list of Vertices in polygon
     const int n (m_points.size ());
     if (n >= 3) {
         int * V = new int [n];
-        /* compute polygon area */
+        // compute polygon area
         qreal area (0.0);
         for (int p = (n -1), q = 0; q < n; p = q++) {
             area += (m_points [p].x () * m_points [q].y () - m_points [q].x () * m_points [p].y ());
         }
-        /* we want a counter-clockwise polygon in V */
-        if (area > 0.0f) {
+        // we want a counter-clockwise polygon in V
+        if (area > 0.0) {
             for (int v = 0; v < n; v++) {
                 V [v] = v;
             }
@@ -140,15 +140,14 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
             }
         }
         int nv (n);
-        /*  remove nv-2 Vertices, creating 1 triangle every time */
-        int count (2 * nv); /* error detection */
+        // remove nv-2 Vertices, creating 1 triangle every time
+        int count (2 * nv); // error detection
         for (int m = 0, v = (nv -1); nv > 2;) {
-            /* if we loop, it is probably a non-simple polygon */
+            // if we loop, it is probably a non-simple polygon
             if (0 >= (count--)) {
-                //** Triangulate: ERROR - probable bad polygon!
-                break;
+                break; // Triangulate: ERROR - probable bad polygon!
             }
-            /* three consecutive vertices in current polygon, <u,v,w> */
+            // three consecutive vertices in current polygon, <u,v,w>
             int u = v;
             if (nv <= u) {
                 u = 0; // previous
@@ -162,17 +161,17 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
                 w = 0; // next
             }
             if (snip (u, v, w, nv, V)) {
-                /* output Triangle */
+                // output Triangle
                 triangles.append (m_points [V [u]]);
                 triangles.append (m_points [V [v]]);
                 triangles.append (m_points [V [w]]);
                 m++;
-                /* remove v from remaining polygon */
+                // remove v from remaining polygon
                 for (int s = v, t = (v +1); t < nv; s++, t++) {
                     V [s] = V [t];
                 }
                 nv--;
-                /* reset error detection counter */
+                // reset error detection counter
                 count = (2 * nv);
             }
         }
