@@ -129,15 +129,8 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
             area += (m_points [p].x () * m_points [q].y () - m_points [q].x () * m_points [p].y ());
         }
         // we want a counter-clockwise polygon in V
-        if (area > 0.0) {
-            for (int v = 0; v < n; v++) {
-                V [v] = v;
-            }
-        }
-        else {
-            for (int v = 0; v < n; v++) {
-                V [v] = (n - v -1);
-            }
+        for (int v = 0; v < n; v++) {
+            V [v] = (area > 0.0 ? v : n - v -1);
         }
         int nv (n);
         // remove nv-2 Vertices, creating 1 triangle every time
@@ -149,18 +142,9 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
                 break; // Triangulate: ERROR - probable bad polygon!
             }
             // three consecutive vertices in current polygon, <u,v,w>
-            int u = v;
-            if (nv <= u) {
-                u = 0; // previous
-            }
-            v = (u +1);
-            if (nv <= v) {
-                v = 0; // new v
-            }
-            int w = (v +1);
-            if (nv <= w) {
-                w = 0; // next
-            }
+            int u = (v    < nv ? v    : 0); // previous
+            v     = (u +1 < nv ? u +1 : 0); // new v
+            int w = (v +1 < nv ? v +1 : 0); // next
             if (snip (u, v, w, nv, V)) {
                 // output Triangle
                 triangles.append (m_points [V [u]]);
