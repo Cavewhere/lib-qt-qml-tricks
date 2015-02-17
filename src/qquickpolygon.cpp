@@ -144,7 +144,8 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
         int count (2 * nv); // error detection
         for (int m = 0, v = (nv -1); nv > 2;) {
             // if we loop, it is probably a non-simple polygon
-            if (0 >= (count--)) {
+            count--;
+            if (count <= 0) {
                 break; // Triangulate: ERROR - probable bad polygon!
             }
             // three consecutive vertices in current polygon, <u,v,w>
@@ -166,13 +167,11 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
                 triangles.append (m_points [V [v]]);
                 triangles.append (m_points [V [w]]);
                 m++;
-                // remove v from remaining polygon
                 for (int s = v, t = (v +1); t < nv; s++, t++) {
-                    V [s] = V [t];
+                    V [s] = V [t]; // remove v from remaining polygon
                 }
                 nv--;
-                // reset error detection counter
-                count = (2 * nv);
+                count = (2 * nv); // reset error detection counter
             }
         }
         delete V;
