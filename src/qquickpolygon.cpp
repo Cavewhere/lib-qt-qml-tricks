@@ -53,7 +53,7 @@ QSGNode * QQuickPolygon::updatePaintNode (QSGNode * oldNode, UpdatePaintNodeData
     const QVector<QPointF> triangles = processTriangulation ();
     const int size = triangles.size ();
     if (size > 0 && m_color.alpha () > 0) {
-        QSGGeometry * geometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), triangles.size ());
+        QSGGeometry * geometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), size);
         geometry->setDrawingMode (GL_TRIANGLE_STRIP);
         QSGGeometry::Point2D * vertex = geometry->vertexDataAsPoint2D ();
         for (int idx = 0; idx < size; idx++) {
