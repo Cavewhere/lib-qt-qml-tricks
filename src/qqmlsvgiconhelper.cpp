@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QFile>
 #include <QImage>
+#include <QDebug>
 #include <QPainter>
 #include <QStringBuilder>
 #include <QCoreApplication>
@@ -20,7 +21,7 @@ QQmlSvgIconHelper::QQmlSvgIconHelper (QObject * parent)
     , m_ready           (false)
     , m_verticalRatio   (1.0)
     , m_horizontalRatio (1.0)
-    , m_color           (QColor  ())
+    , m_color           (Qt::transparent)
     , m_icon            (QString ())
 {
     if (s_basePath.isEmpty ()) {
@@ -129,29 +130,37 @@ void QQmlSvgIconHelper::refresh (void) {
             QString hash (QCryptographicHash::hash (uri.toLocal8Bit (), QCryptographicHash::Md5).toHex ());
             QString sourcePath (s_basePath  % "/" % m_icon % ".svg");
             QString cachedPath (s_cachePath % "/" % hash   % ".png");
-            if (QFile::exists (sourcePath) && !QFile::exists (cachedPath)) {
-                s_renderer.load (sourcePath);
-                if (s_renderer.isValid ()) {
-                    QPainter painter (&image);
-                    image.fill (Qt::transparent);
-                    painter.setRenderHint (QPainter::Antialiasing,            true);
-                    painter.setRenderHint (QPainter::SmoothPixmapTransform,   true);
-                    painter.setRenderHint (QPainter::HighQualityAntialiasing, true);
-                    s_renderer.render (&painter);
-                    if (m_color.isValid ()) {
-                        QColor tmp (m_color);
-                        for (int x (0); x < image.width (); x++) {
-                            for (int y (0); y < image.height (); y++) {
-                                tmp.setAlpha (qAlpha (image.pixel (x, y)));
-                                image.setPixel (x, y, tmp.rgba ());
+            if (!QFile::exists (cachedPath)) {
+                QPainter painter (&image);
+                image.fill (Qt::transparent);
+                painter.setRenderHint (QPainter::Antialiasing,            true);
+                painter.setRenderHint (QPainter::SmoothPixmapTransform,   true);
+                painter.setRenderHint (QPainter::HighQualityAntialiasing, true);
+                if (QFile::exists (sourcePath)) {
+                    s_renderer.load (sourcePath);
+                    if (s_renderer.isValid ()) {
+                        s_renderer.render (&painter);
+                        if (m_color.isValid () && m_color.alpha () > 0) {
+                            QColor tmp (m_color);
+                            for (int x (0); x < image.width (); x++) {
+                                for (int y (0); y < image.height (); y++) {
+                                    tmp.setAlpha (qAlpha (image.pixel (x, y)));
+                                    image.setPixel (x, y, tmp.rgba ());
+                                }
                             }
                         }
+                        QDir ().mkpath (s_cachePath);
+                        image.save (cachedPath, "PNG", 0);
+                        url = QUrl::fromLocalFile (cachedPath);
                     }
-                    QDir ().mkpath (s_cachePath);
-                    image.save (cachedPath, "PNG", 0);
+                }
+                else {
+                    qWarning () << ">>> QmlSvgIconHelper : Can't render" << sourcePath << ", no such file !";
                 }
             }
-            url = QUrl::fromLocalFile (cachedPath);
+            else {
+                url = QUrl::fromLocalFile (cachedPath);
+            }
         }
         if (m_property.isValid () && m_property.isWritable ()) {
             m_property.write (url);
