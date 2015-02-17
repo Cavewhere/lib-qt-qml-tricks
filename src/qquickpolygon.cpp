@@ -8,7 +8,7 @@
 
 QQuickPolygon::QQuickPolygon (QQuickItem * parent)
     : QQuickItem (parent)
-    , m_color (Qt::magenta)
+    , m_color (Qt::transparent)
 {
     setFlag (QQuickItem::ItemHasContents);
 }
@@ -172,7 +172,7 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
                     V [s] = V [t];
                 }
                 nv--;
-                /* resest error detection counter */
+                /* reset error detection counter */
                 count = (2 * nv);
             }
         }
