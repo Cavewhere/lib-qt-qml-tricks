@@ -47,10 +47,13 @@ Rectangle {
         }
     }
     Timer {
+        id: timer;
         repeat: true;
         running: true;
         interval: 1000;
+        triggeredOnStart: true;
         onTriggered: {
+             polygon.count++;
             if (listOperations.length) {
                 listOperations.shift () ();
             }
@@ -91,13 +94,6 @@ Rectangle {
     FocusScope {
         focus: true;
         Keys.onPressed: { timer.running = !timer.running; }
-    }
-    Timer {
-        id: timer;
-        repeat: true;
-        running: true;
-        interval: 1000;
-        onTriggered: { polygon.count++; }
     }
     Polygon {
         id: polygon;
