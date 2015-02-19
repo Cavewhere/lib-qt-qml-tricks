@@ -4,9 +4,8 @@ Item {
     id: layout;
     width: implicitWidth;
     height: implicitHeight;
-    implicitWidth: (guideL.width + spacing + guideR.width);
-    implicitHeight: (guideL.height > guideR.height ? guideL.height : guideR.height);
     onLeftItemsChanged: {
+        //console.warn ("-> LEFT ITEMS CHANGED", leftItems.length, layout);
         for (var idx = 0; idx < leftItems.length; idx++) {
             var item = leftItems [idx];
             if (item.parent !== layout) {
@@ -19,6 +18,7 @@ Item {
         internal.relayoutH ();
     }
     onRightItemsChanged: {
+        //console.warn ("-> RIGHT ITEMS CHANGED", rightItems.length, layout);
         for (var idx = 0; idx < rightItems.length; idx++) {
             var item = rightItems [idx];
             if (item.parent !== layout) {
@@ -30,8 +30,18 @@ Item {
         }
         internal.relayoutH ();
     }
-    Component.onCompleted:   { internal.ready = true; }
-    Component.onDestruction: { internal.ready = false; }
+    onWidthChanged: {
+        //console.warn ("-> LAYOUT WIDTH CHANGED", width, layout);
+        internal.realignV ();
+    }
+    Component.onCompleted: {
+        //console.warn ("-> LAYOUT COMPLETED !", layout);
+        internal.ready = true;
+    }
+    Component.onDestruction: {
+        //console.warn ("-> LAYOUT DESTRUCTION !", layout);
+        internal.ready = false;
+    }
 
     property real spacing : 0;
 
@@ -45,23 +55,17 @@ Item {
 
     QtObject {
         id: internal;
-        onWrapChanged: { realignV (); }
 
         property bool ready : false;
 
-        readonly property bool wrap : (!dontWrap && ((guideL.width + layout.spacing + guideR.width) > layout.width));
-
-        property Item mostBigL : null;
-        property Item mostFarL : null;
-
-        property Item mostBigR : null;
-        property Item mostFarR : null;
-
         function keepBiggest (item1, item2, prop) {
-            if ((item1 && !item2) || (item1 && item2 && item1 [prop] > item2 [prop])) {
+            if (item1 && item2) {
+                return (item1 [prop] > item2 [prop] ? item1 : item2);
+            }
+            else if (item1 && !item2) {
                 return item1;
             }
-            else if ((!item1 && item2) || (item1 && item2 && item1 [prop] < item2 [prop])) {
+            else if (!item1 && item2) {
                 return item2;
             }
             else {
@@ -70,64 +74,76 @@ Item {
         }
 
         function relayoutH () {
+            //console.count ("-------- relayoutH --------");
             if (layout && ready) {
+                //console.warn ("-> RELAYOUT ...", layout);
+                ready = false;
+                //console.time ("RELAYOUT");
                 var idx, child;
-
-                var tmpLastL = null;
-                var tmpMaxHL = null;
+                //console.warn ("-> LAYOUT LEFT ITEMS ANCHORS");
+                var mostFarL = null;
+                var mostBigL = null;
                 for (idx = 0; idx < leftItems.length; idx++) {
                     child = leftItems [idx];
                     if (child.visible) {
-                        tmpMaxHL = keepBiggest (child, tmpMaxHL, "height");
-                        child.anchors.left = undefined;
+                        mostBigL = keepBiggest (child, mostBigL, "height");
+                        child.anchors.left             = undefined;
                         child.anchors.horizontalCenter = undefined;
-                        if (tmpLastL) {
-                            child.anchors.left       = tmpLastL.right;
+                        if (mostFarL) {
+                            child.anchors.left       = mostFarL.right;
                             child.anchors.leftMargin = Qt.binding (function () { return layout.spacing; });
                         }
                         else {
                             child.anchors.left       = layout.left;
                             child.anchors.leftMargin = 0;
                         }
-                        tmpLastL = child;
+                        mostFarL = child;
                     }
                 }
-
-                var tmpMaxHR = null;
-                var tmpLastR = null;
+                //console.warn ("-> LAYOUT RIGHT ITEMS ANCHORS");
+                var mostBigR = null;
+                var mostFarR = null;
                 for (idx = rightItems.length -1; idx >= 0; idx--) {
                     child = rightItems [idx];
                     if (child.visible) {
-                        tmpMaxHR = keepBiggest (child, tmpMaxHR, "height");
-                        child.anchors.left = undefined;
+                        mostBigR = keepBiggest (child, mostBigR, "height");
+                        child.anchors.left             = undefined;
                         child.anchors.horizontalCenter = undefined;
-                        if (tmpLastR) {
-                            child.anchors.right       = tmpLastR.left;
+                        if (mostFarR) {
+                            child.anchors.right       = mostFarR.left;
                             child.anchors.rightMargin = Qt.binding (function () { return layout.spacing; });
                         }
                         else {
                             child.anchors.right       = layout.right;
                             child.anchors.rightMargin = 0;
                         }
-                        tmpLastR = child;
+                        mostFarR = child;
                     }
                 }
-
-                ready    = false;
-                mostFarL = tmpLastL;
-                mostFarR = tmpLastR;
-                mostBigL = tmpMaxHL;
-                mostBigR = tmpMaxHR;
-                ready    = true;
-
+                //console.warn("-> FORCE SIZE OF GUIDES AND UPDATE LAYOUT IMPLICIT WIDTH");
+                guideR.height        = (mostBigR ? mostBigR.height : 0);
+                guideL.height        = (mostBigL ? mostBigL.height : 0);
+                guideL.anchors.right = (mostFarL ? mostFarL.right  : undefined);
+                guideR.anchors.left  = (mostFarR ? mostFarR.left   : undefined);
+                layout.implicitWidth = (guideL.width + spacing + guideR.width);
+                //console.timeEnd ("RELAYOUT");
+                ready = true;
                 realignV ();
+                //console.warn ("-> RELAYOUT.", layout);
+            }
+            else {
+                //console.warn ("-> DON'T RELAYOUT !", layout);
             }
         }
 
         function realignV () {
+            //console.count ("-------- realignV --------");
             if (layout && ready) {
+                //console.warn ("-> REALIGN...", layout);
+                ready = false;
+                //console.time ("REALIGN");
                 var idx, child, tmpBaseline;
-
+                //console.warn ("-> FIND LEFT TEXT ITEMS");
                 var tmpMaxTxtL = null;
                 for (idx = 0; idx < leftItems.length; idx++) {
                     child = leftItems [idx];
@@ -137,7 +153,7 @@ Item {
                         }
                     }
                 }
-
+                //console.warn ("-> FIND RIGHT TEXT ITEMS");
                 var tmpMaxTxtR = null;
                 for (idx = rightItems.length -1; idx >= 0; idx--) {
                     child = rightItems [idx];
@@ -147,9 +163,11 @@ Item {
                         }
                     }
                 }
-
+                //console.warn ("-> COMPUTE BIGGEST TEXT ITEM");
                 var tmpMaxTxtGlobal = keepBiggest (tmpMaxTxtL, tmpMaxTxtR, "contentHeight");
-
+                //console.warn ("-> DECIDE IF WRAP IS NEEDED");
+                var wrap = !dontWrap && (layout.implicitWidth > layout.width);
+                //console.warn ("-> REALIGN LEFT ITEMS");
                 for (idx = 0; idx < leftItems.length; idx++) {
                     child = leftItems [idx];
                     if (child.visible) {
@@ -176,7 +194,7 @@ Item {
                         }
                     }
                 }
-
+                //console.warn ("-> REALIGN RIGHT ITEMS");
                 for (idx = rightItems.length -1; idx >= 0; idx--) {
                     child = rightItems [idx];
                     if (child.visible) {
@@ -203,27 +221,65 @@ Item {
                         }
                     }
                 }
+                //console.warn ("-> FORCE GUIDES ALIGN AND UPDATE LAYOUT IMPLICIT HEIGHT");
+                if (wrap) {
+                    layout.implicitHeight         = (guideL.height + guideR.height);
+                    guideL.anchors.verticalCenter = undefined;
+                    guideR.anchors.verticalCenter = undefined;
+                    guideL.anchors.bottom         = layout.verticalCenter;
+                    guideR.anchors.top            = layout.verticalCenter;
+
+                }
+                else {
+                    layout.implicitHeight         = (guideL.height > guideR.height ? guideL.height : guideR.height);
+                    guideL.anchors.bottom         = undefined;
+                    guideR.anchors.top            = undefined;
+                    guideL.anchors.verticalCenter = layout.verticalCenter;
+                    guideR.anchors.verticalCenter = layout.verticalCenter;
+                }
+                //console.timeEnd ("REALIGN");
+                ready = true;
+                //console.warn ("-> REALIGN.", layout);
+            }
+            else {
+                //console.warn ("-> DON'T REALIGN !", layout);
             }
         }
     }
     Item {
         id: guideL;
-        height: (internal.mostBigL ? internal.mostBigL.height : 0);
-        anchors {
-            top: (internal.wrap ? layout.top : undefined);
-            left: layout.left;
-            right: (internal.mostFarL ? internal.mostFarL.right : undefined);
-            verticalCenter: (!internal.wrap ? layout.verticalCenter : undefined);
+        anchors.left: layout.left;
+        onWidthChanged: {
+            //console.warn ("-> GUIDE LEFT WIDTH CHANGED", width, layout);
+            internal.realignV ();
         }
+        onHeightChanged: {
+            //console.warn ("-> GUIDE LEFT HEIGHT CHANGED", height, layout);
+            internal.realignV ();
+        }
+
+        /*Rectangle {
+            color: "lime";
+            opacity: 0.5;
+            anchors.fill: parent;
+        }*/
     }
     Item {
         id: guideR;
-        height: (internal.mostBigR ? internal.mostBigR.height : 0);
-        anchors {
-            left: (internal.mostFarR ? internal.mostFarR.left : undefined);
-            right: layout.right;
-            bottom: (internal.wrap ? layout.bottom : undefined);
-            verticalCenter: (!internal.wrap ? layout.verticalCenter : undefined);
+        anchors.right: layout.right;
+        onWidthChanged: {
+            //console.warn ("-> GUIDE RIGHT WIDTH CHANGED", width, layout);
+            internal.realignV ();
         }
+        onHeightChanged: {
+            //console.warn ("-> GUIDE RIGHT HEIGHT CHANGED", height, layout);
+            internal.realignV ();
+        }
+
+        /*Rectangle {
+            color: "magenta";
+            opacity: 0.5;
+            anchors.fill: parent;
+        }*/
     }
 }
