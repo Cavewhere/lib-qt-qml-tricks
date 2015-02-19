@@ -5,31 +5,37 @@ Item {
     width: implicitWidth;
     height: implicitHeight;
     implicitWidth: (guideL.width + spacing + guideR.width);
-    implicitHeight: (internal.wrap
-                     ? (guideL.height + spacing + guideR.height)
-                     : Math.max (guideL.height, guideR.height));
-    onWidthChanged: { internal.realignV (); }
-    onImplicitWidthChanged: { internal.realignV (); }
+    implicitHeight: (guideL.height > guideR.height ? guideL.height : guideR.height);
     onLeftItemsChanged: {
         for (var idx = 0; idx < leftItems.length; idx++) {
             var item = leftItems [idx];
-            item.parent = layout;
-            item.heightChanged.connect  (internal.relayoutH);
-            item.visibleChanged.connect (internal.relayoutH);
+            if (item.parent !== layout) {
+                item.parent = layout;
+                item.widthChanged.connect   (internal.realignV);
+                item.heightChanged.connect  (internal.relayoutH);
+                item.visibleChanged.connect (internal.relayoutH);
+            }
         }
         internal.relayoutH ();
     }
     onRightItemsChanged: {
         for (var idx = 0; idx < rightItems.length; idx++) {
             var item = rightItems [idx];
-            item.parent = layout;
-            item.heightChanged.connect  (internal.relayoutH);
-            item.visibleChanged.connect (internal.relayoutH);
+            if (item.parent !== layout) {
+                item.parent = layout;
+                item.widthChanged.connect   (internal.realignV);
+                item.heightChanged.connect  (internal.relayoutH);
+                item.visibleChanged.connect (internal.relayoutH);
+            }
         }
         internal.relayoutH ();
     }
+    Component.onCompleted:   { internal.ready = true; }
+    Component.onDestruction: { internal.ready = false; }
 
     property real spacing : 0;
+
+    property bool dontWrap : false;
 
     property list<Item>     leftItems;
     property list<Item>     rightItems;
@@ -39,9 +45,11 @@ Item {
 
     QtObject {
         id: internal;
+        onWrapChanged: { realignV (); }
 
-        property bool ready    : false;
-        property bool wrap     : false;
+        property bool ready : false;
+
+        readonly property bool wrap : (!dontWrap && ((guideL.width + layout.spacing + guideR.width) > layout.width));
 
         property Item mostBigL : null;
         property Item mostFarL : null;
@@ -62,155 +70,160 @@ Item {
         }
 
         function relayoutH () {
-            var idx, child;
+            if (layout && ready) {
+                var idx, child;
 
-            var tmpLastL = null;
-            for (idx = 0; idx < leftItems.length; idx++) {
-                child = leftItems [idx];
-                if (child.visible) {
-                    if (tmpLastL) {
-                        child.anchors.left       = tmpLastL.right;
-                        child.anchors.leftMargin = Qt.binding (function () { return layout.spacing; });
+                var tmpLastL = null;
+                var tmpMaxHL = null;
+                for (idx = 0; idx < leftItems.length; idx++) {
+                    child = leftItems [idx];
+                    if (child.visible) {
+                        tmpMaxHL = keepBiggest (child, tmpMaxHL, "height");
+                        child.anchors.left = undefined;
+                        child.anchors.horizontalCenter = undefined;
+                        if (tmpLastL) {
+                            child.anchors.left       = tmpLastL.right;
+                            child.anchors.leftMargin = Qt.binding (function () { return layout.spacing; });
+                        }
+                        else {
+                            child.anchors.left       = layout.left;
+                            child.anchors.leftMargin = 0;
+                        }
+                        tmpLastL = child;
                     }
-                    else {
-                        child.anchors.left       = layout.left;
-                        child.anchors.leftMargin = 0;
-                    }
-                    tmpLastL = child;
                 }
-            }
 
-            var tmpLastR = null;
-            for (idx = rightItems.length -1; idx >= 0; idx--) {
-                child = rightItems [idx];
-                if (child.visible) {
-                    if (tmpLastR) {
-                        child.anchors.right       = tmpLastR.left;
-                        child.anchors.rightMargin = Qt.binding (function () { return layout.spacing; });
+                var tmpMaxHR = null;
+                var tmpLastR = null;
+                for (idx = rightItems.length -1; idx >= 0; idx--) {
+                    child = rightItems [idx];
+                    if (child.visible) {
+                        tmpMaxHR = keepBiggest (child, tmpMaxHR, "height");
+                        child.anchors.left = undefined;
+                        child.anchors.horizontalCenter = undefined;
+                        if (tmpLastR) {
+                            child.anchors.right       = tmpLastR.left;
+                            child.anchors.rightMargin = Qt.binding (function () { return layout.spacing; });
+                        }
+                        else {
+                            child.anchors.right       = layout.right;
+                            child.anchors.rightMargin = 0;
+                        }
+                        tmpLastR = child;
                     }
-                    else {
-                        child.anchors.right       = layout.right;
-                        child.anchors.rightMargin = 0;
-                    }
-                    tmpLastR = child;
                 }
-            }
 
-            ready    = false;
-            mostFarL = tmpLastL;
-            mostFarR = tmpLastR;
-            ready    = true;
+                ready    = false;
+                mostFarL = tmpLastL;
+                mostFarR = tmpLastR;
+                mostBigL = tmpMaxHL;
+                mostBigR = tmpMaxHR;
+                ready    = true;
+
+                realignV ();
+            }
         }
 
         function realignV () {
-            var idx, center, child;
+            if (layout && ready) {
+                var idx, child, tmpBaseline;
 
-            var tmpMaxHL = null;
-            var tmpMaxTxtL = null;
-            for (idx = 0; idx < leftItems.length; idx++) {
-                child = leftItems [idx];
-                if (child.visible) {
-                    tmpMaxHL = keepBiggest (child, tmpMaxHL, "height");
-                    if ("text" in child) {
-                        tmpMaxTxtL = keepBiggest (child, tmpMaxTxtL, "contentHeight");
+                var tmpMaxTxtL = null;
+                for (idx = 0; idx < leftItems.length; idx++) {
+                    child = leftItems [idx];
+                    if (child.visible) {
+                        if ("text" in child) {
+                            tmpMaxTxtL = keepBiggest (child, tmpMaxTxtL, "contentHeight");
+                        }
                     }
                 }
-            }
 
-            var tmpMaxHR = null;
-            var tmpMaxTxtR = null;
-            for (idx = rightItems.length -1; idx >= 0; idx--) {
-                child = rightItems [idx];
-                if (child.visible) {
-                    tmpMaxHR = keepBiggest (child, tmpMaxHR, "height");
-                    if ("text" in child) {
-                        tmpMaxTxtR = keepBiggest (child, tmpMaxTxtR, "contentHeight");
+                var tmpMaxTxtR = null;
+                for (idx = rightItems.length -1; idx >= 0; idx--) {
+                    child = rightItems [idx];
+                    if (child.visible) {
+                        if ("text" in child) {
+                            tmpMaxTxtR = keepBiggest (child, tmpMaxTxtR, "contentHeight");
+                        }
                     }
                 }
-            }
 
-            var tmpMaxTxtGlobal = keepBiggest (tmpMaxTxtL, tmpMaxTxtR, "contentHeight");
+                var tmpMaxTxtGlobal = keepBiggest (tmpMaxTxtL, tmpMaxTxtR, "contentHeight");
 
-            var tmpWrap = (implicitWidth > width);
-
-            for (idx = 0; idx < leftItems.length; idx++) {
-                child = leftItems [idx];
-                if (child.visible) {
-                    center = true;
-                    child.anchors.baseline = undefined;
-                    child.anchors.verticalCenter = undefined;
-                    if ("text" in child) {
-                        if (tmpWrap) {
-                            if (tmpMaxTxtL && tmpMaxTxtL !== child) {
-                                child.anchors.baseline = tmpMaxTxtL.baseline;
-                                center = false;
+                for (idx = 0; idx < leftItems.length; idx++) {
+                    child = leftItems [idx];
+                    if (child.visible) {
+                        tmpBaseline = undefined;
+                        if ("text" in child) {
+                            if (wrap) {
+                                if (tmpMaxTxtL && tmpMaxTxtL !== child) {
+                                    tmpBaseline = tmpMaxTxtL.baseline;
+                                }
                             }
+                            else {
+                                if (tmpMaxTxtGlobal && tmpMaxTxtGlobal !== child) {
+                                    tmpBaseline = tmpMaxTxtGlobal.baseline;
+                                }
+                            }
+                        }
+                        if (tmpBaseline) {
+                            child.anchors.verticalCenter = undefined;
+                            child.anchors.baseline       = tmpBaseline;
                         }
                         else {
-                            if (tmpMaxTxtGlobal && tmpMaxTxtGlobal !== child) {
-                                child.anchors.baseline = tmpMaxTxtGlobal.baseline;
-                                center = false;
-                            }
+                            child.anchors.baseline       = undefined;
+                            child.anchors.verticalCenter = guideL.verticalCenter;
                         }
                     }
-                    if (center) {
-                        child.anchors.verticalCenter = guideL.verticalCenter;
-                    }
                 }
-            }
 
-            for (idx = rightItems.length -1; idx >= 0; idx--) {
-                child = rightItems [idx];
-                if (child.visible) {
-                    center = true;
-                    child.anchors.baseline = undefined;
-                    child.anchors.verticalCenter = undefined;
-                    if ("text" in child) {
-                        if (tmpWrap) {
-                            if (tmpMaxTxtR && tmpMaxTxtR !== child) {
-                                child.anchors.baseline = tmpMaxTxtR.baseline;
-                                center = false;
+                for (idx = rightItems.length -1; idx >= 0; idx--) {
+                    child = rightItems [idx];
+                    if (child.visible) {
+                        tmpBaseline = undefined;
+                        if ("text" in child) {
+                            if (wrap) {
+                                if (tmpMaxTxtR && tmpMaxTxtR !== child) {
+                                    tmpBaseline = tmpMaxTxtR.baseline;
+                                }
                             }
+                            else {
+                                if (tmpMaxTxtGlobal && tmpMaxTxtGlobal !== child) {
+                                    tmpBaseline = tmpMaxTxtGlobal.baseline;
+                                }
+                            }
+                        }
+                        if (tmpBaseline) {
+                            child.anchors.verticalCenter = undefined;
+                            child.anchors.baseline       = tmpBaseline;
                         }
                         else {
-                            if (tmpMaxTxtGlobal && tmpMaxTxtGlobal !== child) {
-                                child.anchors.baseline = tmpMaxTxtGlobal.baseline;
-                                center = false;
-                            }
+                            child.anchors.baseline       = undefined;
+                            child.anchors.verticalCenter = guideR.verticalCenter;
                         }
-                    }
-                    if (center) {
-                        child.anchors.verticalCenter = guideR.verticalCenter;
                     }
                 }
             }
-
-            ready    = false;
-            wrap     = tmpWrap;
-            mostBigL = tmpMaxHL;
-            mostBigR = tmpMaxHR;
-            ready    = true;
         }
     }
     Item {
         id: guideL;
-        height: (internal.ready && internal.mostBigL ? internal.mostBigL.height : 0);
+        height: (internal.mostBigL ? internal.mostBigL.height : 0);
         anchors {
-            top: (internal.ready && internal.wrap ? layout.top : undefined);
+            top: (internal.wrap ? layout.top : undefined);
             left: layout.left;
-            right: (internal.ready && internal.mostFarL ? internal.mostFarL.right : undefined);
-            bottom: undefined;
-            verticalCenter: (internal.ready && !internal.wrap ? layout.verticalCenter : undefined);
+            right: (internal.mostFarL ? internal.mostFarL.right : undefined);
+            verticalCenter: (!internal.wrap ? layout.verticalCenter : undefined);
         }
     }
     Item {
         id: guideR;
-        height: (internal.ready && internal.mostBigR ? internal.mostBigR.height : 0);
+        height: (internal.mostBigR ? internal.mostBigR.height : 0);
         anchors {
-            top: undefined;
-            left: (internal.ready && internal.mostFarR ? internal.mostFarR.left : undefined);
+            left: (internal.mostFarR ? internal.mostFarR.left : undefined);
             right: layout.right;
-            bottom: (internal.ready && internal.wrap ? layout.bottom : undefined);
-            verticalCenter: (internal.ready && !internal.wrap ? layout.verticalCenter : undefined);
+            bottom: (internal.wrap ? layout.bottom : undefined);
+            verticalCenter: (!internal.wrap ? layout.verticalCenter : undefined);
         }
     }
+}
