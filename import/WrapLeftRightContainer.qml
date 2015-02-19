@@ -10,7 +10,7 @@ Item {
             var item = leftItems [idx];
             if (item.parent !== layout) {
                 item.parent = layout;
-                item.widthChanged.connect   (internal.realignV);
+                item.widthChanged.connect   (internal.relayoutH);
                 item.heightChanged.connect  (internal.relayoutH);
                 item.visibleChanged.connect (internal.relayoutH);
             }
@@ -23,11 +23,15 @@ Item {
             var item = rightItems [idx];
             if (item.parent !== layout) {
                 item.parent = layout;
-                item.widthChanged.connect   (internal.realignV);
+                item.widthChanged.connect   (internal.relayoutH);
                 item.heightChanged.connect  (internal.relayoutH);
                 item.visibleChanged.connect (internal.relayoutH);
             }
         }
+        internal.relayoutH ();
+    }
+    onSpacingChanged:  {
+        //console.warn ("-> LAYOUT SPACING CHANGED", width, layout);
         internal.relayoutH ();
     }
     onWidthChanged: {
