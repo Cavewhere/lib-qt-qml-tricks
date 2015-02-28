@@ -4,13 +4,13 @@ About the project
 _The **QtQmlTricks** library contains useful classes and macros. It also has some test cases and examples._
 
 
-###Why this project ?
+### Why this project ?
 All the people out there who have done / are doing a mixed C++ / QML project, have surely been thinking that it needs too much code on C++ side, and that this code is often not that easy to do right. So here is the solution :
 
 **A nice library of classes and helpers that have been designed to simplify as much as possible the C++ side, so that it's finally not harder than QML side (which is already nice enough).**
 
 
-###What does it bring at the moment ?
+### What does it bring at the moment ?
 
 We have done a very simple library, which brings mainly some C++ **classes** :
 
@@ -31,7 +31,7 @@ It also strouts a pack of helper C++ **macros** :
 **Note :** All these API are documented using _Doxygen_ so that one can easily generate HTML documentation or even Qt Help file (.qch).
 
 
-###What are the plans for later ?
+### What are the plans for later ?
 
 First we want to add a lot of new classes and helpers for common use.
 
