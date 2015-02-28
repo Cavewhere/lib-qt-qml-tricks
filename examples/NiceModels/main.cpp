@@ -29,10 +29,10 @@ int main (int argc, char * argv []) {
     }
 
     QQuickView view;
-    view.engine ()->addImportPath ("qrc:/import");
+    view.engine ()->addImportPath (QML_TRICK_IMPORT);
     view.rootContext ()->setContextProperty ("testModel", testModel);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/examples/NiceModels/ui.qml"));
+    view.setSource (QUrl ("qrc:/ui.qml"));
     view.show ();
 
     return app.exec ();

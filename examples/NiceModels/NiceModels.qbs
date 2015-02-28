@@ -1,22 +1,15 @@
-import qbs 1.0;
+import qbs;
 
 Application {
     name: "example-nice-models";
     targetName: "NiceModels";
 
+    Depends { name: "Qt"; }
     Depends { name: "cpp"; }
-    Depends {
-        name: "Qt";
-        submodules: ["core", "gui", "qml", "quick"];
-    }
-    Depends { name: "lib-qt-qml-tricks"; }
+    Depends { name: "sdk-utilities"; }
     Group {
-        name: "C++ sources";
-        files: "*.cpp";
-    }
-    Group {
-        name: "C++ headers";
-        files: "*.h";
+        name: "C++ sources & headers";
+        files: ["*.cpp", "*.h"];
     }
     Group {
         name: "QML documents";
@@ -24,6 +17,6 @@ Application {
     }
     Group {
         name: "Qt resources";
-        files: "../../*.qrc";
+        files: "*.qrc";
     }
 }

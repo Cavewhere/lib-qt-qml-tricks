@@ -14,9 +14,9 @@ int main (int argc, char * argv []) {
     qmlRegisterType<QQuickPolygon> ("QtQmlTricks", 1, 0, "Polygon");
 
     QQuickView view;
-    view.engine ()->addImportPath ("qrc:/import");
+    view.engine ()->addImportPath (QML_TRICK_IMPORT);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/examples/CustomPolygon/ui.qml"));
+    view.setSource (QUrl ("qrc:/ui.qml"));
     view.show ();
 
     return app.exec ();

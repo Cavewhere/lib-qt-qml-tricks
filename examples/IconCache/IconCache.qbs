@@ -1,15 +1,12 @@
-import qbs 1.0;
+import qbs;
 
 Application {
     name: "example-icon-cache";
     targetName: "IconCache";
 
+    Depends { name: "Qt"; }
     Depends { name: "cpp"; }
-    Depends {
-        name: "Qt";
-        submodules: ["core", "gui", "qml", "quick", "svg"];
-    }
-    Depends { name: "lib-qt-qml-tricks"; }
+    Depends { name: "sdk-utilities"; }
     Group {
         name: "C++ sources & headers";
         files: ["*.cpp", "*.h"];
@@ -20,6 +17,6 @@ Application {
     }
     Group {
         name: "Qt resources";
-        files: "../../*.qrc";
+        files: "*.qrc";
     }
 }

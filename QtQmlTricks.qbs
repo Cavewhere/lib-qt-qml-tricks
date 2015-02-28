@@ -1,4 +1,4 @@
-import qbs 1.0;
+import qbs;
 import qbs.Process;
 
 Project {
@@ -11,6 +11,27 @@ Project {
         "examples/CustomPolygon/CustomPolygon.qbs",
     ];
 
+    Product {
+        name: "sdk-utilities";
+
+        Export {
+            cpp.defines: ['QML_TRICK_IMPORT="' + project.sourceDirectory + '/import"'];
+            cpp.includePaths: "./src";
+
+            Depends { name: "cpp"; }
+            Depends {
+                name: "Qt";
+                submodules: ["core", "gui", "qml", "quick", "svg"];
+            }
+            Depends { name: "lib-qt-qml-tricks"; }
+        }
+        Group {
+            name: "Includes";
+            prefix: "src/";
+            files: "Q*";
+            excludeFiles: "*.*";
+        }
+    }
     Product {
         name: "project-utils";
         type: "docs";
@@ -33,15 +54,21 @@ Project {
             files: ["*.svg"];
         }
         Group {
-            name: "CSS style";
+            name: "Doxygen CSS style";
             prefix: "doc/"
             files: ["*.css"];
             fileTags: "style";
         }
         Group {
-            name: "C++ & JavaScript & QML inputs";
-            prefix: "src/**/";
-            files: ["*.h", "*.cpp", "*.qml", "*.js"];
+            name: "Doxygen C++ inputs";
+            prefix: "src/";
+            files: ["*.h", "*.cpp"];
+            fileTags: "source";
+        }
+        Group {
+            name: "Doxygen JavaScript & QML inputs";
+            prefix: "import/**/";
+            files: ["*.qml", "*.js"];
             fileTags: "source";
         }
         Group {

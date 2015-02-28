@@ -11,13 +11,13 @@
 int main (int argc, char * argv []) {
     QGuiApplication app (argc, argv);
 
-    QQmlSvgIconHelper::setBasePath ("://examples/IconCache");
+    QQmlSvgIconHelper::setBasePath ("://");
     qmlRegisterType<QQmlSvgIconHelper> ("QtQmlTricks", 1, 0, "SvgIconHelper");
 
     QQuickView view;
-    view.engine ()->addImportPath ("qrc:/import");
+    view.engine ()->addImportPath (QML_TRICK_IMPORT);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/examples/IconCache/ui.qml"));
+    view.setSource (QUrl ("qrc:/ui.qml"));
     view.show ();
 
     return app.exec ();

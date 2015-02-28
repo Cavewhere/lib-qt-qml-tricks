@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ui.qml</file>
+        <file>mark.svg</file>
+    </qresource>
+</RCC>

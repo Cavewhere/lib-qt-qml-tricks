@@ -4,11 +4,7 @@ StaticLibrary {
     name: "lib-qt-qml-tricks";
     targetName: "QtQmlTricks";
 
-    Export {
-        Depends { name: "cpp"; }
-
-        cpp.includePaths: ["."];
-    }
+    Depends { name: "cpp"; }
     Depends { name: "Qt"; submodules: ["core", "qml", "gui", "quick", "svg"]; }
     Group {
         name: "C++ sources";
@@ -21,10 +17,5 @@ StaticLibrary {
         files: "*.h";
         fileTags: "source";
         overrideTags: false;
-    }
-    Group {
-        name: "Includes";
-        files: "Q*";
-        excludeFiles: "*.*";
     }
 }
