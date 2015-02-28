@@ -15,7 +15,6 @@ Project {
         name: "sdk-utilities";
 
         Export {
-            cpp.defines: ['QML_TRICK_IMPORT=":/import/"'];
             cpp.includePaths: "./include";
 
             Depends { name: "cpp"; }
@@ -26,11 +25,15 @@ Project {
             Depends { name: "lib-qt-qml-tricks"; }
             Depends { name: "qml-js-imports"; }
         }
+        Depends {
+            name: "Qt";
+            submodules: ["qml", "quick"];
+        }
         Group {
             name: "Includes";
             prefix: "include/";
-            files: "Q*";
-            excludeFiles: "*.*";
+            files: ["Q*"];
+            excludeFiles: "*.qbs";
         }
     }
     Product {

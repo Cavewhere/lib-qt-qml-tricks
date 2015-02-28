@@ -6,18 +6,15 @@
 #include <QUrl>
 #include <qqml.h>
 
-#include <QQmlSvgIconHelper>
+#include <QtQmlTricks>
 
 int main (int argc, char * argv []) {
-    Q_INIT_RESOURCE(components);
-
     QGuiApplication app (argc, argv);
 
     QQmlSvgIconHelper::setBasePath ("://");
-    qmlRegisterType<QQmlSvgIconHelper> ("QtQmlTricks", 1, 0, "SvgIconHelper");
 
     QQuickView view;
-    view.engine ()->addImportPath (QML_TRICK_IMPORT);
+    registerQtQmlTricksModule (view.engine ());
     view.setResizeMode (QQuickView::SizeRootObjectToView);
     view.setSource (QUrl ("qrc:/ui.qml"));
     view.show ();

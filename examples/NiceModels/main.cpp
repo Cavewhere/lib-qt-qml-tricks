@@ -5,15 +5,12 @@
 #include <QQmlEngine>
 #include <QUrl>
 #include <QDateTime>
-#include <qqml.h>
 
-#include <QQmlObjectListModel>
+#include <QtQmlTricks>
 
 #include "defs.h"
 
 int main (int argc, char * argv []) {
-    Q_INIT_RESOURCE(components);
-
     QGuiApplication app (argc, argv);
 
     QQmlObjectListModel * testModel = QQmlObjectListModel::create<MyItem> (&app);
@@ -31,7 +28,7 @@ int main (int argc, char * argv []) {
     }
 
     QQuickView view;
-    view.engine ()->addImportPath (QML_TRICK_IMPORT);
+    registerQtQmlTricksModule (view.engine ());
     view.rootContext ()->setContextProperty ("testModel", testModel);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
     view.setSource (QUrl ("qrc:/ui.qml"));
