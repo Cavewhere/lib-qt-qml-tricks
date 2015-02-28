@@ -8,8 +8,6 @@
 #include <qqml.h>
 
 #include <QQmlObjectListModel>
-#include <QQmlSvgIconHelper>
-#include <QQuickPolygon>
 
 #include "defs.h"
 
@@ -30,15 +28,11 @@ int main (int argc, char * argv []) {
         date = date.addDays (1);
     }
 
-    QQmlSvgIconHelper::setBasePath (":/test");
-    qmlRegisterType<QQmlSvgIconHelper> ("QtQmlTricks", 1, 0, "SvgIconHelper");
-    qmlRegisterType<QQuickPolygon>     ("QtQmlTricks", 1, 0, "Polygon");
-
     QQuickView view;
     view.engine ()->addImportPath ("qrc:/import");
     view.rootContext ()->setContextProperty ("testModel", testModel);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/test/ui.qml"));
+    view.setSource (QUrl ("qrc:/examples/NiceModels/ui.qml"));
     view.show ();
 
     return app.exec ();

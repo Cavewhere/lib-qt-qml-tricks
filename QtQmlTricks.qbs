@@ -4,9 +4,11 @@ import qbs.Process;
 Project {
     name: "The Qt QML Tricks";
     references: [
-        "src/src.qbs",
-        "test/test.qbs",
-        "import/import.qbs"
+        "src/QtLibrary.qbs",
+        "import/QtQmlTricks/QmlComponents.qbs",
+        "examples/IconCache/IconCache.qbs",
+        "examples/NiceModels/NiceModels.qbs",
+        "examples/CustomPolygon/CustomPolygon.qbs",
     ];
 
     Product {

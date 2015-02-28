@@ -1,4 +1,4 @@
-import qbs 1.0;
+import qbs
 
 Product {
     name: "qml-js-imports";

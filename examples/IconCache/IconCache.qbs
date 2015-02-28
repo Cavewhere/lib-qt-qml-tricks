@@ -1,22 +1,18 @@
 import qbs 1.0;
 
 Application {
-    name: "test-app";
-    targetName: "testQtQmlTricks";
+    name: "example-icon-cache";
+    targetName: "IconCache";
 
     Depends { name: "cpp"; }
     Depends {
         name: "Qt";
-        submodules: ["core", "gui", "network", "qml", "quick", "svg"];
+        submodules: ["core", "gui", "qml", "quick", "svg"];
     }
     Depends { name: "lib-qt-qml-tricks"; }
     Group {
-        name: "C++ sources";
-        files: "*.cpp";
-    }
-    Group {
-        name: "C++ headers";
-        files: "*.h";
+        name: "C++ sources & headers";
+        files: ["*.cpp", "*.h"];
     }
     Group {
         name: "QML documents";
@@ -24,6 +20,6 @@ Application {
     }
     Group {
         name: "Qt resources";
-        files: "../*.qrc";
+        files: "../../*.qrc";
     }
 }
