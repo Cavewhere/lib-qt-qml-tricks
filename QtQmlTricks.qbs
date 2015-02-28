@@ -16,7 +16,7 @@ Project {
 
         Export {
             cpp.defines: ['QML_TRICK_IMPORT="' + project.sourceDirectory + '/import"'];
-            cpp.includePaths: "./src";
+            cpp.includePaths: "./include";
 
             Depends { name: "cpp"; }
             Depends {
@@ -27,7 +27,7 @@ Project {
         }
         Group {
             name: "Includes";
-            prefix: "src/";
+            prefix: "include/";
             files: "Q*";
             excludeFiles: "*.*";
         }

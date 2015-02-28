@@ -87,7 +87,7 @@
 
 #define QML_ENUM_CLASS(name, ...) \
     class name : public QObject { \
-        Q_OBJECT \
+        Q_GADGET \
     public: \
         enum Type { __VA_ARGS__ }; \
         Q_ENUMS (Type) \
