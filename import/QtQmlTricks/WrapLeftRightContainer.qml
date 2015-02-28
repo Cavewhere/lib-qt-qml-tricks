@@ -41,6 +41,7 @@ Item {
     Component.onCompleted: {
         //console.warn ("-> LAYOUT COMPLETED !", layout);
         internal.ready = true;
+        internal.relayoutH ();
     }
     Component.onDestruction: {
         //console.warn ("-> LAYOUT DESTRUCTION !", layout);
