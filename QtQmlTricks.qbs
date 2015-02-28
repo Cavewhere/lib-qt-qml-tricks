@@ -15,7 +15,7 @@ Project {
         name: "sdk-utilities";
 
         Export {
-            cpp.defines: ['QML_TRICK_IMPORT="' + project.sourceDirectory + '/import"'];
+            cpp.defines: ['QML_TRICK_IMPORT=":/import/"'];
             cpp.includePaths: "./include";
 
             Depends { name: "cpp"; }
@@ -24,6 +24,7 @@ Project {
                 submodules: ["core", "gui", "qml", "quick", "svg"];
             }
             Depends { name: "lib-qt-qml-tricks"; }
+            Depends { name: "qml-js-imports"; }
         }
         Group {
             name: "Includes";

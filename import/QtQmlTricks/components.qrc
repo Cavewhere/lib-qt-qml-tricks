@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/import/QtQmlTricks">
+        <file>GridContainer.qml</file>
+        <file>QtCoreApi.js</file>
+        <file>qmldir</file>
+        <file>RowContainer.qml</file>
+        <file>WrapLeftRightContainer.qml</file>
+        <file>ScrollContainer.qml</file>
+    </qresource>
+</RCC>

@@ -1,8 +1,11 @@
 import qbs
 
-Product {
+StaticLibrary {
     name: "qml-js-imports";
+    targetName: "QmlJsTricks";
 
+    Depends { name: "Qt"; }
+    Depends { name: "cpp"; }
     Group {
         name: "JavaScript modules";
         files: "*.js";
@@ -14,5 +17,9 @@ Product {
     Group {
         name: "QML directory";
         files: "qmldir";
+    }
+    Group {
+        name: "Qt resources";
+        files: "*.qrc";
     }
 }

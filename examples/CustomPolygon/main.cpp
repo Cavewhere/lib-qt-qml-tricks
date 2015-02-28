@@ -9,6 +9,8 @@
 #include <QQuickPolygon>
 
 int main (int argc, char * argv []) {
+    Q_INIT_RESOURCE(components);
+
     QGuiApplication app (argc, argv);
 
     qmlRegisterType<QQuickPolygon> ("QtQmlTricks", 1, 0, "Polygon");

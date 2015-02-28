@@ -12,6 +12,8 @@
 #include "defs.h"
 
 int main (int argc, char * argv []) {
+    Q_INIT_RESOURCE(components);
+
     QGuiApplication app (argc, argv);
 
     QQmlObjectListModel * testModel = QQmlObjectListModel::create<MyItem> (&app);

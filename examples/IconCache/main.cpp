@@ -9,6 +9,8 @@
 #include <QQmlSvgIconHelper>
 
 int main (int argc, char * argv []) {
+    Q_INIT_RESOURCE(components);
+
     QGuiApplication app (argc, argv);
 
     QQmlSvgIconHelper::setBasePath ("://");
