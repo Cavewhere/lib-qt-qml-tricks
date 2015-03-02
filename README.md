@@ -27,6 +27,16 @@ It also strouts a pack of helper C++ **macros** :
 * `QML_LIST_PROPERTY` : a really handy macro to create a QML list property that maps to an internal QList of objects, without having to declare and implement all static function pointers...
 * `QML_ENUM_CLASS` : a macro to declare a `QObject` class that only contains a `Q_ENUM` and can be exposed as is to QML.
 
+A nice set of JavaScript prototype modifications :
+
+* `String` and `Array` classes extended to have API closer to QString/QByteArray and QList/QVector : addition of `startsWith`, `contains`, `at`, `size`, `append`, `prepend`, `insert`, `isEmpty`, ...
+
+And a bunch of QML components :
+
+* `RowContainer` : an horizontal layout, that positions its childrens side-by-side, setting their size in consequence of their implicit size hints, and using remaining space in the layout to distribute it between all items that expose a negative implicit width.
+* `GridContainer` : a smart grid that dimensions itself according to the sum/max of its children's implicit size hints, and then distributes regularly the available space between all children, positioned against a col/row model.
+* `WrapLeftRightContainer` : a simplified layout for one of the most common positioning scheme in UI, on the same line, put some items at left, the others at right. But it has extra intelligency, to wrap itslef it left/right items do not fit in the provided space.
+* `ScrollContainer` : put a `Flickable` (or derived, e.g. `ListView`) in it to get vertical/horizontal scrollbars displayed around it (according to the flicking direction axis that are set).
 
 **Note :** All these API are documented using _Doxygen_ so that one can easily generate HTML documentation or even Qt Help file (.qch).
 
@@ -35,10 +45,9 @@ It also strouts a pack of helper C++ **macros** :
 
 First we want to add a lot of new classes and helpers for common use.
 
-Next, add some helpers and components for QML / JavaScript side too.
+Next, add more helpers and components for QML / JavaScript side too.
 
 And maybe then, propose this for integration into standard Qt module QtCore, if it's really useful to people !
 
 
 **Enjoy !**
-
