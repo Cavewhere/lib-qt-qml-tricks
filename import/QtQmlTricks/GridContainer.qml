@@ -8,8 +8,10 @@ Item {
     id: layout;
     width: implicitWidth;
     height: implicitHeight;
+    onColsChanged: { relayout (); }
     onWidthChanged: { relayout (); }
     onHeightChanged: { relayout (); }
+    onCapacityChanged: { relayout (); }
     onFillEmptyChanged: { relayout (); }
     onVerticalFlowChanged: { relayout (); }
     onInvertDirectionChanged: { relayout (); }
