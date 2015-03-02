@@ -8,7 +8,7 @@
 
 #include <QtQmlTricks>
 
-#include "defs.h"
+#include "defs_nicemodels.h"
 
 int main (int argc, char * argv []) {
     QGuiApplication app (argc, argv);
@@ -31,7 +31,7 @@ int main (int argc, char * argv []) {
     registerQtQmlTricksModule (view.engine ());
     view.rootContext ()->setContextProperty ("testModel", testModel);
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/ui.qml"));
+    view.setSource (QUrl ("qrc:/ui_nicemodels.qml"));
     view.show ();
 
     return app.exec ();

@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>ui.qml</file>
+        <file>ui_custompolygon.qml</file>
     </qresource>
 </RCC>

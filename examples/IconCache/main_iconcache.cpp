@@ -16,7 +16,7 @@ int main (int argc, char * argv []) {
     QQuickView view;
     registerQtQmlTricksModule (view.engine ());
     view.setResizeMode (QQuickView::SizeRootObjectToView);
-    view.setSource (QUrl ("qrc:/ui.qml"));
+    view.setSource (QUrl ("qrc:/ui_iconcache.qml"));
     view.show ();
 
     return app.exec ();

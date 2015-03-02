@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>ui.qml</file>
+        <file>ui_nicemodels.qml</file>
     </qresource>
 </RCC>

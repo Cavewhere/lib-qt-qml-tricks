@@ -49,7 +49,7 @@ Rectangle {
                 console.log ("model count=", testModel.count);
             },
             function () {
-                var uid = "2014-04-08";
+                var uid = Qt.formatDate (new Date (), "yyyy-MM-dd");
                 var obj = testModel.getByUid (uid);
                 console.log ("uid=", uid, "obj=", obj, "val=", obj.bar);
             },
