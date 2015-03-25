@@ -221,12 +221,14 @@ int QQmlObjectListModel::indexOf (QObject * item) const
 */
 void QQmlObjectListModel::clear ()
 {
-    beginRemoveRows (NO_PARENT, 0, count () -1);
-    foreach (QObject * item, m_privateImpl->m_items) {
-        m_privateImpl->dereferenceItem (item);
+    if (!m_privateImpl->m_items.isEmpty ()) {
+        beginRemoveRows (NO_PARENT, 0, count () -1);
+        foreach (QObject * item, m_privateImpl->m_items) {
+            m_privateImpl->dereferenceItem (item);
+        }
+        m_privateImpl->m_items.clear ();
+        endRemoveRows ();
     }
-    m_privateImpl->m_items.clear ();
-    endRemoveRows ();
 }
 
 /*!
