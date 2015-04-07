@@ -9,6 +9,7 @@ Project {
         "examples/IconCache/IconCache.qbs",
         "examples/NiceModels/NiceModels.qbs",
         "examples/CustomPolygon/CustomPolygon.qbs",
+        "examples/COBS/QtCOBS.qbs",
     ];
 
     Product {
