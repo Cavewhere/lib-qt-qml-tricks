@@ -18,6 +18,7 @@ We have done a very simple library, which brings mainly some C++ **classes** :
 * `QQmlVariantListModel` : a dead-simple way to create a dynamic C++ list of any type and expose it to QML, way better than using a `QVariantList` property.
 * `QQmlSvgIconHelper` : a class that takes a SVG file as input, plus size/ratio information, and makes a PNG file in persistant cache as output. If additional color information other than transparent is provided, the opaque pixels of the output will be colorized with the given tint.
 * `QQuickPolygon` : a simple QtQuick item that takes a list of points and draw them with a provided color.
+* `QtCOBS` : a codec to create COBS-encoded QByteArray from raw data, and vice-versa.
 
 It also strouts a pack of helper C++ **macros** :
 
