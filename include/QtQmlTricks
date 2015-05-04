@@ -12,7 +12,7 @@
 static void registerQtQmlTricksModule (QQmlEngine * engine) {
     Q_INIT_RESOURCE (components);
 
-    const char * uri = "QtQmlTricks";
+    const char * uri = "QtQmlTricks"; // @uri QtQmlTricks
     const int    maj = 1;
     const int    min = 0;
 
