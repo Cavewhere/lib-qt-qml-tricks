@@ -357,9 +357,13 @@ void QQmlObjectListModel::insert (int idx, QObjectList itemList)
 */
 void QQmlObjectListModel::move (int idx, int pos)
 {
-    beginMoveRows (NO_PARENT, idx, idx, NO_PARENT, pos);
-    m_privateImpl->m_items.move (idx, pos);
-    endMoveRows ();
+    if (idx != pos) {
+        const int lowest  = qMin (idx, pos);
+        const int highest = qMax (idx, pos);
+        beginMoveRows (NO_PARENT, highest, highest, NO_PARENT, lowest);
+        m_privateImpl->m_items.move (highest, lowest);
+        endMoveRows ();
+    }
 }
 
 /*!
