@@ -39,6 +39,7 @@ And a bunch of QML components :
 * `GridContainer` : a smart grid that dimensions itself according to the sum/max of its children's implicit size hints, and then distributes regularly the available space between all children, positioned against a col/row model.
 * `WrapLeftRightContainer` : a simplified layout for one of the most common positioning scheme in UI, on the same line, put some items at left, the others at right. But it has extra intelligency, to wrap itslef it left/right items do not fit in the provided space.
 * `ScrollContainer` : put a `Flickable` (or derived, e.g. `ListView`) in it to get vertical/horizontal scrollbars displayed around it (according to the flicking direction axis that are set).
+* `IconTextButton` : a simple and customizable push button that can have either an icon, a label, or both. Colors, sizes, fonts and rounding are customizable.
 
 **Note :** All these API are documented using _Doxygen_ so that one can easily generate HTML documentation or even Qt Help file (.qch).
 
