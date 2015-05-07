@@ -103,7 +103,7 @@ MouseArea {
     Rectangle {
         id: rect;
         color: (pressed ? "lightblue" : "lightgray");
-        radius: 6; //(height / 2);
+        radius: 6;
         antialiasing: true;
         border {
             color: "steelblue";

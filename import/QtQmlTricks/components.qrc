@@ -6,5 +6,6 @@
         <file>RowContainer.qml</file>
         <file>WrapLeftRightContainer.qml</file>
         <file>ScrollContainer.qml</file>
+        <file>IconTextButton.qml</file>
     </qresource>
 </RCC>
