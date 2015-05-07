@@ -62,7 +62,9 @@ FocusScope {
         }
 
         Rectangle {
-            color: "darkgray";
+            id: backBottom;
+            color: "gray";
+            opacity: (flickableItem && flickableItem.contentWidth > container.width ? 0.5 : 0.15);
             anchors.fill: parent;
         }
         MouseArea {
@@ -117,7 +119,9 @@ FocusScope {
         }
 
         Rectangle {
-            color: "darkgray";
+            id: backRight;
+            color: "gray";
+            opacity: (flickableItem && flickableItem.contentHeight > container.height ? 0.5 : 0.15);
             anchors.fill: parent;
         }
         MouseArea {
@@ -161,7 +165,8 @@ FocusScope {
         }
     }
     Rectangle {
-        color: "lightgray";
+        color: "gray";
+        opacity: Math.max (backRight.opacity, backBottom.opacity);
         anchors {
             top: scrollbarY.bottom;
             left: scrollbarX.right;
