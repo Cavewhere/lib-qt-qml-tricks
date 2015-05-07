@@ -128,10 +128,8 @@ public:
         }
     }
 
-
 private:
-    UInt m_len;
-    UInt m_pos;
+    UInt m_len, m_pos;
     QByteArray m_data;
 };
 

@@ -20,6 +20,7 @@ We have done a very simple library, which brings mainly some C++ **classes** :
 * `QQuickPolygon` : a simple QtQuick item that takes a list of points and draw them with a provided color.
 * `QtCOBS` : a codec to create COBS-encoded QByteArray from raw data, and vice-versa.
 * `QtBitStream` : a helper class to extract or inject custom amount of bits (between 1 and 64) in a `QByteArray` using a position cursor like `QDataStream` does for bytes...
+* `QtJsonPath` : a nice way to retreive specific sub-values from a QJson*** class as a QVariant, by simply asking it by path.
 
 It also strouts a pack of helper C++ **macros** :
 

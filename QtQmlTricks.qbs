@@ -11,6 +11,7 @@ Project {
         "examples/CustomPolygon/CustomPolygon.qbs",
         "examples/COBS/QtCOBS.qbs",
         "examples/BitStream/QtBitStream.qbs",
+        "examples/JSONPath/QtJsonPath.qbs",
     ];
 
     Product {
