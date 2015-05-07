@@ -10,6 +10,7 @@ Project {
         "examples/NiceModels/NiceModels.qbs",
         "examples/CustomPolygon/CustomPolygon.qbs",
         "examples/COBS/QtCOBS.qbs",
+        "examples/BitStream/QtBitStream.qbs",
     ];
 
     Product {
@@ -101,7 +102,7 @@ Project {
 
             Artifact {
                 fileTags: "docs";
-                fileName: "force.doc";
+                filePath: "force.doc";
                 alwaysUpdated: true;
             }
         }
