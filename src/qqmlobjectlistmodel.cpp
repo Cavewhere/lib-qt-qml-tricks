@@ -89,6 +89,16 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent)
 /*!
     \internal
 */
+QObjectList::const_iterator QQmlObjectListModel::begin () const
+{
+    return m_privateImpl->m_items.begin ();
+}
+
+QObjectList::const_iterator QQmlObjectListModel::end () const
+{
+    return m_privateImpl->m_items.end ();
+}
+
 QQmlObjectListModel::~QQmlObjectListModel ()
 {
     clear ();
