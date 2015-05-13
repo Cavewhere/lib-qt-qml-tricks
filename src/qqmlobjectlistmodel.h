@@ -16,6 +16,9 @@ public: // public factory and casts
     template <class ItemType> ItemType * getAs (int idx) const {
         return qobject_cast<ItemType *> (get (idx));
     }
+    template <class ItemType> ItemType * getByUidAs (QString uid) const {
+        return qobject_cast<ItemType *> (getByUid (uid));
+    }
     template <class ItemType> QList<ItemType *> listAs (void) const {
         QList<ItemType *> ret;
         ret.reserve (count ());
