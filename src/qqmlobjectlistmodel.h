@@ -10,24 +10,24 @@ class QQmlObjectListModel : public QAbstractListModel {
     Q_PROPERTY (int count READ count NOTIFY countChanged)
 
 public: // public factory and casts
-    template <class ItemType> static QQmlObjectListModel * create (QObject * parent = NULL) {
+    template<class ItemType> static QQmlObjectListModel * create (QObject * parent = NULL) {
         return new QQmlObjectListModel (ItemType::staticMetaObject, parent);
     }
-    template <class ItemType> ItemType * getAs (int idx) const {
+    template<class ItemType> ItemType * getAs (int idx) const {
         return qobject_cast<ItemType *> (get (idx));
     }
-    template <class ItemType> ItemType * getByUidAs (QString uid) const {
+    template<class ItemType> ItemType * getByUidAs (QString uid) const {
         return qobject_cast<ItemType *> (getByUid (uid));
     }
-    template <class ItemType> QList<ItemType *> listAs (void) const {
+    template<class ItemType> QList<ItemType *> listAs (void) const {
         QList<ItemType *> ret;
-        ret.reserve (count ());
+        ret.reserve (size ());
         for (int idx = 0; idx < count (); idx++) {
             ret.append (qobject_cast<ItemType *> (get (idx)));
         }
         return ret;
     }
-    template <class ItemType> class QIterableListWrapper {
+    template<class ItemType> class QIterableListWrapper {
     public:
         class const_iterator : public QObjectList::const_iterator {
         public:
@@ -46,7 +46,7 @@ public: // public factory and casts
     private:
         const QQmlObjectListModel & m_list;
     };
-    template <class ItemType> QIterableListWrapper<ItemType> iterateAs (void) const {
+    template<class ItemType> QIterableListWrapper<ItemType> iterateAs (void) const {
         return QIterableListWrapper<ItemType> (* this);
     }
     virtual ~QQmlObjectListModel (void);
@@ -59,32 +59,32 @@ public: // QAbstractItemModel interface reimplemented
     virtual bool setData (const QModelIndex & index, const QVariant & value, int role);
     virtual QVariant data (const QModelIndex & index, int role) const;
     virtual QHash<int, QByteArray> roleNames (void) const;
-
-    QObjectList::const_iterator begin (void) const;
-    QObjectList::const_iterator end (void) const;
+    virtual QObjectList::const_iterator begin (void) const;
+    virtual QObjectList::const_iterator end (void) const;
 
 public slots: // public methods API
     void clear (void);
+    int size (void) const;
     int count (void) const;
     bool isEmpty (void) const;
-    bool contains (QObject * item) const;
     int indexOf (QObject * item) const;
-    int roleForName (QByteArray name) const;
+    bool contains (QObject * item) const;
     void append (QObject * item);
-    void prepend (QObject * item);
-    void insert (int idx, QObject * item);
     void append (QObjectList itemList);
+    void prepend (QObject * item);
     void prepend (QObjectList itemList);
+    void insert (int idx, QObject * item);
     void insert (int idx, QObjectList itemList);
-    void move (int idx, int pos);
     void remove (int idx);
     void remove (QObject * item);
+    void move (int idx, int pos);
+    void setRoleNameForUid (QByteArray name);
+    int roleForName (QByteArray name) const;
     QObject * get (int idx) const;
+    QObject * getByUid (QString uid) const;
     QObject * first (void) const;
     QObject * last (void) const;
     QObjectList list (void) const;
-    QObject * getByUid (QString uid) const;
-    void setRoleNameForUid (QByteArray name);
 
 signals: // notifiers
     void countChanged (int count);

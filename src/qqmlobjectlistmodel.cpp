@@ -191,6 +191,12 @@ int QQmlObjectListModel::count () const
     return m_privateImpl->m_count;
 }
 
+int QQmlObjectListModel::size() const
+{
+    return m_privateImpl->m_count;
+}
+
+
 /*!
     \details Tests the content of the model.
 
