@@ -560,6 +560,7 @@ void QQmlObjectListModelPrivate::updateCounter ()
 void QQmlObjectListModelPrivate::referenceItem (QObject * item)
 {
     if (item != NULL) {
+        Q_ASSERT (item->inherits (m_metaObj.className ()));
         if (item->parent () == NULL) {
             item->setParent (this);
         }
