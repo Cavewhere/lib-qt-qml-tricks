@@ -10,7 +10,7 @@ class QQmlObjectListModel : public QAbstractListModel {
     Q_PROPERTY (int count READ count NOTIFY countChanged)
 
 public: // public factory and casts
-    template<class ItemType> static QQmlObjectListModel * create (QObject * parent = NULL) {
+    template<class ItemType> static QQmlObjectListModel * create (QObject * parent = Q_NULLPTR) {
         return new QQmlObjectListModel (ItemType::staticMetaObject, parent);
     }
     template<class ItemType> ItemType * getAs (int idx) const {

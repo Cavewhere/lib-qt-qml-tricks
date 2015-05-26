@@ -25,7 +25,7 @@
 
 
 /*!
-    \fn static QQmlObjectListModel * QQmlObjectListModel::create (QObject * parent = NULL)
+    \fn static QQmlObjectListModel * QQmlObjectListModel::create (QObject * parent = Q_NULLPTR)
 
     \details A factory to create a new model from a class that will be used as item type.
 
@@ -49,7 +49,7 @@
 
     \tparam ItemType The class to use as return pointer type
     \param idx The position of the item in the model
-    \return The typed pointer to the object, or \c NULL if the type doesn't match
+    \return The typed pointer to the object, or \c Q_NULLPTR if the type doesn't match
 
     \sa get(int) const, getByUid(QString) const
 */
@@ -129,7 +129,7 @@ QVariant QQmlObjectListModel::data (const QModelIndex & index, int role) const
     QVariant ret;
     QObject * item = get (index.row ());
     QByteArray rolename = m_privateImpl->m_roles.value (role, EMPTY_BA);
-    if (item != NULL && !rolename.isEmpty ()) {
+    if (item != Q_NULLPTR && !rolename.isEmpty ()) {
         ret.setValue (role > BASE_ROLE ? item->property (rolename) : QVariant::fromValue (item));
     }
     return ret;
@@ -164,7 +164,7 @@ bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & v
     bool ret = false;
     QObject * item = get (index.row ());
     QByteArray rolename = m_privateImpl->m_roles.value (role, EMPTY_BA);
-    if (item != NULL && role > BASE_ROLE && !rolename.isEmpty ()) {
+    if (item != Q_NULLPTR && role > BASE_ROLE && !rolename.isEmpty ()) {
         ret = item->setProperty (rolename, value);
     }
     return ret;
@@ -257,7 +257,7 @@ void QQmlObjectListModel::clear ()
 */
 void QQmlObjectListModel::append (QObject * item)
 {
-    if (item != NULL) {
+    if (item != Q_NULLPTR) {
         int pos = m_privateImpl->m_items.count ();
         beginInsertRows (NO_PARENT, pos, pos);
         m_privateImpl->m_items.append (item);
@@ -275,7 +275,7 @@ void QQmlObjectListModel::append (QObject * item)
 */
 void QQmlObjectListModel::prepend (QObject * item)
 {
-    if (item != NULL) {
+    if (item != Q_NULLPTR) {
         beginInsertRows (NO_PARENT, 0, 0);
         m_privateImpl->m_items.prepend (item);
         m_privateImpl->referenceItem (item);
@@ -293,7 +293,7 @@ void QQmlObjectListModel::prepend (QObject * item)
 */
 void QQmlObjectListModel::insert (int idx, QObject * item)
 {
-    if (item != NULL) {
+    if (item != Q_NULLPTR) {
         beginInsertRows (NO_PARENT, idx, idx);
         m_privateImpl->m_items.insert (idx, item);
         m_privateImpl->referenceItem (item);
@@ -310,7 +310,7 @@ void QQmlObjectListModel::insert (int idx, QObject * item)
 */
 void QQmlObjectListModel::append (QObjectList itemList)
 {
-    itemList.removeAll (NULL);
+    itemList.removeAll (Q_NULLPTR);
     if (!itemList.isEmpty ()) {
         int pos = m_privateImpl->m_items.count ();
         beginInsertRows (NO_PARENT, pos, pos + itemList.count () -1);
@@ -331,7 +331,7 @@ void QQmlObjectListModel::append (QObjectList itemList)
 */
 void QQmlObjectListModel::prepend (QObjectList itemList)
 {
-    itemList.removeAll (NULL);
+    itemList.removeAll (Q_NULLPTR);
     if (!itemList.isEmpty ()) {
         beginInsertRows (NO_PARENT, 0, itemList.count () -1);
         int offset = 0;
@@ -353,7 +353,7 @@ void QQmlObjectListModel::prepend (QObjectList itemList)
 */
 void QQmlObjectListModel::insert (int idx, QObjectList itemList)
 {
-    itemList.removeAll (NULL);
+    itemList.removeAll (Q_NULLPTR);
     if (!itemList.isEmpty ()) {
         beginInsertRows (NO_PARENT, idx, idx + itemList.count () -1);
         int offset = 0;
@@ -390,7 +390,7 @@ void QQmlObjectListModel::move (int idx, int pos)
 */
 void QQmlObjectListModel::remove (QObject * item)
 {
-    if (item != NULL) {
+    if (item != Q_NULLPTR) {
         int idx = m_privateImpl->m_items.indexOf (item);
         remove (idx);
     }
@@ -421,7 +421,7 @@ void QQmlObjectListModel::remove (int idx)
 */
 QObject * QQmlObjectListModel::get (int idx) const
 {
-    QObject * ret = NULL;
+    QObject * ret = Q_NULLPTR;
     if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
         ret = m_privateImpl->m_items.value (idx);
     }
@@ -475,7 +475,7 @@ QObjectList QQmlObjectListModel::list () const
 */
 QObject * QQmlObjectListModel::getByUid (QString uid) const
 {
-    return m_privateImpl->m_indexByUid.value (uid, NULL);
+    return m_privateImpl->m_indexByUid.value (uid, Q_NULLPTR);
 }
 
 /*!
@@ -559,9 +559,9 @@ void QQmlObjectListModelPrivate::updateCounter ()
 */
 void QQmlObjectListModelPrivate::referenceItem (QObject * item)
 {
-    if (item != NULL) {
+    if (item != Q_NULLPTR) {
         Q_ASSERT (item->inherits (m_metaObj.className ()));
-        if (item->parent () == NULL) {
+        if (item->parent () == Q_NULLPTR) {
             item->setParent (this);
         }
         foreach (int signalIdx, m_signalIdxToRole.keys ()) {
@@ -587,7 +587,7 @@ void QQmlObjectListModelPrivate::referenceItem (QObject * item)
 */
 void QQmlObjectListModelPrivate::dereferenceItem (QObject * item)
 {
-    if (item != NULL) {
+    if (item != Q_NULLPTR) {
         item->disconnect ();
         if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
             item->deleteLater ();
