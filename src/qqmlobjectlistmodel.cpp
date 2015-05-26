@@ -243,6 +243,7 @@ void QQmlObjectListModel::clear ()
             m_privateImpl->dereferenceItem (item);
         }
         m_privateImpl->m_items.clear ();
+        m_privateImpl->updateCounter ();
         endRemoveRows ();
     }
 }
