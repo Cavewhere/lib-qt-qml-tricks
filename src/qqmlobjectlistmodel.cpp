@@ -76,14 +76,12 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent,
         m_privateImpl->m_roles.insert (Qt::DisplayRole, QByteArrayLiteral ("display"));
     }
     m_privateImpl->m_roles.insert (BASE_ROLE, QByteArrayLiteral ("qtObject"));
-    int role (BASE_ROLE +1);
-    for (int propertyIdx = 0; propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++) {
+    for (int propertyIdx = 0, role = (BASE_ROLE +1); propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++, role++) {
         QMetaProperty metaProp = m_privateImpl->m_metaObj.property (propertyIdx);
         m_privateImpl->m_roles.insert (role, metaProp.name ());
         if (metaProp.hasNotifySignal ()) {
             m_privateImpl->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
         }
-        role++;
     }
 }
 
