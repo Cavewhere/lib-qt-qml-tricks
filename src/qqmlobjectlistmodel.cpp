@@ -85,7 +85,6 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent,
         }
         role++;
     }
-    qDebug () << m_privateImpl->m_roles;
 }
 
 /*!
