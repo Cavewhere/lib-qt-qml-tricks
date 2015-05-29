@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 
 #define NO_PARENT QModelIndex ()
-#define BASE_ROLE 0
+#define BASE_ROLE Qt::UserRole
 #define EMPTY_STR QStringLiteral ("")
 #define EMPTY_BA  QByteArrayLiteral ("")
 

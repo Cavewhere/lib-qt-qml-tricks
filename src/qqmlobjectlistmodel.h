@@ -10,8 +10,8 @@ class QQmlObjectListModel : public QAbstractListModel {
     Q_PROPERTY (int count READ count NOTIFY countChanged)
 
 public: // public factory and casts
-    template<class ItemType> static QQmlObjectListModel * create (QObject * parent = Q_NULLPTR) {
-        return new QQmlObjectListModel (ItemType::staticMetaObject, parent);
+    template<class ItemType> static QQmlObjectListModel * create (QObject * parent = Q_NULLPTR, QByteArray displayRole = "") {
+        return new QQmlObjectListModel (ItemType::staticMetaObject, parent, displayRole);
     }
     template<class ItemType> ItemType * getAs (int idx) const {
         return qobject_cast<ItemType *> (get (idx));
@@ -52,7 +52,7 @@ public: // public factory and casts
     virtual ~QQmlObjectListModel (void);
 
 protected: // protected constructor
-    explicit QQmlObjectListModel (QMetaObject metaObj, QObject * parent);
+    explicit QQmlObjectListModel (QMetaObject metaObj, QObject * parent, QByteArray displayRole);
 
 public: // QAbstractItemModel interface reimplemented
     virtual int rowCount (const QModelIndex & parent = QModelIndex ()) const;

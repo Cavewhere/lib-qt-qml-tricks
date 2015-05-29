@@ -30,6 +30,7 @@ public:
 
     int                       m_count;
     QByteArray                m_uidRoleName;
+    QByteArray                m_dispRoleName;
     QMetaObject               m_metaObj;
     QMetaMethod               m_handler;
     QObjectList               m_items;
