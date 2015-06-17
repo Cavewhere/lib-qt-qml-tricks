@@ -7,5 +7,6 @@
         <file>WrapLeftRightContainer.qml</file>
         <file>ScrollContainer.qml</file>
         <file>IconTextButton.qml</file>
+        <file>SingleLineEditBox.qml</file>
     </qresource>
 </RCC>

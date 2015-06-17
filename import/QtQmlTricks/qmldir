@@ -6,3 +6,4 @@ GridContainer               1.0     GridContainer.qml
 ScrollContainer             1.0     ScrollContainer.qml
 WrapLeftRightContainer      1.0     WrapLeftRightContainer.qml
 IconTextButton              1.0     IconTextButton.qml
+SingleLineEditBox           1.0     SingleLineEditBox.qml

@@ -23,6 +23,14 @@ Rectangle {
                     right: parent.right;
                 }
 
+                SingleLineEditBox {
+                    placeholderText: "Type here...";
+                    anchors {
+                        left: parent.left;
+                        right: parent.right;
+                    }
+                }
+
                 Repeater {
                     model: testModel;
                     delegate: Text {
