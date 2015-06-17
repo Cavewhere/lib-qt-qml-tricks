@@ -6,7 +6,7 @@ FocusScope {
     implicitWidth: (input.contentWidth + padding * 2);
     implicitHeight: (input.contentHeight + padding * 2);
 
-    property int padding : 8;
+    property int padding : 6;
 
     property color backgroundColor : "white";
     property color foregroundColor : "black";
@@ -17,12 +17,13 @@ FocusScope {
     property alias textFont        : input.font;
     property alias rounding        : rect.radius;
     property alias editableText    : input.text;
+    property alias isEditLocked    : input.readOnly;
     property alias placeholderText : placeholder.text;
 
     Rectangle {
         id: rect;
         color: backgroundColor;
-        radius: 6;
+        radius: 4;
         antialiasing: true;
         anchors.fill: parent;
     }
@@ -33,7 +34,7 @@ FocusScope {
         TextInput {
             id: input;
             focus: true;
-            color: (enabled ? secondaryColor : foregroundColor);
+            color: (enabled ? foregroundColor : secondaryColor);
             selectByMouse: true;
             selectionColor: highlightColor;
             selectedTextColor: backgroundColor;
