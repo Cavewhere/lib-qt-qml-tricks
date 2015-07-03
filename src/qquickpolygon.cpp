@@ -1,4 +1,3 @@
-
 #include "qquickpolygon.h"
 
 QQuickPolygon::QQuickPolygon (QQuickItem * parent)
@@ -161,28 +160,24 @@ void QQuickPolygon::processTriangulation (void) {
     const int n = m_points.size ();
     if (n >= 3) {
         QVector<int> index (n);
-        // compute polygon area
-        qreal area (0.0);
-        for (int p = (n -1), q = 0; q < n; p = q++) {
-            area += (m_points [p].x () * m_points [q].y () - m_points [q].x () * m_points [p].y ());
+        for (int i = 0; i < n; i++) {
+            index [i] = i;
         }
-        // we want a counter-clockwise polygon in V
-        for (int v = 0; v < n; v++) {
-            index [v] = (area > 0.0 ? v : n - v -1);
-        }
-        int nv = n;
         // remove nv-2 Vertices, creating 1 triangle every time
+        int nv = n;
         int count = (2 * nv); // error detection
-        for (int m = 0, v = (nv -1); nv > 2;) {
+        QPolygonF triangle (3);
+        for (int v = (nv -1), u, w; nv > 2;) {
             // if we loop, it is probably a non-simple polygon
             count--;
             if (count > 0) {
                 // three consecutive vertices in current polygon, <u,v,w>
-                int u = (v    < nv ? v    : 0); // previous
-                v     = (u +1 < nv ? u +1 : 0); // new v
-                int w = (v +1 < nv ? v +1 : 0); // next
-                QPolygonF triangle;
-                triangle << m_points [index [u]] << m_points [index [v]] << m_points [index [w]];
+                u = (v    < nv ? v    : 0); // previous
+                v = (u +1 < nv ? u +1 : 0); // new v
+                w = (v +1 < nv ? v +1 : 0); // next
+                triangle [0] = m_points [index [u]];
+                triangle [1] = m_points [index [v]];
+                triangle [2] = m_points [index [w]];
                 QPolygonF result = triangle.intersected (m_points);
                 if (result.isClosed ()) {
                     result.removeLast ();
@@ -192,16 +187,14 @@ void QQuickPolygon::processTriangulation (void) {
                     m_triangles.append (m_points [index [u]]);
                     m_triangles.append (m_points [index [v]]);
                     m_triangles.append (m_points [index [w]]);
-                    m++;
-                    for (int s = v, t = (v +1); t < nv; s++, t++) {
-                        index [s] = index [t]; // remove v from remaining polygon
-                    }
+                    index.remove (v); // remove v from remaining polygon
                     nv--;
                     count = (2 * nv); // reset error detection counter
                 }
             }
             else {
-                break; // Triangulate: ERROR - probable bad polygon!
+                // Triangulate: ERROR - probable bad polygon!
+                break;
             }
         }
     }
