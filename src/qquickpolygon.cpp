@@ -1,19 +1,42 @@
 
 #include "qquickpolygon.h"
 
-#include <QSGNode>
-#include <QSGGeometry>
-#include <QSGGeometryNode>
-#include <QSGFlatColorMaterial>
-
 QQuickPolygon::QQuickPolygon (QQuickItem * parent)
     : QQuickItem (parent)
-    , m_color (Qt::transparent)
+    , m_border (0)
+    , m_closed (true)
+    , m_minX   (0.0)
+    , m_maxX   (0.0)
+    , m_minY   (0.0)
+    , m_maxY   (0.0)
+    , m_color  (Qt::magenta)
+    , m_stroke (Qt::transparent)
+    , m_node         (Q_NULLPTR)
+    , m_foreNode     (Q_NULLPTR)
+    , m_backNode     (Q_NULLPTR)
+    , m_foreGeometry (Q_NULLPTR)
+    , m_backGeometry (Q_NULLPTR)
+    , m_foreMaterial (Q_NULLPTR)
+    , m_backMaterial (Q_NULLPTR)
 {
     setFlag (QQuickItem::ItemHasContents);
 }
 
-QQuickPolygon::~QQuickPolygon (void) { }
+int QQuickPolygon::getBorder (void) const {
+    return m_border;
+}
+
+bool QQuickPolygon::getClosed (void) const {
+    return m_closed;
+}
+
+QColor QQuickPolygon::getColor (void) const {
+    return m_color;
+}
+
+QColor QQuickPolygon::getStroke (void) const {
+    return m_stroke;
+}
 
 QVariantList QQuickPolygon::getPoints (void) const {
     QVariantList ret;
@@ -23,20 +46,23 @@ QVariantList QQuickPolygon::getPoints (void) const {
     return ret;
 }
 
-QColor QQuickPolygon::getColor (void) const {
-    return m_color;
-}
-
-void QQuickPolygon::setPoints (QVariantList points) {
-    m_points.clear ();
-    foreach (QVariant tmp, points) {
-        m_points.append (tmp.value<QPointF> ());
+void QQuickPolygon::setBorder (int border) {
+    if (m_border != border) {
+        m_border = border;
+        emit borderChanged ();
+        update ();
     }
-    emit pointsChanged ();
-    update ();
 }
 
-void QQuickPolygon::setColor (QColor color) {
+void QQuickPolygon::setClosed (bool closed) {
+    if (m_closed != closed) {
+        m_closed = closed;
+        emit closedChanged ();
+        update ();
+    }
+}
+
+void QQuickPolygon::setColor (const QColor & color) {
     if (m_color != color) {
         m_color = color;
         emit colorChanged ();
@@ -44,85 +70,97 @@ void QQuickPolygon::setColor (QColor color) {
     }
 }
 
+void QQuickPolygon::setStroke (const QColor & stroke) {
+    if (m_stroke != stroke) {
+        m_stroke = stroke;
+        emit strokeChanged ();
+        update ();
+    }
+}
+void QQuickPolygon::setPoints (const QVariantList & points) {
+    m_points.clear ();
+    foreach (QVariant tmp, points) {
+        m_points.append (tmp.toPointF ());
+    }
+    emit pointsChanged ();
+    processTriangulation ();
+    update ();
+}
+
 QSGNode * QQuickPolygon::updatePaintNode (QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData) {
+    Q_UNUSED (oldNode)
     Q_UNUSED (updatePaintNodeData)
-    if (oldNode) {
-        delete oldNode;
+    // remove old nodes
+    if (m_backMaterial != Q_NULLPTR) {
+        delete m_backMaterial;
     }
-    QSGNode * ret = NULL;
-    const QVector<QPointF> triangles = processTriangulation ();
-    const int size = triangles.size ();
-    if (size > 0 && m_color.alpha () > 0) {
-        QSGGeometry * geometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), size);
-        geometry->setDrawingMode (GL_TRIANGLE_STRIP);
-        QSGGeometry::Point2D * vertex = geometry->vertexDataAsPoint2D ();
+    if (m_foreMaterial != Q_NULLPTR) {
+        delete m_foreMaterial;
+    }
+    if (m_backGeometry != Q_NULLPTR) {
+        delete m_backGeometry;
+    }
+    if (m_foreGeometry != Q_NULLPTR) {
+        delete m_foreGeometry;
+    }
+    if (m_backNode != Q_NULLPTR) {
+        delete m_backNode;
+    }
+    if (m_foreNode != Q_NULLPTR) {
+        delete m_foreNode;
+    }
+    if (m_node != Q_NULLPTR) {
+        delete m_node;
+    }
+    m_node = new QSGNode;
+    // polygon background tesselation
+    if (!m_triangles.isEmpty () && m_color.alpha () > 0) {
+        m_backGeometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), m_triangles.size ());
+        m_backGeometry->setDrawingMode (GL_TRIANGLES);
+        QSGGeometry::Point2D * vertex = m_backGeometry->vertexDataAsPoint2D ();
+        const int size = m_triangles.size ();
         for (int idx = 0; idx < size; idx++) {
-            vertex [idx].x = triangles [idx].x ();
-            vertex [idx].y = triangles [idx].y ();
+            vertex [idx].x = m_triangles [idx].x ();
+            vertex [idx].y = m_triangles [idx].y ();
         }
-        QSGFlatColorMaterial * material = new QSGFlatColorMaterial;
-        material->setColor (m_color);
-        QSGGeometryNode * newNode = new QSGGeometryNode;
-        newNode->setFlag (QSGNode::OwnsGeometry);
-        newNode->setFlag (QSGNode::OwnsMaterial);
-        newNode->setMaterial (material);
-        newNode->setGeometry (geometry);
-        ret = newNode;
+        m_backMaterial = new QSGFlatColorMaterial;
+        m_backMaterial->setColor (m_color);
+        m_backNode = new QSGGeometryNode;
+        m_backNode->setGeometry (m_backGeometry);
+        m_backNode->setMaterial (m_backMaterial);
+        m_node->appendChildNode (m_backNode);
     }
-    return ret;
-}
-
-bool QQuickPolygon::isInsideTriangle (qreal Ax, qreal Ay, qreal Bx, qreal By, qreal Cx, qreal Cy, qreal Px, qreal Py) {
-    qreal ax  (Cx - Bx);
-    qreal ay  (Cy - By);
-    qreal bx  (Ax - Cx);
-    qreal by  (Ay - Cy);
-    qreal cx  (Bx - Ax);
-    qreal cy  (By - Ay);
-    qreal apx (Px - Ax);
-    qreal apy (Py - Ay);
-    qreal bpx (Px - Bx);
-    qreal bpy (Py - By);
-    qreal cpx (Px - Cx);
-    qreal cpy (Py - Cy);
-    qreal aCROSSbp (ax * bpy - ay * bpx);
-    qreal cCROSSap (cx * apy - cy * apx);
-    qreal bCROSScp (bx * cpy - by * cpx);
-    return ((aCROSSbp >= 0.0) && (bCROSScp >= 0.0) && (cCROSSap >= 0.0));
-}
-
-bool QQuickPolygon::snip (int u, int v, int w, int n, int * V) {
-    static const qreal EPSILON (0.0000000001);
-    bool ret (false);
-    qreal Ax (m_points [V [u]].x ());
-    qreal Ay (m_points [V [u]].y ());
-    qreal Bx (m_points [V [v]].x ());
-    qreal By (m_points [V [v]].y ());
-    qreal Cx (m_points [V [w]].x ());
-    qreal Cy (m_points [V [w]].y ());
-    if (EPSILON <= (((Bx - Ax) * (Cy - Ay)) - ((By - Ay) * (Cx - Ax)))) {
-        for (int p = 0; p < n; p++) {
-            if ((p == u) || (p == v) || (p == w)) {
-                continue;
-            }
-            qreal Px (m_points [V [p]].x ());
-            qreal Py (m_points [V [p]].y ());
-            if (isInsideTriangle (Ax, Ay, Bx, By, Cx, Cy, Px, Py)) {
-                ret = false;
-                break;
-            }
+    // polyline stroke
+    if (!m_points.isEmpty () && m_border > 0 && m_stroke.alpha () > 0) {
+        m_foreGeometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), m_points.size () + (m_closed ? 1 : 0));
+        m_foreGeometry->setDrawingMode (GL_LINE_STRIP);
+        m_foreGeometry->setLineWidth (m_border);
+        QSGGeometry::Point2D * vertex = m_foreGeometry->vertexDataAsPoint2D ();
+        const int size = m_points.size ();
+        for (int idx = 0; idx < size; idx++) {
+            vertex [idx].x = m_points [idx].x ();
+            vertex [idx].y = m_points [idx].y ();
         }
-        ret = true;
+        if (m_closed) {
+            vertex [size].x = m_points [0].x ();
+            vertex [size].y = m_points [0].y ();
+        }
+        m_foreMaterial = new QSGFlatColorMaterial;
+        m_foreMaterial->setColor (m_stroke);
+        m_foreNode = new QSGGeometryNode;
+        m_foreNode->setGeometry (m_foreGeometry);
+        m_foreNode->setMaterial (m_foreMaterial);
+        m_node->appendChildNode (m_foreNode);
     }
-    return ret;
+    return m_node;
 }
 
-QVector<QPointF> QQuickPolygon::processTriangulation (void) {
-    QVector<QPointF> triangles;
+void QQuickPolygon::processTriangulation (void) {
     // allocate and initialize list of Vertices in polygon
-    const int n (m_points.size ());
+    m_triangles.clear ();
+    const int n = m_points.size ();
     if (n >= 3) {
-        int * V = new int [n];
+        QVector<int> index (n);
         // compute polygon area
         qreal area (0.0);
         for (int p = (n -1), q = 0; q < n; p = q++) {
@@ -130,35 +168,41 @@ QVector<QPointF> QQuickPolygon::processTriangulation (void) {
         }
         // we want a counter-clockwise polygon in V
         for (int v = 0; v < n; v++) {
-            V [v] = (area > 0.0 ? v : n - v -1);
+            index [v] = (area > 0.0 ? v : n - v -1);
         }
-        int nv (n);
+        int nv = n;
         // remove nv-2 Vertices, creating 1 triangle every time
-        int count (2 * nv); // error detection
+        int count = (2 * nv); // error detection
         for (int m = 0, v = (nv -1); nv > 2;) {
             // if we loop, it is probably a non-simple polygon
             count--;
-            if (count <= 0) {
+            if (count > 0) {
+                // three consecutive vertices in current polygon, <u,v,w>
+                int u = (v    < nv ? v    : 0); // previous
+                v     = (u +1 < nv ? u +1 : 0); // new v
+                int w = (v +1 < nv ? v +1 : 0); // next
+                QPolygonF triangle;
+                triangle << m_points [index [u]] << m_points [index [v]] << m_points [index [w]];
+                QPolygonF result = triangle.intersected (m_points);
+                if (result.isClosed ()) {
+                    result.removeLast ();
+                }
+                if (result == triangle) {
+                    // output Triangle
+                    m_triangles.append (m_points [index [u]]);
+                    m_triangles.append (m_points [index [v]]);
+                    m_triangles.append (m_points [index [w]]);
+                    m++;
+                    for (int s = v, t = (v +1); t < nv; s++, t++) {
+                        index [s] = index [t]; // remove v from remaining polygon
+                    }
+                    nv--;
+                    count = (2 * nv); // reset error detection counter
+                }
+            }
+            else {
                 break; // Triangulate: ERROR - probable bad polygon!
             }
-            // three consecutive vertices in current polygon, <u,v,w>
-            int u = (v    < nv ? v    : 0); // previous
-            v     = (u +1 < nv ? u +1 : 0); // new v
-            int w = (v +1 < nv ? v +1 : 0); // next
-            if (snip (u, v, w, nv, V)) {
-                // output Triangle
-                triangles.append (m_points [V [u]]);
-                triangles.append (m_points [V [v]]);
-                triangles.append (m_points [V [w]]);
-                m++;
-                for (int s = v, t = (v +1); t < nv; s++, t++) {
-                    V [s] = V [t]; // remove v from remaining polygon
-                }
-                nv--;
-                count = (2 * nv); // reset error detection counter
-            }
         }
-        delete V;
     }
-    return triangles;
 }
