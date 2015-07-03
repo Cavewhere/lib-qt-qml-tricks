@@ -77,14 +77,24 @@ void QQuickPolygon::setStroke (const QColor & stroke) {
     }
 }
 void QQuickPolygon::setPoints (const QVariantList & points) {
-    m_points.clear ();
-    m_points.reserve (points.size ());
-    foreach (QVariant tmp, points) {
-        m_points.append (tmp.value<QPointF> ());
+    bool dirty = false;
+    const int count = points.size ();
+    if (m_points.size () != count) {
+        m_points.resize (count);
+        dirty = true;
     }
-    processTriangulation ();
-    emit pointsChanged ();
-    update ();
+    for (int idx = 0; idx < count; idx++) {
+        QPointF pt = points.at (idx).value<QPointF> ();
+        if (pt != m_points.at (idx)) {
+            m_points [idx] = pt;
+            dirty = true;
+        }
+    }
+    if (dirty) {
+        processTriangulation ();
+        emit pointsChanged ();
+        update ();
+    }
 }
 
 QSGNode * QQuickPolygon::updatePaintNode (QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData) {
