@@ -157,8 +157,9 @@ QSGNode * QQuickPolygon::updatePaintNode (QSGNode * oldNode, UpdatePaintNodeData
 
 void QQuickPolygon::processTriangulation (void) {
     // allocate and initialize list of Vertices in polygon
-    m_triangles.clear ();
     const int n = m_points.size ();
+    m_triangles.clear ();
+    m_triangles.reserve (n * 3);
     if (n >= 3) {
         QVector<int> index (n);
         for (int i = 0; i < n; i++) {
