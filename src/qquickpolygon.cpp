@@ -78,11 +78,12 @@ void QQuickPolygon::setStroke (const QColor & stroke) {
 }
 void QQuickPolygon::setPoints (const QVariantList & points) {
     m_points.clear ();
+    m_points.reserve (points.size ());
     foreach (QVariant tmp, points) {
-        m_points.append (tmp.toPointF ());
+        m_points.append (tmp.value<QPointF> ());
     }
-    emit pointsChanged ();
     processTriangulation ();
+    emit pointsChanged ();
     update ();
 }
 
