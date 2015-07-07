@@ -343,14 +343,14 @@ protected: // internal stuff
         if (item != Q_NULLPTR) {
             disconnect (this, Q_NULLPTR, item, Q_NULLPTR);
             disconnect (item, Q_NULLPTR, this, Q_NULLPTR);
-            if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
-                item->deleteLater ();
-            }
             if (!m_uidRoleName.isEmpty ()) {
                 QString key = m_indexByUid.key (item, emptyStr ());
                 if (!key.isEmpty ()) {
                     m_indexByUid.remove (key);
                 }
+            }
+            if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
+                item->deleteLater ();
             }
             updateCounter ();
         }
@@ -383,7 +383,7 @@ protected: // internal stuff
             }
         }
     }
-    void updateCounter (void) {
+    inline void updateCounter (void) {
         if (m_count != m_items.count ()) {
             m_count = m_items.count ();
             emit countChanged ();
