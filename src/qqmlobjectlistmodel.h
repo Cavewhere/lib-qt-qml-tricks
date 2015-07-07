@@ -1,96 +1,395 @@
 #ifndef QQMLOBJECTLISTMODEL_H
 #define QQMLOBJECTLISTMODEL_H
 
-#include "qqmlmodels.h"
+#include <QAbstractListModel>
+#include <QByteArray>
+#include <QChar>
+#include <QDebug>
+#include <QHash>
+#include <QList>
+#include <QMetaMethod>
+#include <QMetaObject>
+#include <QMetaProperty>
+#include <QObject>
+#include <QString>
+#include <QStringBuilder>
+#include <QVariant>
+#include <QVector>
 
-class QQmlObjectListModelPrivate;
-
-class QQmlObjectListModel : public QAbstractListModel {
+class QQmlObjectListModelBase : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY (int count READ count NOTIFY countChanged)
 
-public: // public factory and casts
-    template<class ItemType> static QQmlObjectListModel * create (QObject * parent = Q_NULLPTR, QByteArray displayRole = "") {
-        return new QQmlObjectListModel (ItemType::staticMetaObject, parent, displayRole);
+public:
+    explicit QQmlObjectListModelBase (QObject * parent = Q_NULLPTR) : QAbstractListModel (parent) { }
+
+public slots: // API for QML
+    virtual int size (void) const = 0;
+    virtual int count (void) const = 0;
+    virtual bool isEmpty (void) const = 0;
+    virtual bool contains (QObject * item) const = 0;
+    virtual int indexOf (QObject * item) const = 0;
+    virtual int roleForName (const QByteArray & name) const = 0;
+    virtual void clear (void) = 0;
+    virtual void append (QObject * item) = 0;
+    virtual void prepend (QObject * item) = 0;
+    virtual void insert (int idx, QObject * item) = 0;
+    virtual void move (int idx, int pos) = 0;
+    virtual void remove (QObject * item) = 0;
+    virtual void remove (int idx) = 0;
+    virtual QObject * get (int idx) const = 0;
+    virtual QObject * get (const QString & uid) const = 0;
+    virtual QObject * getFirst (void) const = 0;
+    virtual QObject * getLast (void) const = 0;
+
+protected slots: // internal callback
+    virtual void onItemPropertyChanged (void) = 0;
+
+signals: // notifier
+    void countChanged (void);
+};
+
+template<class ItemType> class QQmlObjectListModel : public QQmlObjectListModelBase {
+public:
+    explicit QQmlObjectListModel (QObject *          parent      = Q_NULLPTR,
+                                  const QByteArray & displayRole = QByteArray (),
+                                  const QByteArray & uidRole     = QByteArray ())
+        : QQmlObjectListModelBase (parent)
+        , m_count (0)
+        , m_uidRoleName (uidRole)
+        , m_dispRoleName (displayRole)
+        , m_metaObj (ItemType::staticMetaObject)
+    {
+        static QSet<QByteArray> roleNamesBlacklist;
+        if (roleNamesBlacklist.isEmpty ()) {
+            roleNamesBlacklist << QByteArrayLiteral ("id")
+                               << QByteArrayLiteral ("index")
+                               << QByteArrayLiteral ("class")
+                               << QByteArrayLiteral ("model")
+                               << QByteArrayLiteral ("modelData");
+        }
+        m_handler = metaObject ()->method (metaObject ()->indexOfMethod ("onItemPropertyChanged()"));
+        if (!displayRole.isEmpty ()) {
+            m_roles.insert (Qt::DisplayRole, QByteArrayLiteral ("display"));
+        }
+        m_roles.insert (baseRole (), QByteArrayLiteral ("qtObject"));
+        const int len = m_metaObj.propertyCount ();
+        for (int propertyIdx = 0, role = (baseRole () +1); propertyIdx < len; propertyIdx++, role++) {
+            QMetaProperty metaProp = m_metaObj.property (propertyIdx);
+            const QByteArray propName (metaProp.name ());
+            if (!roleNamesBlacklist.contains (propName)) {
+                m_roles.insert (role, propName);
+                if (metaProp.hasNotifySignal ()) {
+                    m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
+                }
+            }
+            else {
+                qCritical () << "Can't have"
+                             << propName
+                             << "as a role name in"
+                             << qPrintable (QByteArrayLiteral ("QQmlObjectListModel<") % m_metaObj.className () % '>');
+            }
+        }
     }
-    template<class ItemType> ItemType * getAs (int idx) const {
-        return qobject_cast<ItemType *> (get (idx));
-    }
-    template<class ItemType> ItemType * getByUidAs (QString uid) const {
-        return qobject_cast<ItemType *> (getByUid (uid));
-    }
-    template<class ItemType> QList<ItemType *> listAs (void) const {
-        QList<ItemType *> ret;
-        ret.reserve (size ());
-        for (int idx = 0; idx < count (); idx++) {
-            ret.append (qobject_cast<ItemType *> (get (idx)));
+
+public: // C++ API
+    ItemType * at (int idx) const {
+        ItemType * ret = Q_NULLPTR;
+        if (idx >= 0 && idx < m_items.size ()) {
+            ret = m_items.value (idx);
         }
         return ret;
     }
-    template<class ItemType> class QIterableListWrapper {
-    public:
-        class const_iterator : public QObjectList::const_iterator {
-        public:
-            explicit const_iterator (const QObjectList::const_iterator & other) : QObjectList::const_iterator (other) { }
-            inline ItemType * operator * (void) const {
-                return qobject_cast<ItemType *> (QObjectList::const_iterator::operator * ());
-            }
-        };
-        explicit QIterableListWrapper (const QQmlObjectListModel & list) : m_list (list) { }
-        const_iterator begin (void) const {
-            return const_iterator (m_list.begin ());
-        }
-        const_iterator end (void) const {
-            return const_iterator (m_list.end ());
-        }
-    private:
-        const QQmlObjectListModel & m_list;
-    };
-    template<class ItemType> QIterableListWrapper<ItemType> iterateAs (void) const {
-        return QIterableListWrapper<ItemType> (* this);
+    ItemType * getByUid (const QString & uid) const {
+        return m_indexByUid.value (uid, Q_NULLPTR);
     }
-    virtual ~QQmlObjectListModel (void);
+    int roleForName (const QByteArray & name) const {
+        return m_roles.key (name, -1);
+    }
+    int count (void) const {
+        return m_count;
+    }
+    int size (void) const {
+        return m_count;
+    }
+    bool isEmpty (void) const {
+        return m_items.isEmpty ();
+    }
+    bool contains (ItemType * item) const {
+        return m_items.contains (item);
+    }
+    int indexOf (ItemType * item) const {
+        return m_items.indexOf (item);
+    }
+    void clear (void) {
+        if (!m_items.isEmpty ()) {
+            beginRemoveRows (noParent (), 0, count () -1);
+            foreach (ItemType * item, m_items) {
+                dereferenceItem (item);
+            }
+            m_items.clear ();
+            updateCounter ();
+            endRemoveRows ();
+        }
+    }
+    void append (ItemType * item) {
+        if (item != Q_NULLPTR) {
+            int pos = m_items.count ();
+            beginInsertRows (noParent (), pos, pos);
+            m_items.append (item);
+            referenceItem (item);
+            endInsertRows ();
+        }
+    }
+    void prepend (ItemType * item) {
+        if (item != Q_NULLPTR) {
+            beginInsertRows (noParent (), 0, 0);
+            m_items.prepend (item);
+            referenceItem (item);
+            endInsertRows ();
+        }
+    }
+    void insert (int idx, ItemType * item) {
+        if (item != Q_NULLPTR) {
+            beginInsertRows (noParent (), idx, idx);
+            m_items.insert (idx, item);
+            referenceItem (item);
+            endInsertRows ();
+        }
+    }
+    void append (const QList<ItemType *> & itemList) {
+        itemList.removeAll (Q_NULLPTR);
+        if (!itemList.isEmpty ()) {
+            int pos = m_items.count ();
+            beginInsertRows (noParent (), pos, pos + itemList.count () -1);
+            m_items.append (itemList);
+            foreach (ItemType * item, itemList) {
+                referenceItem (item);
+            }
+            endInsertRows ();
+        }
+    }
+    void prepend (const QList<ItemType *> & itemList) {
+        itemList.removeAll (Q_NULLPTR);
+        if (!itemList.isEmpty ()) {
+            beginInsertRows (noParent (), 0, itemList.count () -1);
+            int offset = 0;
+            foreach (ItemType * item, itemList) {
+                m_items.insert (offset, item);
+                referenceItem (item);
+            }
+            endInsertRows ();
+        }
+    }
+    void insert (int idx, const QList<ItemType *> & itemList) {
+        itemList.removeAll (Q_NULLPTR);
+        if (!itemList.isEmpty ()) {
+            beginInsertRows (noParent (), idx, idx + itemList.count () -1);
+            int offset = 0;
+            foreach (ItemType * item, itemList) {
+                m_items.insert (idx + offset, item);
+                referenceItem (item);
+                offset++;
+            }
+            endInsertRows ();
+        }
+    }
+    void move (int idx, int pos) {
+        if (idx != pos) {
+            const int lowest  = qMin (idx, pos);
+            const int highest = qMax (idx, pos);
+            beginMoveRows (noParent (), highest, highest, noParent (), lowest);
+            m_items.move (highest, lowest);
+            endMoveRows ();
+        }
+    }
+    void remove (ItemType * item) {
+        if (item != Q_NULLPTR) {
+            int idx = m_items.indexOf (item);
+            remove (idx);
+        }
+    }
+    void remove (int idx) {
+        if (idx >= 0 && idx < m_items.size ()) {
+            beginRemoveRows (noParent (), idx, idx);
+            ItemType * item = m_items.takeAt (idx);
+            dereferenceItem (item);
+            endRemoveRows ();
+        }
+    }
+    ItemType * first (void) const {
+        return m_items.first ();
+    }
+    ItemType * last (void) const {
+        return m_items.last ();
+    }
+    const QList<ItemType *> & toList (void) const {
+        return m_items;
+    }
 
-protected: // protected constructor
-    explicit QQmlObjectListModel (const QMetaObject & metaObj, QObject * parent, const QByteArray & displayRole);
+public: // QML slots implementation
+    void append (QObject * item) {
+        append (qobject_cast<ItemType *> (item));
+    }
+    void prepend (QObject * item) {
+        prepend (qobject_cast<ItemType *> (item));
+    }
+    void insert (int idx, QObject * item) {
+        insert (idx, qobject_cast<ItemType *> (item));
+    }
+    void remove (QObject * item) {
+        remove (qobject_cast<ItemType *> (item));
+    }
+    bool contains (QObject * item) const {
+        return contains (qobject_cast<ItemType *> (item));
+    }
+    int indexOf (QObject * item) const {
+        return indexOf (item);
+    }
+    QObject * get (int idx) const {
+        return static_cast<QObject *> (at (idx));
+    }
+    QObject * get (const QString & uid) const {
+        return static_cast<QObject *> (getByUid (uid));
+    }
+    QObject * getFirst (void) const {
+        return static_cast<QObject *> (first ());
+    }
+    QObject * getLast (void) const {
+        return static_cast<QObject *> (last ());
+    }
 
-public: // QAbstractItemModel interface reimplemented
-    virtual int rowCount (const QModelIndex & parent = QModelIndex ()) const;
-    virtual bool setData (const QModelIndex & index, const QVariant & value, int role);
-    virtual QVariant data (const QModelIndex & index, int role) const;
-    virtual QHash<int, QByteArray> roleNames (void) const;
-    virtual QObjectList::const_iterator begin (void) const;
-    virtual QObjectList::const_iterator end (void) const;
+protected: // internal stuff
+    static const QString & emptyStr (void) {
+        static const QString ret = QStringLiteral ("");
+        return ret;
+    }
+    static const QByteArray & emptyBA (void) {
+        static const QByteArray ret = QByteArrayLiteral ("");
+        return ret;
+    }
+    static const QModelIndex & noParent (void) {
+        static const QModelIndex ret = QModelIndex ();
+        return ret;
+    }
+    static const int & baseRole (void) {
+        static const int ret = Qt::UserRole;
+        return ret;
+    }
+    class const_iterator : public QList<ItemType *>::const_iterator { };
+    int rowCount (const QModelIndex & parent = QModelIndex ()) const {
+        Q_UNUSED (parent);
+        return m_items.count ();
+    }
+    bool setData (const QModelIndex & index, const QVariant & value, int role) {
+        bool ret = false;
+        ItemType * item = at (index.row ());
+        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
+        if (item != Q_NULLPTR && role != baseRole () && !rolename.isEmpty ()) {
+            ret = item->setProperty (rolename, value);
+        }
+        return ret;
+    }
+    QVariant data (const QModelIndex & index, int role) const {
+        QVariant ret;
+        ItemType * item = at (index.row ());
+        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
+        if (item != Q_NULLPTR && !rolename.isEmpty ()) {
+            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (item));
+        }
+        return ret;
+    }
+    QHash<int, QByteArray> roleNames (void) const {
+        return m_roles;
+    }
+    const_iterator begin (void) const {
+        return  m_items.begin ();
+    }
+    const_iterator end (void) const {
+        return m_items.end ();
+    }
+    void referenceItem (ItemType * item) {
+        if (item != Q_NULLPTR) {
+            if (item->parent () == Q_NULLPTR) {
+                item->setParent (this);
+            }
+            foreach (int signalIdx, m_signalIdxToRole.keys ()) {
+                QMetaMethod notifier = item->metaObject ()->method (signalIdx);
+                connect (item, notifier, this, m_handler, Qt::UniqueConnection);
+            }
+            if (!m_uidRoleName.isEmpty ()) {
+                QString key = m_indexByUid.key (item, emptyStr ());
+                if (!key.isEmpty ()) {
+                    m_indexByUid.remove (key);
+                }
+                QString value = item->property (m_uidRoleName).toString ();
+                if (!value.isEmpty ()) {
+                    m_indexByUid.insert (value, item);
+                }
+            }
+            updateCounter ();
+        }
+    }
+    void dereferenceItem (ItemType * item) {
+        if (item != Q_NULLPTR) {
+            item->disconnect ();
+            if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
+                item->deleteLater ();
+            }
+            if (!m_uidRoleName.isEmpty ()) {
+                QString key = m_indexByUid.key (item, emptyStr ());
+                if (!key.isEmpty ()) {
+                    m_indexByUid.remove (key);
+                }
+            }
+            updateCounter ();
+        }
+    }
+    void onItemPropertyChanged (void) {
+        ItemType * item = qobject_cast<ItemType *> (sender ());
+        int row = m_items.indexOf (item);
+        int sig = senderSignalIndex ();
+        int role = m_signalIdxToRole.value (sig, -1);
+        if (row >= 0 && role >= 0) {
+            QModelIndex index = QAbstractListModel::index (row, 0, noParent ());
+            QVector<int> rolesList;
+            rolesList.append (role);
+            if (m_roles.value (role) == m_dispRoleName) {
+                rolesList.append (Qt::DisplayRole);
+            }
+            emit dataChanged (index, index, rolesList);
+        }
+        if (!m_uidRoleName.isEmpty ()) {
+            QByteArray roleName = m_roles.value (role, emptyBA ());
+            if (!roleName.isEmpty () && roleName == m_uidRoleName) {
+                QString key = m_indexByUid.key (item, emptyStr ());
+                if (!key.isEmpty ()) {
+                    m_indexByUid.remove (key);
+                }
+                QString value = item->property (m_uidRoleName).toString ();
+                if (!value.isEmpty ()) {
+                    m_indexByUid.insert (value, item);
+                }
+            }
+        }
+    }
+    void updateCounter (void) {
+        if (m_count != m_items.count ()) {
+            m_count = m_items.count ();
+            emit countChanged ();
+        }
+    }
 
-public slots: // public methods API
-    void clear (void);
-    int size (void) const;
-    int count (void) const;
-    bool isEmpty (void) const;
-    int indexOf (QObject * item) const;
-    bool contains (QObject * item) const;
-    void append (QObject * item);
-    void append (QObjectList itemList);
-    void prepend (QObject * item);
-    void prepend (QObjectList itemList);
-    void insert (int idx, QObject * item);
-    void insert (int idx, QObjectList itemList);
-    void remove (int idx);
-    void remove (QObject * item);
-    void move (int idx, int pos);
-    void setRoleNameForUid (const QByteArray & name);
-    int roleForName (const QByteArray & name) const;
-    QObject * get (int idx) const;
-    QObject * getByUid (const QString & uid) const;
-    QObject * first (void) const;
-    QObject * last (void) const;
-    QObjectList list (void) const;
-
-signals: // notifiers
-    void countChanged (int count);
-
-private: // pimpl
-    QQmlObjectListModelPrivate * m_privateImpl;
+private: // data members
+    int                        m_count;
+    QByteArray                 m_uidRoleName;
+    QByteArray                 m_dispRoleName;
+    QMetaObject                m_metaObj;
+    QMetaMethod                m_handler;
+    QHash<int, QByteArray>     m_roles;
+    QHash<int, int>            m_signalIdxToRole;
+    QList<ItemType *>          m_items;
+    QHash<QString, ItemType *> m_indexByUid;
 };
 
 #endif // QQMLOBJECTLISTMODEL_H
