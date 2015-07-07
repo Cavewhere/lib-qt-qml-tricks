@@ -332,7 +332,8 @@ protected: // internal stuff
     }
     void dereferenceItem (ItemType * item) {
         if (item != Q_NULLPTR) {
-            item->disconnect ();
+            disconnect (this, Q_NULLPTR, item, Q_NULLPTR);
+            disconnect (item, Q_NULLPTR, this, Q_NULLPTR);
             if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
                 item->deleteLater ();
             }
@@ -347,9 +348,9 @@ protected: // internal stuff
     }
     void onItemPropertyChanged (void) {
         ItemType * item = qobject_cast<ItemType *> (sender ());
-        int row = m_items.indexOf (item);
-        int sig = senderSignalIndex ();
-        int role = m_signalIdxToRole.value (sig, -1);
+        const int row = m_items.indexOf (item);
+        const int sig = senderSignalIndex ();
+        const int role = m_signalIdxToRole.value (sig, -1);
         if (row >= 0 && role >= 0) {
             QModelIndex index = QAbstractListModel::index (row, 0, noParent ());
             QVector<int> rolesList;
