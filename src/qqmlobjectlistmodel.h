@@ -41,6 +41,7 @@ public slots: // API for QML
     virtual QObject * get (const QString & uid) const = 0;
     virtual QObject * getFirst (void) const = 0;
     virtual QObject * getLast (void) const = 0;
+    virtual QVariantList toVarArray (void) const = 0;
 
 protected slots: // internal callback
     virtual void onItemPropertyChanged (void) = 0;
@@ -264,6 +265,14 @@ public: // QML slots implementation
     }
     QObject * getLast (void) const {
         return static_cast<QObject *> (last ());
+    }
+    QVariantList toVarArray (void) const {
+        QVariantList ret;
+        ret.reserve (m_items.size ());
+        foreach (ItemType * item, m_items) {
+            ret.append (QVariant::fromValue (static_cast<QObject *> (item)));
+        }
+        return ret;
     }
 
 protected: // internal stuff
