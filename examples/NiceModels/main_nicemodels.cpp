@@ -13,8 +13,6 @@
 int main (int argc, char * argv []) {
     QGuiApplication app (argc, argv);
 
-    qmlRegisterUncreatableType<QQmlObjectListModel<MyItem> > ("QtQmlTricks", 1, 0, "QQmlObjectListModel_MyItem", "!!!");
-
     QQmlObjectListModel<MyItem> * testModel = new QQmlObjectListModel<MyItem> (&app, "foo", "bar");
 
     int year = QDateTime::currentDateTime ().date ().year ();
