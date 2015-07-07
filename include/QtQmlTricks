@@ -22,6 +22,7 @@ static void registerQtQmlTricksModule (QQmlEngine * engine) {
     qmlRegisterUncreatableType<QAbstractItemModel>   (uri, maj, min, "AbstractItemModel", "!!!");
     qmlRegisterUncreatableType<QAbstractListModel>   (uri, maj, min, "AbstractListModel", "!!!");
     qmlRegisterUncreatableType<QQmlVariantListModel> (uri, maj, min, "VariantListModel",  "!!!");
+    qmlRegisterUncreatableType<QQmlObjectListModelBase> (uri, maj, min, "ObjectListModelBase",  "!!!");
 
     if (engine) {
         engine->addImportPath ("qrc:/import");

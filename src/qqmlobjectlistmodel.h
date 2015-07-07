@@ -91,6 +91,13 @@ public:
             }
         }
     }
+    typedef typename QList<ItemType *>::const_iterator const_iterator;
+    const_iterator begin (void) const {
+        return m_items.begin ();
+    }
+    const_iterator end (void) const {
+        return m_items.end ();
+    }
 
 public: // C++ API
     ItemType * at (int idx) const {
@@ -244,7 +251,7 @@ public: // QML slots implementation
         return contains (qobject_cast<ItemType *> (item));
     }
     int indexOf (QObject * item) const {
-        return indexOf (item);
+        return indexOf (qobject_cast<ItemType *> (item));
     }
     QObject * get (int idx) const {
         return static_cast<QObject *> (at (idx));
@@ -276,7 +283,6 @@ protected: // internal stuff
         static const int ret = Qt::UserRole;
         return ret;
     }
-    class const_iterator : public QList<ItemType *>::const_iterator { };
     int rowCount (const QModelIndex & parent = QModelIndex ()) const {
         Q_UNUSED (parent);
         return m_items.count ();
@@ -301,12 +307,6 @@ protected: // internal stuff
     }
     QHash<int, QByteArray> roleNames (void) const {
         return m_roles;
-    }
-    const_iterator begin (void) const {
-        return  m_items.begin ();
-    }
-    const_iterator end (void) const {
-        return m_items.end ();
     }
     void referenceItem (ItemType * item) {
         if (item != Q_NULLPTR) {
@@ -392,5 +392,14 @@ private: // data members
     QList<ItemType *>          m_items;
     QHash<QString, ItemType *> m_indexByUid;
 };
+
+#define QML_OBJMODEL_PROPERTY(type, name) \
+    protected: \
+        Q_PROPERTY (QQmlObjectListModelBase * name READ get_##name CONSTANT) \
+    private: \
+        QQmlObjectListModel<type> * m_##name; \
+    public: \
+        QQmlObjectListModel<type> * get_##name (void) const { return m_##name; } \
+    private:
 
 #endif // QQMLOBJECTLISTMODEL_H
