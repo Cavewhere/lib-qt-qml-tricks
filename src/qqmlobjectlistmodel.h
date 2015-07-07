@@ -16,20 +16,20 @@
 #include <QVariant>
 #include <QVector>
 
-template<class T> QList<T *> qListFromVariant (const QVariantList & list) {
-    QList<T *> ret;
+template<typename T> QList<T> qListFromVariant (const QVariantList & list) {
+    QList<T> ret;
     ret.reserve (list.size ());
     foreach (const QVariant & var, list) {
-        ret.append (var.value<T *> ());
+        ret.append (var.value<T> ());
     }
     return ret;
 }
 
-template<class T> QVariantList qListToVariant (const QList<T *> & list) {
+template<typename T> QVariantList qListToVariant (const QList<T> & list) {
     QVariantList ret;
     ret.reserve (list.size ());
-    foreach (T * obj, list) {
-        ret.append (QVariant::fromValue (obj));
+    foreach (T val, list) {
+        ret.append (QVariant::fromValue (val));
     }
     return ret;
 }
@@ -285,7 +285,7 @@ public: // QML slots implementation
         return static_cast<QObject *> (last ());
     }
     QVariantList toVarArray (void) const {
-        return qListToVariant<ItemType> (m_items);
+        return qListToVariant<ItemType *> (m_items);
     }
 
 protected: // internal stuff
