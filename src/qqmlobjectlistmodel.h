@@ -16,6 +16,24 @@
 #include <QVariant>
 #include <QVector>
 
+template<class T> QList<T *> qListFromVariant (const QVariantList & list) {
+    QList<T *> ret;
+    ret.reserve (list.size ());
+    foreach (const QVariant & var, list) {
+        ret.append (var.value<T *> ());
+    }
+    return ret;
+}
+
+template<class T> QVariantList qListToVariant (const QList<T *> & list) {
+    QVariantList ret;
+    ret.reserve (list.size ());
+    foreach (T * obj, list) {
+        ret.append (QVariant::fromValue (obj));
+    }
+    return ret;
+}
+
 class QQmlObjectListModelBase : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY (int count READ count NOTIFY countChanged)
@@ -267,12 +285,7 @@ public: // QML slots implementation
         return static_cast<QObject *> (last ());
     }
     QVariantList toVarArray (void) const {
-        QVariantList ret;
-        ret.reserve (m_items.size ());
-        foreach (ItemType * item, m_items) {
-            ret.append (QVariant::fromValue (static_cast<QObject *> (item)));
-        }
-        return ret;
+        return qListToVariant<ItemType> (m_items);
     }
 
 protected: // internal stuff
