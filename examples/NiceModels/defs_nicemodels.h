@@ -14,6 +14,7 @@ class MyItem : public QObject {
     QML_WRITABLE_PROPERTY (QString,      bar)
     QML_READONLY_PROPERTY (MyEnum::Type, test)
     QML_CONSTANT_PROPERTY (QString,      type)
+    QML_CONSTANT_PROPERTY (bool,         model)
 
 public:
     explicit MyItem (QObject * parent = NULL) : QObject (parent) {

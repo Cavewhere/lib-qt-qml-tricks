@@ -32,7 +32,7 @@ public: // public factory and casts
         class const_iterator : public QObjectList::const_iterator {
         public:
             explicit const_iterator (const QObjectList::const_iterator & other) : QObjectList::const_iterator (other) { }
-            inline ItemType * const operator * (void) const {
+            inline ItemType * operator * (void) const {
                 return qobject_cast<ItemType *> (QObjectList::const_iterator::operator * ());
             }
         };
@@ -52,7 +52,7 @@ public: // public factory and casts
     virtual ~QQmlObjectListModel (void);
 
 protected: // protected constructor
-    explicit QQmlObjectListModel (QMetaObject metaObj, QObject * parent, QByteArray displayRole);
+    explicit QQmlObjectListModel (const QMetaObject & metaObj, QObject * parent, const QByteArray & displayRole);
 
 public: // QAbstractItemModel interface reimplemented
     virtual int rowCount (const QModelIndex & parent = QModelIndex ()) const;
@@ -78,10 +78,10 @@ public slots: // public methods API
     void remove (int idx);
     void remove (QObject * item);
     void move (int idx, int pos);
-    void setRoleNameForUid (QByteArray name);
-    int roleForName (QByteArray name) const;
+    void setRoleNameForUid (const QByteArray & name);
+    int roleForName (const QByteArray & name) const;
     QObject * get (int idx) const;
-    QObject * getByUid (QString uid) const;
+    QObject * getByUid (const QString & uid) const;
     QObject * first (void) const;
     QObject * last (void) const;
     QObjectList list (void) const;

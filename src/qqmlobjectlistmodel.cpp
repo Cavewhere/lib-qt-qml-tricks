@@ -1,5 +1,9 @@
+
 #include "qqmlobjectlistmodel.h"
 #include "qqmlobjectlistmodel_p.h"
+
+#include <QByteArray>
+#include <QStringBuilder>
 
 /*!
     \class QQmlObjectListModel
@@ -66,10 +70,18 @@
 /*!
     \internal
 */
-QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent, QByteArray displayRole)
+QQmlObjectListModel::QQmlObjectListModel (const QMetaObject & metaObj, QObject * parent, const QByteArray & displayRole)
     : QAbstractListModel (parent)
     , m_privateImpl (new QQmlObjectListModelPrivate (this))
 {
+    static QSet<QByteArray> roleNamesBlacklist;
+    if (roleNamesBlacklist.isEmpty ()) {
+        roleNamesBlacklist << QByteArrayLiteral ("id")
+                           << QByteArrayLiteral ("index")
+                           << QByteArrayLiteral ("class")
+                           << QByteArrayLiteral ("model")
+                           << QByteArrayLiteral ("modelData");
+    }
     m_privateImpl->m_metaObj = metaObj;
     m_privateImpl->m_dispRoleName = displayRole;
     if (!displayRole.isEmpty ()) {
@@ -78,9 +90,18 @@ QQmlObjectListModel::QQmlObjectListModel (QMetaObject metaObj, QObject * parent,
     m_privateImpl->m_roles.insert (BASE_ROLE, QByteArrayLiteral ("qtObject"));
     for (int propertyIdx = 0, role = (BASE_ROLE +1); propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++, role++) {
         QMetaProperty metaProp = m_privateImpl->m_metaObj.property (propertyIdx);
-        m_privateImpl->m_roles.insert (role, metaProp.name ());
-        if (metaProp.hasNotifySignal ()) {
-            m_privateImpl->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
+        QByteArray propName (metaProp.name ());
+        if (!roleNamesBlacklist.contains (propName)) {
+            m_privateImpl->m_roles.insert (role, propName);
+            if (metaProp.hasNotifySignal ()) {
+                m_privateImpl->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
+            }
+        }
+        else {
+            qCritical () << "Can't have"
+                         << propName
+                         << "as a role name in"
+                         << qPrintable (QByteArrayLiteral ("QQmlObjectListModel<") % metaObj.className () % '>');
         }
     }
 }
@@ -175,7 +196,7 @@ bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & v
     \param name The property name inside the item class
     \return The matching role, \c -1 if not found
 */
-int QQmlObjectListModel::roleForName (QByteArray name) const {
+int QQmlObjectListModel::roleForName (const QByteArray & name) const {
     return m_privateImpl->m_roles.key (name, -1);
 }
 
@@ -456,7 +477,7 @@ QObjectList QQmlObjectListModel::list (void) const {
 
     \sa getAs(int) const, get(int) const
 */
-QObject * QQmlObjectListModel::getByUid (QString uid) const {
+QObject * QQmlObjectListModel::getByUid (const QString & uid) const {
     return m_privateImpl->m_indexByUid.value (uid, Q_NULLPTR);
 }
 
@@ -469,7 +490,7 @@ QObject * QQmlObjectListModel::getByUid (QString uid) const {
 
     \param name The name of the property / role that is used as the index key
 */
-void QQmlObjectListModel::setRoleNameForUid (QByteArray name) {
+void QQmlObjectListModel::setRoleNameForUid (const QByteArray & name) {
     m_privateImpl->m_uidRoleName = name;
     m_privateImpl->m_indexByUid.clear ();
     if (!name.isEmpty ()) {
