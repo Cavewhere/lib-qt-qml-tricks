@@ -131,7 +131,7 @@ public:
         ItemType * item = at (index.row ());
         QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
         if (item != Q_NULLPTR && !rolename.isEmpty ()) {
-            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (item));
+            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (static_cast<QObject *> (item)));
         }
         return ret;
     }
