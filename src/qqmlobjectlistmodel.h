@@ -117,6 +117,27 @@ public:
     const_iterator end (void) const {
         return m_items.end ();
     }
+    bool setData (const QModelIndex & index, const QVariant & value, int role) {
+        bool ret = false;
+        ItemType * item = at (index.row ());
+        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
+        if (item != Q_NULLPTR && role != baseRole () && !rolename.isEmpty ()) {
+            ret = item->setProperty (rolename, value);
+        }
+        return ret;
+    }
+    QVariant data (const QModelIndex & index, int role) const {
+        QVariant ret;
+        ItemType * item = at (index.row ());
+        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
+        if (item != Q_NULLPTR && !rolename.isEmpty ()) {
+            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (static_cast<QObject *> (item)));
+        }
+        return ret;
+    }
+    QHash<int, QByteArray> roleNames (void) const {
+        return m_roles;
+    }
 
 public: // C++ API
     ItemType * at (int idx) const {
@@ -308,27 +329,6 @@ protected: // internal stuff
     int rowCount (const QModelIndex & parent = QModelIndex ()) const {
         Q_UNUSED (parent);
         return m_items.count ();
-    }
-    bool setData (const QModelIndex & index, const QVariant & value, int role) {
-        bool ret = false;
-        ItemType * item = at (index.row ());
-        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
-        if (item != Q_NULLPTR && role != baseRole () && !rolename.isEmpty ()) {
-            ret = item->setProperty (rolename, value);
-        }
-        return ret;
-    }
-    QVariant data (const QModelIndex & index, int role) const {
-        QVariant ret;
-        ItemType * item = at (index.row ());
-        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
-        if (item != Q_NULLPTR && !rolename.isEmpty ()) {
-            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (item));
-        }
-        return ret;
-    }
-    QHash<int, QByteArray> roleNames (void) const {
-        return m_roles;
     }
     void referenceItem (ItemType * item) {
         if (item != Q_NULLPTR) {
