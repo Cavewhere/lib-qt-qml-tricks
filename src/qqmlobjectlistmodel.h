@@ -28,7 +28,7 @@ template<typename T> QList<T> qListFromVariant (const QVariantList & list) {
 template<typename T> QVariantList qListToVariant (const QList<T> & list) {
     QVariantList ret;
     ret.reserve (list.size ());
-    foreach (T val, list) {
+    foreach (const T & val, list) {
         ret.append (QVariant::fromValue (val));
     }
     return ret;
@@ -131,7 +131,7 @@ public:
         ItemType * item = at (index.row ());
         QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
         if (item != Q_NULLPTR && !rolename.isEmpty ()) {
-            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (static_cast<QObject *> (item)));
+            ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (item));
         }
         return ret;
     }
@@ -175,17 +175,18 @@ public: // C++ API
                 dereferenceItem (item);
             }
             m_items.clear ();
-            updateCounter ();
             endRemoveRows ();
+            updateCounter ();
         }
     }
     void append (ItemType * item) {
         if (item != Q_NULLPTR) {
-            int pos = m_items.count ();
+            const int pos = m_items.count ();
             beginInsertRows (noParent (), pos, pos);
             m_items.append (item);
             referenceItem (item);
             endInsertRows ();
+            updateCounter ();
         }
     }
     void prepend (ItemType * item) {
@@ -194,6 +195,7 @@ public: // C++ API
             m_items.prepend (item);
             referenceItem (item);
             endInsertRows ();
+            updateCounter ();
         }
     }
     void insert (int idx, ItemType * item) {
@@ -202,36 +204,40 @@ public: // C++ API
             m_items.insert (idx, item);
             referenceItem (item);
             endInsertRows ();
+            updateCounter ();
         }
     }
     void append (const QList<ItemType *> & itemList) {
-        itemList.removeAll (Q_NULLPTR);
         if (!itemList.isEmpty ()) {
-            int pos = m_items.count ();
+            const int pos = m_items.count ();
             beginInsertRows (noParent (), pos, pos + itemList.count () -1);
+            m_items.reserve (m_items.count () + itemList.count ());
             m_items.append (itemList);
             foreach (ItemType * item, itemList) {
                 referenceItem (item);
             }
             endInsertRows ();
+            updateCounter ();
         }
     }
     void prepend (const QList<ItemType *> & itemList) {
-        itemList.removeAll (Q_NULLPTR);
         if (!itemList.isEmpty ()) {
             beginInsertRows (noParent (), 0, itemList.count () -1);
+            m_items.reserve (m_items.count () + itemList.count ());
             int offset = 0;
             foreach (ItemType * item, itemList) {
                 m_items.insert (offset, item);
                 referenceItem (item);
+                offset++;
             }
             endInsertRows ();
+            updateCounter ();
         }
     }
     void insert (int idx, const QList<ItemType *> & itemList) {
-        itemList.removeAll (Q_NULLPTR);
         if (!itemList.isEmpty ()) {
             beginInsertRows (noParent (), idx, idx + itemList.count () -1);
+            m_items.reserve (m_items.count () + itemList.count ());
             int offset = 0;
             foreach (ItemType * item, itemList) {
                 m_items.insert (idx + offset, item);
@@ -239,6 +245,7 @@ public: // C++ API
                 offset++;
             }
             endInsertRows ();
+            updateCounter ();
         }
     }
     void move (int idx, int pos) {
@@ -252,7 +259,7 @@ public: // C++ API
     }
     void remove (ItemType * item) {
         if (item != Q_NULLPTR) {
-            int idx = m_items.indexOf (item);
+            const int idx = m_items.indexOf (item);
             remove (idx);
         }
     }
@@ -262,6 +269,7 @@ public: // C++ API
             ItemType * item = m_items.takeAt (idx);
             dereferenceItem (item);
             endRemoveRows ();
+            updateCounter ();
         }
     }
     ItemType * first (void) const {
@@ -340,16 +348,15 @@ protected: // internal stuff
                 connect (item, notifier, this, m_handler, Qt::UniqueConnection);
             }
             if (!m_uidRoleName.isEmpty ()) {
-                QString key = m_indexByUid.key (item, emptyStr ());
+                const QString key = m_indexByUid.key (item, emptyStr ());
                 if (!key.isEmpty ()) {
                     m_indexByUid.remove (key);
                 }
-                QString value = item->property (m_uidRoleName).toString ();
+                const QString value = item->property (m_uidRoleName).toString ();
                 if (!value.isEmpty ()) {
                     m_indexByUid.insert (value, item);
                 }
             }
-            updateCounter ();
         }
     }
     void dereferenceItem (ItemType * item) {
@@ -357,7 +364,7 @@ protected: // internal stuff
             disconnect (this, Q_NULLPTR, item, Q_NULLPTR);
             disconnect (item, Q_NULLPTR, this, Q_NULLPTR);
             if (!m_uidRoleName.isEmpty ()) {
-                QString key = m_indexByUid.key (item, emptyStr ());
+                const QString key = m_indexByUid.key (item, emptyStr ());
                 if (!key.isEmpty ()) {
                     m_indexByUid.remove (key);
                 }
@@ -365,7 +372,6 @@ protected: // internal stuff
             if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
                 item->deleteLater ();
             }
-            updateCounter ();
         }
     }
     void onItemPropertyChanged (void) {
@@ -385,11 +391,11 @@ protected: // internal stuff
         if (!m_uidRoleName.isEmpty ()) {
             QByteArray roleName = m_roles.value (role, emptyBA ());
             if (!roleName.isEmpty () && roleName == m_uidRoleName) {
-                QString key = m_indexByUid.key (item, emptyStr ());
+                const QString key = m_indexByUid.key (item, emptyStr ());
                 if (!key.isEmpty ()) {
                     m_indexByUid.remove (key);
                 }
-                QString value = item->property (m_uidRoleName).toString ();
+                const QString value = item->property (m_uidRoleName).toString ();
                 if (!value.isEmpty ()) {
                     m_indexByUid.insert (value, item);
                 }
