@@ -120,7 +120,7 @@ public:
     bool setData (const QModelIndex & index, const QVariant & value, int role) {
         bool ret = false;
         ItemType * item = at (index.row ());
-        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
+        const QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
         if (item != Q_NULLPTR && role != baseRole () && !rolename.isEmpty ()) {
             ret = item->setProperty (rolename, value);
         }
@@ -129,7 +129,7 @@ public:
     QVariant data (const QModelIndex & index, int role) const {
         QVariant ret;
         ItemType * item = at (index.row ());
-        QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
+        const QByteArray rolename = (role != Qt::DisplayRole ? m_roles.value (role, emptyBA ()) : m_dispRoleName);
         if (item != Q_NULLPTR && !rolename.isEmpty ()) {
             ret.setValue (role != baseRole () ? item->property (rolename) : QVariant::fromValue (static_cast<QObject *> (item)));
         }
@@ -389,7 +389,7 @@ protected: // internal stuff
             emit dataChanged (index, index, rolesList);
         }
         if (!m_uidRoleName.isEmpty ()) {
-            QByteArray roleName = m_roles.value (role, emptyBA ());
+            const QByteArray roleName = m_roles.value (role, emptyBA ());
             if (!roleName.isEmpty () && roleName == m_uidRoleName) {
                 const QString key = m_indexByUid.key (item, emptyStr ());
                 if (!key.isEmpty ()) {
