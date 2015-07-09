@@ -19,7 +19,8 @@
 template<typename T> QList<T> qListFromVariant (const QVariantList & list) {
     QList<T> ret;
     ret.reserve (list.size ());
-    foreach (const QVariant & var, list) {
+    for (QVariantList::const_iterator it = list.constBegin (); it != list.constEnd (); it++) {
+        const QVariant & var = (QVariant) (* it);
         ret.append (var.value<T> ());
     }
     return ret;
@@ -28,20 +29,26 @@ template<typename T> QList<T> qListFromVariant (const QVariantList & list) {
 template<typename T> QVariantList qListToVariant (const QList<T> & list) {
     QVariantList ret;
     ret.reserve (list.size ());
-    foreach (const T & val, list) {
+    for (typename QList<T>::const_iterator it = list.constBegin (); it != list.constEnd (); it++) {
+        const T & val = (T) (* it);
         ret.append (QVariant::fromValue (val));
     }
     return ret;
 }
 
-class QQmlObjectListModelBase : public QAbstractListModel {
+// custom foreach for QList, which uses no copy and check pointer non-null
+#define FOREACH_PTR_IN_QLIST(_type_, _var_, _list_) \
+    for (typename QList<_type_ *>::iterator it = _list_.begin (); it != _list_.end (); it++) \
+        for (_type_ * _var_ = (_type_ *) (* it); _var_ != Q_NULLPTR; _var_ = Q_NULLPTR)
+
+class QQmlObjectListModelBase : public QAbstractListModel { // abstract Qt base class
     Q_OBJECT
     Q_PROPERTY (int count READ count NOTIFY countChanged)
 
 public:
     explicit QQmlObjectListModelBase (QObject * parent = Q_NULLPTR) : QAbstractListModel (parent) { }
 
-public slots: // API for QML
+public slots: // virtual methods API for QML
     virtual int size (void) const = 0;
     virtual int count (void) const = 0;
     virtual bool isEmpty (void) const = 0;
@@ -87,7 +94,8 @@ public:
                                << QByteArrayLiteral ("model")
                                << QByteArrayLiteral ("modelData");
         }
-        m_handler = metaObject ()->method (metaObject ()->indexOfMethod ("onItemPropertyChanged()"));
+        static const char * HANDLER = "onItemPropertyChanged()";
+        m_handler = metaObject ()->method (metaObject ()->indexOfMethod (HANDLER));
         if (!displayRole.isEmpty ()) {
             m_roles.insert (Qt::DisplayRole, QByteArrayLiteral ("display"));
         }
@@ -168,8 +176,8 @@ public: // C++ API
     }
     void clear (void) {
         if (!m_items.isEmpty ()) {
-            beginRemoveRows (noParent (), 0, count () -1);
-            foreach (ItemType * item, m_items) {
+            beginRemoveRows (noParent (), 0, m_items.count () -1);
+            FOREACH_PTR_IN_QLIST (ItemType, item, m_items) {
                 dereferenceItem (item);
             }
             m_items.clear ();
@@ -211,7 +219,7 @@ public: // C++ API
             beginInsertRows (noParent (), pos, pos + itemList.count () -1);
             m_items.reserve (m_items.count () + itemList.count ());
             m_items.append (itemList);
-            foreach (ItemType * item, itemList) {
+            FOREACH_PTR_IN_QLIST (ItemType, item, itemList) {
                 referenceItem (item);
             }
             endInsertRows ();
@@ -223,7 +231,7 @@ public: // C++ API
             beginInsertRows (noParent (), 0, itemList.count () -1);
             m_items.reserve (m_items.count () + itemList.count ());
             int offset = 0;
-            foreach (ItemType * item, itemList) {
+            FOREACH_PTR_IN_QLIST (ItemType, item, itemList) {
                 m_items.insert (offset, item);
                 referenceItem (item);
                 offset++;
@@ -237,7 +245,7 @@ public: // C++ API
             beginInsertRows (noParent (), idx, idx + itemList.count () -1);
             m_items.reserve (m_items.count () + itemList.count ());
             int offset = 0;
-            foreach (ItemType * item, itemList) {
+            FOREACH_PTR_IN_QLIST (ItemType, item, itemList) {
                 m_items.insert (idx + offset, item);
                 referenceItem (item);
                 offset++;
@@ -341,7 +349,9 @@ protected: // internal stuff
             if (item->parent () == Q_NULLPTR) {
                 item->setParent (this);
             }
-            foreach (int signalIdx, m_signalIdxToRole.keys ()) {
+            const QList<int> & signalsIdxList = m_signalIdxToRole.keys ();
+            for (QList<int>::const_iterator it = signalsIdxList.constBegin (); it != signalsIdxList.constEnd (); it++) {
+                const int signalIdx = (int) (* it);
                 QMetaMethod notifier = item->metaObject ()->method (signalIdx);
                 connect (item, notifier, this, m_handler, Qt::UniqueConnection);
             }
@@ -420,12 +430,9 @@ private: // data members
 };
 
 #define QML_OBJMODEL_PROPERTY(type, name) \
-    protected: \
-        Q_PROPERTY (QQmlObjectListModelBase * name READ get_##name CONSTANT) \
-    private: \
-        QQmlObjectListModel<type> * m_##name; \
-    public: \
-        QQmlObjectListModel<type> * get_##name (void) const { return m_##name; } \
+    protected: Q_PROPERTY (QQmlObjectListModelBase * name READ get_##name CONSTANT) \
+    private: QQmlObjectListModel<type> * m_##name; \
+    public: QQmlObjectListModel<type> * get_##name (void) const { return m_##name; } \
     private:
 
 #endif // QQMLOBJECTLISTMODEL_H
