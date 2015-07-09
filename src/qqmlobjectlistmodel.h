@@ -103,10 +103,8 @@ public:
                 }
             }
             else {
-                qCritical () << "Can't have"
-                             << propName
-                             << "as a role name in"
-                             << qPrintable (QByteArrayLiteral ("QQmlObjectListModel<") % m_metaObj.className () % '>');
+                static const QByteArray & CLASS_NAME = (QByteArrayLiteral ("QQmlObjectListModel<") % m_metaObj.className () % '>');
+                qWarning () << "Can't have" << propName << "as a role name in" << qPrintable (CLASS_NAME);
             }
         }
     }
