@@ -1,9 +1,5 @@
 
 #include "qqmlobjectlistmodel.h"
-#include "qqmlobjectlistmodel_p.h"
-
-#include <QByteArray>
-#include <QStringBuilder>
 
 /*!
     \class QQmlObjectListModel
@@ -67,70 +63,6 @@
     \sa list() const
 */
 
-/*!
-    \internal
-*/
-QQmlObjectListModel::QQmlObjectListModel (const QMetaObject & metaObj, QObject * parent, const QByteArray & displayRole)
-    : QAbstractListModel (parent)
-    , m_privateImpl (new QQmlObjectListModelPrivate (this))
-{
-    static QSet<QByteArray> roleNamesBlacklist;
-    if (roleNamesBlacklist.isEmpty ()) {
-        roleNamesBlacklist << QByteArrayLiteral ("id")
-                           << QByteArrayLiteral ("index")
-                           << QByteArrayLiteral ("class")
-                           << QByteArrayLiteral ("model")
-                           << QByteArrayLiteral ("modelData");
-    }
-    m_privateImpl->m_metaObj = metaObj;
-    m_privateImpl->m_dispRoleName = displayRole;
-    if (!displayRole.isEmpty ()) {
-        m_privateImpl->m_roles.insert (Qt::DisplayRole, QByteArrayLiteral ("display"));
-    }
-    m_privateImpl->m_roles.insert (BASE_ROLE, QByteArrayLiteral ("qtObject"));
-    for (int propertyIdx = 0, role = (BASE_ROLE +1); propertyIdx < m_privateImpl->m_metaObj.propertyCount (); propertyIdx++, role++) {
-        QMetaProperty metaProp = m_privateImpl->m_metaObj.property (propertyIdx);
-        QByteArray propName (metaProp.name ());
-        if (!roleNamesBlacklist.contains (propName)) {
-            m_privateImpl->m_roles.insert (role, propName);
-            if (metaProp.hasNotifySignal ()) {
-                m_privateImpl->m_signalIdxToRole.insert (metaProp.notifySignalIndex (), role);
-            }
-        }
-        else {
-            qCritical () << "Can't have"
-                         << propName
-                         << "as a role name in"
-                         << qPrintable (QByteArrayLiteral ("QQmlObjectListModel<") % metaObj.className () % '>');
-        }
-    }
-}
-
-/*!
-    \internal
-*/
-QObjectList::const_iterator QQmlObjectListModel::begin (void) const {
-    return m_privateImpl->m_items.begin ();
-}
-
-/*!
-    \internal
-*/
-QObjectList::const_iterator QQmlObjectListModel::end (void) const {
-    return m_privateImpl->m_items.end ();
-}
-
-QQmlObjectListModel::~QQmlObjectListModel (void) {
-    clear ();
-}
-
-/*!
-    \internal
-*/
-int QQmlObjectListModel::rowCount (const QModelIndex & parent) const {
-    Q_UNUSED (parent);
-    return m_privateImpl->m_items.count ();
-}
 
 /*!
     \details Returns the data in a specific index for a given role.
@@ -143,17 +75,6 @@ int QQmlObjectListModel::rowCount (const QModelIndex & parent) const {
 
     \b Note : the \c 0 role is a pointer to item object itself.
 */
-QVariant QQmlObjectListModel::data (const QModelIndex & index, int role) const {
-    QVariant ret;
-    QObject * item = get (index.row ());
-    QByteArray rolename = (role != Qt::DisplayRole
-                                   ? m_privateImpl->m_roles.value (role, EMPTY_BA)
-                                   : m_privateImpl->m_dispRoleName);
-    if (item != Q_NULLPTR && !rolename.isEmpty ()) {
-        ret.setValue (role != BASE_ROLE ? item->property (rolename) : QVariant::fromValue (item));
-    }
-    return ret;
-}
 
 /*!
     \details Returns the roles available in the model.
@@ -164,9 +85,6 @@ QVariant QQmlObjectListModel::data (const QModelIndex & index, int role) const {
 
     \b Note : an additional \c 'qtObject' role is added for convenience.
 */
-QHash<int, QByteArray> QQmlObjectListModel::roleNames (void) const {
-    return m_privateImpl->m_roles;
-}
 
 /*!
     \details Modifies the data in a specific index for a given role.
@@ -178,17 +96,6 @@ QHash<int, QByteArray> QQmlObjectListModel::roleNames (void) const {
     \param role The role for property
     \return Weither the modification was done
 */
-bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & value, int role) {
-    bool ret = false;
-    QObject * item = get (index.row ());
-    QByteArray rolename = (role != Qt::DisplayRole
-                                   ? m_privateImpl->m_roles.value (role, EMPTY_BA)
-                                   : m_privateImpl->m_dispRoleName);
-    if (item != Q_NULLPTR && role != BASE_ROLE && !rolename.isEmpty ()) {
-        ret = item->setProperty (rolename, value);
-    }
-    return ret;
-}
 
 /*!
     \details Returns the role associated to the given property name.
@@ -196,36 +103,24 @@ bool QQmlObjectListModel::setData (const QModelIndex & index, const QVariant & v
     \param name The property name inside the item class
     \return The matching role, \c -1 if not found
 */
-int QQmlObjectListModel::roleForName (const QByteArray & name) const {
-    return m_privateImpl->m_roles.key (name, -1);
-}
+
 
 /*!
     \details Counts the items in the model.
 
     \return The count of items in the model
 */
-int QQmlObjectListModel::count (void) const {
-    return m_privateImpl->m_count;
-}
 
 /*!
     \details Counts the items in the model.
 
     \return The count of items in the model
 */
-int QQmlObjectListModel::size (void) const {
-    return m_privateImpl->m_count;
-}
-
 /*!
     \details Tests the content of the model.
 
     \return Whether the model contains no item
 */
-bool QQmlObjectListModel::isEmpty (void) const {
-    return m_privateImpl->m_items.isEmpty ();
-}
 
 /*!
     \details Tests the presence of a given item in the model.
@@ -233,9 +128,6 @@ bool QQmlObjectListModel::isEmpty (void) const {
     \param item The pointer to the item
     \return Whether the item was found
 */
-bool QQmlObjectListModel::contains (QObject * item) const {
-    return m_privateImpl->m_items.contains (item);
-}
 
 /*!
     \details Finds the position of given item in the model.
@@ -243,9 +135,6 @@ bool QQmlObjectListModel::contains (QObject * item) const {
     \param item The pointer to the item
     \return The row index of the item, \c -1 if not found
 */
-int QQmlObjectListModel::indexOf (QObject * item) const {
-    return m_privateImpl->m_items.indexOf (item);
-}
 
 /*!
     \details Delete all the items in the model.
@@ -253,17 +142,7 @@ int QQmlObjectListModel::indexOf (QObject * item) const {
     \b Note : The items objects will be removed from the model but they will be destructed
     only if they have no parent (because the model took the ownership).
 */
-void QQmlObjectListModel::clear (void) {
-    if (!m_privateImpl->m_items.isEmpty ()) {
-        beginRemoveRows (NO_PARENT, 0, count () -1);
-        foreach (QObject * item, m_privateImpl->m_items) {
-            m_privateImpl->dereferenceItem (item);
-        }
-        m_privateImpl->m_items.clear ();
-        m_privateImpl->updateCounter ();
-        endRemoveRows ();
-    }
-}
+
 
 /*!
     \details Adds the given item at the end of the model.
@@ -272,15 +151,7 @@ void QQmlObjectListModel::clear (void) {
 
     \sa prepend(QObject*), insert(int,QObject*)
 */
-void QQmlObjectListModel::append (QObject * item) {
-    if (item != Q_NULLPTR) {
-        int pos = m_privateImpl->m_items.count ();
-        beginInsertRows (NO_PARENT, pos, pos);
-        m_privateImpl->m_items.append (item);
-        m_privateImpl->referenceItem (item);
-        endInsertRows ();
-    }
-}
+
 
 /*!
     \details Adds the given item at the beginning of the model.
@@ -289,14 +160,7 @@ void QQmlObjectListModel::append (QObject * item) {
 
     \sa append(QObject*), insert(int,QObject*)
 */
-void QQmlObjectListModel::prepend (QObject * item) {
-    if (item != Q_NULLPTR) {
-        beginInsertRows (NO_PARENT, 0, 0);
-        m_privateImpl->m_items.prepend (item);
-        m_privateImpl->referenceItem (item);
-        endInsertRows ();
-    }
-}
+
 
 /*!
     \details Adds the given item at a certain position in the model.
@@ -306,14 +170,7 @@ void QQmlObjectListModel::prepend (QObject * item) {
 
     \sa append(QObject*), prepend(QObject*)
 */
-void QQmlObjectListModel::insert (int idx, QObject * item) {
-    if (item != Q_NULLPTR) {
-        beginInsertRows (NO_PARENT, idx, idx);
-        m_privateImpl->m_items.insert (idx, item);
-        m_privateImpl->referenceItem (item);
-        endInsertRows ();
-    }
-}
+
 
 /*!
     \details Adds the given list of items at the end of the model.
@@ -322,18 +179,7 @@ void QQmlObjectListModel::insert (int idx, QObject * item) {
 
     \sa prepend(QObjectList), insert(int, QObjectList)
 */
-void QQmlObjectListModel::append (QObjectList itemList) {
-    itemList.removeAll (Q_NULLPTR);
-    if (!itemList.isEmpty ()) {
-        int pos = m_privateImpl->m_items.count ();
-        beginInsertRows (NO_PARENT, pos, pos + itemList.count () -1);
-        m_privateImpl->m_items.append (itemList);
-        foreach (QObject * item, itemList) {
-            m_privateImpl->referenceItem (item);
-        }
-        endInsertRows ();
-    }
-}
+
 
 /*!
     \details Adds the given list of items at the beginning of the model.
@@ -342,18 +188,7 @@ void QQmlObjectListModel::append (QObjectList itemList) {
 
     \sa append(QObjectList), insert(int, QObjectList)
 */
-void QQmlObjectListModel::prepend (QObjectList itemList) {
-    itemList.removeAll (Q_NULLPTR);
-    if (!itemList.isEmpty ()) {
-        beginInsertRows (NO_PARENT, 0, itemList.count () -1);
-        int offset = 0;
-        foreach (QObject * item, itemList) {
-            m_privateImpl->m_items.insert (offset, item);
-            m_privateImpl->referenceItem (item);
-        }
-        endInsertRows ();
-    }
-}
+
 
 /*!
     \details Adds the given list of items at a certain position in the model.
@@ -363,19 +198,6 @@ void QQmlObjectListModel::prepend (QObjectList itemList) {
 
     \sa append(QObjectList), prepend(QObjectList)
 */
-void QQmlObjectListModel::insert (int idx, QObjectList itemList) {
-    itemList.removeAll (Q_NULLPTR);
-    if (!itemList.isEmpty ()) {
-        beginInsertRows (NO_PARENT, idx, idx + itemList.count () -1);
-        int offset = 0;
-        foreach (QObject * item, itemList) {
-            m_privateImpl->m_items.insert (idx + offset, item);
-            m_privateImpl->referenceItem (item);
-            offset++;
-        }
-        endInsertRows ();
-    }
-}
 
 /*!
     \details Moves an item from the model to another position.
@@ -383,41 +205,21 @@ void QQmlObjectListModel::insert (int idx, QObjectList itemList) {
     \param idx The current position of the item
     \param pos The position where it willl be after the move
 */
-void QQmlObjectListModel::move (int idx, int pos) {
-    if (idx != pos) {
-        const int lowest  = qMin (idx, pos);
-        const int highest = qMax (idx, pos);
-        beginMoveRows (NO_PARENT, highest, highest, NO_PARENT, lowest);
-        m_privateImpl->m_items.move (highest, lowest);
-        endMoveRows ();
-    }
-}
+
 
 /*!
     \details Remove an item from the model.
 
     \param item The pointer to the item object
 */
-void QQmlObjectListModel::remove (QObject * item) {
-    if (item != Q_NULLPTR) {
-        int idx = m_privateImpl->m_items.indexOf (item);
-        remove (idx);
-    }
-}
+
 
 /*!
     \details Remove an item from the model.
 
     \param idx The position of the item in the model
 */
-void QQmlObjectListModel::remove (int idx) {
-    if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
-        beginRemoveRows (NO_PARENT, idx, idx);
-        QObject * item = m_privateImpl->m_items.takeAt (idx);
-        m_privateImpl->dereferenceItem (item);
-        endRemoveRows ();
-    }
-}
+
 
 /*!
     \details Retreives a model item as standard Qt object pointer.
@@ -427,13 +229,6 @@ void QQmlObjectListModel::remove (int idx) {
 
     \sa getAs(int) const, getByUid(QString) const
 */
-QObject * QQmlObjectListModel::get (int idx) const {
-    QObject * ret = Q_NULLPTR;
-    if (idx >= 0 && idx < m_privateImpl->m_items.size ()) {
-        ret = m_privateImpl->m_items.value (idx);
-    }
-    return ret;
-}
 
 /*!
     \details Retreives the first item of the model as standard Qt object pointer.
@@ -442,9 +237,6 @@ QObject * QQmlObjectListModel::get (int idx) const {
 
     \sa last()
 */
-QObject * QQmlObjectListModel::first (void) const {
-    return m_privateImpl->m_items.first ();
-}
 
 /*!
     \details Retreives the last item of the model as standard Qt object pointer.
@@ -453,9 +245,6 @@ QObject * QQmlObjectListModel::first (void) const {
 
     \sa first()
 */
-QObject * QQmlObjectListModel::last (void) const {
-    return m_privateImpl->m_items.last ();
-}
 
 /*!
     \details Retreives all the items of the model as a standard Qt object pointer list.
@@ -464,9 +253,6 @@ QObject * QQmlObjectListModel::last (void) const {
 
     \sa listAs() const
 */
-QObjectList QQmlObjectListModel::list (void) const {
-    return m_privateImpl->m_items;
-}
 
 /*!
     \details Retreives a model item as standard Qt object pointer using its indexed property.
@@ -477,9 +263,6 @@ QObjectList QQmlObjectListModel::list (void) const {
 
     \sa getAs(int) const, get(int) const
 */
-QObject * QQmlObjectListModel::getByUid (const QString & uid) const {
-    return m_privateImpl->m_indexByUid.value (uid, Q_NULLPTR);
-}
 
 /*!
     \details Sets which property of the items will be used as an index key.
@@ -490,117 +273,3 @@ QObject * QQmlObjectListModel::getByUid (const QString & uid) const {
 
     \param name The name of the property / role that is used as the index key
 */
-void QQmlObjectListModel::setRoleNameForUid (const QByteArray & name) {
-    m_privateImpl->m_uidRoleName = name;
-    m_privateImpl->m_indexByUid.clear ();
-    if (!name.isEmpty ()) {
-        foreach (QObject * item, m_privateImpl->m_items) {
-            if (item) {
-                QString value = item->property (m_privateImpl->m_uidRoleName).toString ();
-                if (!value.isEmpty ()) {
-                    m_privateImpl->m_indexByUid.insert (value, item);
-                }
-            }
-        }
-    }
-}
-
-/*!
-    \internal
-*/
-QQmlObjectListModelPrivate::QQmlObjectListModelPrivate (QQmlObjectListModel * parent)
-    : QObject (parent)
-    , m_count (0)
-    , m_uidRoleName (EMPTY_BA)
-    , m_publicObject (parent)
-{
-    m_handler = metaObject ()->method (metaObject ()->indexOfMethod ("onItemPropertyChanged()"));
-}
-
-/*!
-    \internal
-*/
-void QQmlObjectListModelPrivate::onItemPropertyChanged (void) {
-    QObject * item = sender ();
-    int row = m_items.indexOf (item);
-    int sig = senderSignalIndex ();
-    int role = m_signalIdxToRole.value (sig, -1);
-    if (row >= 0 && role >= 0) {
-        QModelIndex index = m_publicObject->index (row, 0, NO_PARENT);
-        QVector<int> rolesList;
-        rolesList.append (role);
-        if (m_roles.value (role) == m_dispRoleName) {
-            rolesList.append (Qt::DisplayRole);
-        }
-        emit m_publicObject->dataChanged (index, index, rolesList);
-    }
-    if (!m_uidRoleName.isEmpty ()) {
-        QByteArray roleName = m_roles.value (role, EMPTY_BA);
-        if (!roleName.isEmpty () && roleName == m_uidRoleName) {
-            QString key = m_indexByUid.key (item, EMPTY_STR);
-            if (!key.isEmpty ()) {
-                m_indexByUid.remove (key);
-            }
-            QString value = item->property (m_uidRoleName).toString ();
-            if (!value.isEmpty ()) {
-                m_indexByUid.insert (value, item);
-            }
-        }
-    }
-}
-
-/*!
-    \internal
-*/
-void QQmlObjectListModelPrivate::updateCounter (void) {
-    if (m_count != m_items.count ()) {
-        m_count = m_items.count ();
-        emit m_publicObject->countChanged (m_count);
-    }
-}
-
-/*!
-    \internal
-*/
-void QQmlObjectListModelPrivate::referenceItem (QObject * item) {
-    if (item != Q_NULLPTR) {
-        Q_ASSERT (item->inherits (m_metaObj.className ()));
-        if (item->parent () == Q_NULLPTR) {
-            item->setParent (this);
-        }
-        foreach (int signalIdx, m_signalIdxToRole.keys ()) {
-            QMetaMethod notifier = item->metaObject ()->method (signalIdx);
-            QObject::connect (item, notifier, this, m_handler, Qt::UniqueConnection);
-        }
-        if (!m_uidRoleName.isEmpty ()) {
-            QString key = m_indexByUid.key (item, EMPTY_STR);
-            if (!key.isEmpty ()) {
-                m_indexByUid.remove (key);
-            }
-            QString value = item->property (m_uidRoleName).toString ();
-            if (!value.isEmpty ()) {
-                m_indexByUid.insert (value, item);
-            }
-        }
-        updateCounter ();
-    }
-}
-
-/*!
-    \internal
-*/
-void QQmlObjectListModelPrivate::dereferenceItem (QObject * item) {
-    if (item != Q_NULLPTR) {
-        item->disconnect ();
-        if (item->parent () == this) { // FIXME : maybe that's not the best way to test ownership ?
-            item->deleteLater ();
-        }
-        if (!m_uidRoleName.isEmpty ()) {
-            QString key = m_indexByUid.key (item, EMPTY_STR);
-            if (!key.isEmpty ()) {
-                m_indexByUid.remove (key);
-            }
-        }
-        updateCounter ();
-    }
-}

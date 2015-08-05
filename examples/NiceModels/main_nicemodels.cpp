@@ -13,8 +13,7 @@
 int main (int argc, char * argv []) {
     QGuiApplication app (argc, argv);
 
-    QQmlObjectListModel * testModel = QQmlObjectListModel::create<MyItem> (&app, "foo");
-    testModel->setRoleNameForUid ("bar");
+    QQmlObjectListModel<MyItem> * testModel = new QQmlObjectListModel<MyItem> (&app, "foo", "bar");
 
     int year = QDateTime::currentDateTime ().date ().year ();
     QDate date (year, 1, 1);
