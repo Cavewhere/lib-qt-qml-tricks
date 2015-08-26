@@ -1,9 +1,12 @@
+
 #include "qquickpolygon.h"
+
+#include <qmath.h>
 
 QQuickPolygon::QQuickPolygon (QQuickItem * parent)
     : QQuickItem (parent)
-    , m_border (0)
     , m_closed (true)
+    , m_border (0.0)
     , m_minX   (0.0)
     , m_maxX   (0.0)
     , m_minY   (0.0)
@@ -21,7 +24,7 @@ QQuickPolygon::QQuickPolygon (QQuickItem * parent)
     setFlag (QQuickItem::ItemHasContents);
 }
 
-int QQuickPolygon::getBorder (void) const {
+qreal QQuickPolygon::getBorder (void) const {
     return m_border;
 }
 
@@ -45,7 +48,7 @@ QVariantList QQuickPolygon::getPoints (void) const {
     return ret;
 }
 
-void QQuickPolygon::setBorder (int border) {
+void QQuickPolygon::setBorder (qreal border) {
     if (m_border != border) {
         m_border = border;
         emit borderChanged ();
@@ -97,6 +100,10 @@ void QQuickPolygon::setPoints (const QVariantList & points) {
     }
 }
 
+static inline qreal getAngleFromSegment (const QPointF & startPoint, const QPointF & endPoint) {
+    return qAtan2 (endPoint.y () - startPoint.y (), endPoint.x () - startPoint.x ());
+}
+
 QSGNode * QQuickPolygon::updatePaintNode (QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData) {
     Q_UNUSED (oldNode)
     Q_UNUSED (updatePaintNodeData)
@@ -140,20 +147,56 @@ QSGNode * QQuickPolygon::updatePaintNode (QSGNode * oldNode, UpdatePaintNodeData
         m_backNode->setMaterial (m_backMaterial);
         m_node->appendChildNode (m_backNode);
     }
-    // polyline stroke
-    if (!m_points.isEmpty () && m_border > 0 && m_stroke.alpha () > 0) {
-        m_foreGeometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), m_points.size () + (m_closed ? 1 : 0));
-        m_foreGeometry->setDrawingMode (GL_LINE_STRIP);
-        m_foreGeometry->setLineWidth (m_border);
-        QSGGeometry::Point2D * vertex = m_foreGeometry->vertexDataAsPoint2D ();
-        const int size = m_points.size ();
-        for (int idx = 0; idx < size; idx++) {
-            vertex [idx].x = m_points [idx].x ();
-            vertex [idx].y = m_points [idx].y ();
+    // polyline stroke generation
+    if (m_points.size () >= 2 && m_border > 0 && m_stroke.alpha () > 0) {
+        const int pointsCount    = m_points.size ();
+        const int linesCount     = (m_closed ? pointsCount : pointsCount -1);
+        const int trianglesCount = (linesCount * 2);
+        const int vertexCount    = (trianglesCount * 3);
+        const qreal halfStroke = (qreal (m_border) * 0.5);
+        QVector<QPointF> trianglesStroke;
+        trianglesStroke.reserve (vertexCount);
+        QPointF firstVec1, firstVec2, lastVec1, lastVec2;
+        for (int startPointIdx = 0, endPointIdx = 1; endPointIdx < pointsCount; startPointIdx++, endPointIdx++) {
+            const bool isFirst = (startPointIdx == 0);
+            const bool isLast  = (endPointIdx   == pointsCount -1);
+            const QPointF startPoint = m_points [startPointIdx];
+            const QPointF endPoint   = m_points [endPointIdx];
+            qreal currAngle = getAngleFromSegment (startPoint, endPoint);
+            qreal prevAngle = (!isFirst ? getAngleFromSegment (startPoint, m_points [startPointIdx -1]) : (m_closed ? getAngleFromSegment (startPoint, m_points.last ()) : currAngle + M_PI));
+            qreal nextAngle = (!isLast  ? getAngleFromSegment (m_points [endPointIdx +1], endPoint)     : (m_closed ? getAngleFromSegment (m_points.first (), endPoint)  : currAngle + M_PI));
+            qreal startAngle = ((currAngle + prevAngle) * 0.5);
+            qreal endAngle   = ((currAngle + nextAngle) * 0.5);
+            QPointF startPolar = QPointF (qCos (startAngle), qSin (startAngle));
+            QPointF endPolar   = QPointF (qCos (endAngle),   qSin (endAngle));
+            QPointF startVec1 = (startPoint + startPolar * (halfStroke / qSin (startAngle - currAngle)));
+            QPointF startVec2 = (startPoint + startPolar * (halfStroke / qSin (currAngle  - startAngle)));
+            QPointF endVec1   = (endPoint   + endPolar   * (halfStroke / qSin (endAngle   - currAngle)));
+            QPointF endVec2   = (endPoint   + endPolar   * (halfStroke / qSin (currAngle  - endAngle)));
+            trianglesStroke << startVec1 << startVec2 << endVec2;
+            trianglesStroke << endVec1   << endVec2   << startVec1;
+            if (m_closed) {
+                if (isFirst) {
+                    firstVec1 = startVec1;
+                    firstVec2 = startVec2;
+                }
+                if (isLast) {
+                    lastVec1 = endVec1;
+                    lastVec2 = endVec2;
+                }
+            }
         }
         if (m_closed) {
-            vertex [size].x = m_points [0].x ();
-            vertex [size].y = m_points [0].y ();
+            trianglesStroke << lastVec1  << lastVec2  << firstVec2;
+            trianglesStroke << firstVec1 << firstVec2 << lastVec1;
+        }
+        m_foreGeometry = new QSGGeometry (QSGGeometry::defaultAttributes_Point2D (), trianglesStroke.size ());
+        m_foreGeometry->setDrawingMode (GL_TRIANGLES);
+        QSGGeometry::Point2D * vertex = m_foreGeometry->vertexDataAsPoint2D ();
+        const int size = trianglesStroke.size ();
+        for (int idx = 0; idx < size; idx++) {
+            vertex [idx].x = trianglesStroke [idx].x ();
+            vertex [idx].y = trianglesStroke [idx].y ();
         }
         m_foreMaterial = new QSGFlatColorMaterial;
         m_foreMaterial->setColor (m_stroke);

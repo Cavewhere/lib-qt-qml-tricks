@@ -3,19 +3,19 @@
 
 #include <QQuickItem>
 #include <QVariant>
-#include <QPointF>
 #include <QColor>
 #include <QList>
+#include <QPointF>
+#include <QPolygonF>
 #include <QSGNode>
 #include <QSGGeometry>
 #include <QSGGeometryNode>
 #include <QSGFlatColorMaterial>
-#include <QPolygonF>
 
 class QQuickPolygon : public QQuickItem {
     Q_OBJECT
-    Q_PROPERTY (int          border READ getBorder WRITE setBorder NOTIFY borderChanged) // border width
     Q_PROPERTY (bool         closed READ getClosed WRITE setClosed NOTIFY closedChanged) // whether last point should connect to first
+    Q_PROPERTY (qreal        border READ getBorder WRITE setBorder NOTIFY borderChanged) // border width
     Q_PROPERTY (QColor       color  READ getColor  WRITE setColor  NOTIFY colorChanged)  // back color
     Q_PROPERTY (QColor       stroke READ getStroke WRITE setStroke NOTIFY strokeChanged) // border color
     Q_PROPERTY (QVariantList points READ getPoints WRITE setPoints NOTIFY pointsChanged) // points list
@@ -23,15 +23,15 @@ class QQuickPolygon : public QQuickItem {
 public:
     explicit QQuickPolygon (QQuickItem * parent = NULL);
 
-    Q_INVOKABLE int          getBorder (void) const;
     Q_INVOKABLE bool         getClosed (void) const;
+    Q_INVOKABLE qreal        getBorder (void) const;
     Q_INVOKABLE QColor       getColor  (void) const;
     Q_INVOKABLE QColor       getStroke (void) const;
     Q_INVOKABLE QVariantList getPoints (void) const;
 
 public slots:
-    void setBorder (int border);
     void setClosed (bool closed);
+    void setBorder (qreal border);
     void setColor  (const QColor & color);
     void setStroke (const QColor & stroke);
     void setPoints (const QVariantList & points);
@@ -50,8 +50,8 @@ protected slots:
     void processTriangulation (void);
 
 private:
-    int m_border;
     bool m_closed;
+    qreal m_border;
     qreal m_minX;
     qreal m_maxX;
     qreal m_minY;
