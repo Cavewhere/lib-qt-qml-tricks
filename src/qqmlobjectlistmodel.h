@@ -103,7 +103,7 @@ public:
         const int len = m_metaObj.propertyCount ();
         for (int propertyIdx = 0, role = (baseRole () +1); propertyIdx < len; propertyIdx++, role++) {
             QMetaProperty metaProp = m_metaObj.property (propertyIdx);
-            const QByteArray propName (metaProp.name ());
+            const QByteArray propName = QByteArray::fromRawData (metaProp.name ());
             if (!roleNamesBlacklist.contains (propName)) {
                 m_roles.insert (role, propName);
                 if (metaProp.hasNotifySignal ()) {
@@ -111,17 +111,10 @@ public:
                 }
             }
             else {
-                static const QByteArray & CLASS_NAME = (QByteArrayLiteral ("QQmlObjectListModel<") % m_metaObj.className () % '>');
+                static const QByteArray CLASS_NAME = (QByteArrayLiteral ("QQmlObjectListModel<") % m_metaObj.className () % '>');
                 qWarning () << "Can't have" << propName << "as a role name in" << qPrintable (CLASS_NAME);
             }
         }
-    }
-    typedef typename QList<ItemType *>::const_iterator const_iterator;
-    const_iterator begin (void) const {
-        return m_items.begin ();
-    }
-    const_iterator end (void) const {
-        return m_items.end ();
     }
     bool setData (const QModelIndex & index, const QVariant & value, int role) {
         bool ret = false;
@@ -143,6 +136,20 @@ public:
     }
     QHash<int, QByteArray> roleNames (void) const {
         return m_roles;
+    }
+    typedef typename QList<ItemType *>::iterator iterator;
+    iterator begin (void) const {
+        return m_items.begin ();
+    }
+    iterator end (void) const {
+        return m_items.end ();
+    }
+    typedef typename QList<ItemType *>::const_iterator const_iterator;
+    const_iterator constBegin (void) const {
+        return m_items.constBegin ();
+    }
+    const_iterator constEnd (void) const {
+        return m_items.constEnd ();
     }
 
 public: // C++ API
@@ -352,7 +359,7 @@ protected: // internal stuff
             if (item->parent () == Q_NULLPTR) {
                 item->setParent (this);
             }
-            const QList<int> & signalsIdxList = m_signalIdxToRole.keys ();
+            const QList<int> signalsIdxList = m_signalIdxToRole.keys ();
             for (QList<int>::const_iterator it = signalsIdxList.constBegin (); it != signalsIdxList.constEnd (); it++) {
                 const int signalIdx = (int) (* it);
                 QMetaMethod notifier = item->metaObject ()->method (signalIdx);
