@@ -8,6 +8,7 @@ FocusScope {
     implicitHeight: 200;
 
     property bool       showBorder    : true;
+    property bool       indicatorOnly : false;
     property alias      background    : rect.color;
     property Flickable  flickableItem : null;
 
@@ -52,7 +53,7 @@ FocusScope {
     }
     Item {
         id: scrollbarX;
-        height: 18;
+        height: (indicatorOnly ? 6 : 18);
         visible: (flickableItem && flickableItem.flickableDirection !== Flickable.VerticalFlick);
         anchors {
             left: parent.left;
@@ -70,6 +71,7 @@ FocusScope {
         MouseArea {
             id: grooveHoriz;
             clip: true;
+            enabled: !indicatorOnly;
             drag {
                 axis: Drag.XAxis;
                 target: handleHoriz;
@@ -84,11 +86,11 @@ FocusScope {
             Rectangle {
                 id: handleHoriz;
                 color: "lightgray";
-                radius: 5;
+                radius: (indicatorOnly ? 2 : 5);
                 visible: (flickableItem && flickableItem.visibleArea.widthRatio < 1.0);
                 antialiasing: true;
                 border {
-                    width: 2;
+                    width: (indicatorOnly ? 1 : 2);
                     color: "darkgray";
                 }
                 anchors {
@@ -102,14 +104,14 @@ FocusScope {
                 }
                 Binding on width {
                     when: (flickableItem && !grooveHoriz.pressed);
-                    value: (grooveHoriz.width * flickableItem.visibleArea.widthRatio);
+                    value: Math.max (grooveHoriz.width * flickableItem.visibleArea.widthRatio, 40);
                 }
             }
         }
     }
     Item {
         id: scrollbarY;
-        width: 18;
+        width: (indicatorOnly ? 6 : 18);
         visible: (flickableItem && flickableItem.flickableDirection !== Flickable.HorizontalFlick);
         anchors {
             top: parent.top;
@@ -127,6 +129,7 @@ FocusScope {
         MouseArea {
             id: grooveVertic;
             clip: true;
+            enabled: !indicatorOnly;
             drag {
                 axis: Drag.YAxis;
                 target: handleVertic;
@@ -141,11 +144,11 @@ FocusScope {
             Rectangle {
                 id: handleVertic;
                 color: "lightgray";
-                radius: 5;
+                radius: (indicatorOnly ? 2 : 5);
                 visible: (flickableItem && flickableItem.visibleArea.heightRatio < 1.0);
                 antialiasing: true;
                 border {
-                    width: 2;
+                    width: (indicatorOnly ? 1 : 2);
                     color: "darkgray";
                 }
                 anchors {
@@ -159,7 +162,7 @@ FocusScope {
                 }
                 Binding on height {
                     when: (flickableItem && !grooveVertic.pressed);
-                    value: (grooveVertic.height * flickableItem.visibleArea.heightRatio);
+                    value: Math.max (grooveVertic.height * flickableItem.visibleArea.heightRatio, 40);
                 }
             }
         }

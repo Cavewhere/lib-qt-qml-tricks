@@ -103,7 +103,7 @@ public:
         const int len = m_metaObj.propertyCount ();
         for (int propertyIdx = 0, role = (baseRole () +1); propertyIdx < len; propertyIdx++, role++) {
             QMetaProperty metaProp = m_metaObj.property (propertyIdx);
-            const QByteArray propName = QByteArray::fromRawData (metaProp.name ());
+            const QByteArray propName = QByteArray (metaProp.name ());
             if (!roleNamesBlacklist.contains (propName)) {
                 m_roles.insert (role, propName);
                 if (metaProp.hasNotifySignal ()) {
