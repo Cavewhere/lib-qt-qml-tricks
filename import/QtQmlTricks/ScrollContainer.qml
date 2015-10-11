@@ -11,6 +11,8 @@ FocusScope {
     property bool       indicatorOnly : false;
     property alias      background    : rect.color;
     property Flickable  flickableItem : null;
+    property alias      headerItem    : loaderHeader.sourceComponent;
+    property alias      footerItem    : loaderFooter.sourceComponent;
 
     default property alias content : base.flickableItem;
 
@@ -23,12 +25,53 @@ FocusScope {
         }
         anchors.fill: parent;
     }
+    Loader {
+        id: loaderHeader;
+        visible: item;
+        anchors {
+            top: parent.top;
+            left: parent.left;
+            right: parent.right;
+            margins: rect.border.width;
+        }
+
+        Rectangle {
+            z: -1;
+            gradient: Gradient {
+                GradientStop { position: 0; color: "lightgray"; }
+                GradientStop { position: 1; color: rect.color; }
+            }
+            anchors.fill: parent;
+        }
+    }
+    Loader {
+        id: loaderFooter;
+        visible: item;
+        anchors {
+            left: parent.left;
+            right: parent.right;
+            bottom: parent.bottom;
+            margins: rect.border.width;
+        }
+
+        Rectangle {
+            z: -1;
+            gradient: Gradient {
+                GradientStop { position: 0; color: rect.color; }
+                GradientStop { position: 1; color: "lightgray"; }
+            }
+            anchors.fill: parent;
+        }
+    }
     Item {
         id: container;
         clip: true;
         children: flickableItem;
         anchors {
-            fill: parent;
+            top: (loaderHeader.item ? loaderHeader.bottom : parent.top);
+            left: parent.left;
+            right: parent.right;
+            bottom: (loaderFooter.item ? loaderFooter.top : parent.bottom);
             topMargin: rect.border.width;
             leftMargin: rect.border.width;
             rightMargin: (scrollbarY.visible ? scrollbarY.width : rect.border.width);
@@ -56,8 +99,8 @@ FocusScope {
         height: (indicatorOnly ? 6 : 18);
         visible: (flickableItem && flickableItem.flickableDirection !== Flickable.VerticalFlick);
         anchors {
-            left: parent.left;
-            right: parent.right;
+            left: container.left;
+            right: container.right;
             bottom: parent.bottom;
             rightMargin: (scrollbarY.visible ? scrollbarY.width : 0);
         }
@@ -114,9 +157,9 @@ FocusScope {
         width: (indicatorOnly ? 6 : 18);
         visible: (flickableItem && flickableItem.flickableDirection !== Flickable.HorizontalFlick);
         anchors {
-            top: parent.top;
+            top: container.top;
             right: parent.right;
-            bottom: parent.bottom;
+            bottom: container.bottom;
             bottomMargin: (scrollbarX.visible ? scrollbarX.height : 0);
         }
 
@@ -173,8 +216,8 @@ FocusScope {
         anchors {
             top: scrollbarY.bottom;
             left: scrollbarX.right;
-            right: parent.right;
-            bottom: parent.bottom;
+            right: container.right;
+            bottom: container.bottom;
         }
     }
 }
