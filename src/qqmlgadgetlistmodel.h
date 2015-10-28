@@ -48,6 +48,12 @@ class QQmlGadgetListModelBase : public QAbstractListModel { // abstract Qt base 
 public:
     explicit QQmlGadgetListModelBase (QObject * parent = Q_NULLPTR) : QAbstractListModel (parent) { }
 
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role) {
+        return QAbstractListModel::setData(index, value, role);
+    }
+
+    virtual QVariant data(const QModelIndex& index, int role) const = 0;
+
 public slots: // virtual methods API for QML
     virtual int size (void) const = 0;
     virtual int count (void) const = 0;
@@ -67,6 +73,8 @@ public slots: // virtual methods API for QML
     virtual QVariant getFirst (void) const = 0;
     virtual QVariant getLast (void) const = 0;
     virtual QVariantList toVarArray (void) const = 0;
+    virtual bool setData(int idx, const QVariant& value, const QByteArray& roleName) = 0;
+    virtual QVariant data(int idx, const QByteArray& roleName) const = 0;
 
 //protected slots: // internal callback
 //    virtual void onItemPropertyChanged (void) = 0;
@@ -233,31 +241,9 @@ public: // C++ API
         updateCounter ();
     }
     void append (const QList<ItemType> & itemList) {
-//        if (!itemList.isEmpty ()) {
-//            const int pos = m_items.count ();
-//            beginInsertRows (noParent (), pos, pos + itemList.count () -1);
-//            m_items.reserve (m_items.count () + itemList.count ());
-//            m_items.append (itemList);
-//            for(int i = pos; i < m_items.count(); i++) {
-//                referenceItem(&m_items[i]);
-//            }
-//            endInsertRows ();
-//            updateCounter ();
-//        }
         insert(m_items.count(), itemList);
     }
     void prepend (const QList<ItemType> & itemList) {
-//        if (!itemList.isEmpty ()) {
-//            beginInsertRows (noParent (), 0, itemList.count () -1);
-//            m_items.reserve (m_items.count () + itemList.count ());
-//            for(int i = 0; i < itemList.count(); i++) {
-//                m_items.insert (i, item);
-//                referenceItem(&m_items[i]);
-//            }
-
-//            endInsertRows ();
-//            updateCounter ();
-//        }
         insert(0, itemList);
     }
     void insert (int idx, const QList<ItemType> & itemList) {
@@ -342,6 +328,13 @@ public: // QML slots implementation
     QVariantList toVarArray (void) const {
         return qListToVariant<ItemType> (m_items);
     }
+    bool setData(int idx, const QVariant& value, const QByteArray& roleName) {
+        return setData(index(idx), value, roleForName(roleName));
+    }
+    QVariant data(int idx, const QByteArray& rolename) const {
+        return data(index(idx), roleForName(rolename));
+    }
+
 
 protected: // internal stuff
     static const QString & emptyStr (void) {
@@ -389,34 +382,7 @@ protected: // internal stuff
             }
         }
     }
-//    void onItemPropertyChanged (void) {
-//        ItemType * item = qobject_cast<ItemType *> (sender ());
-//        const int row = m_items.indexOf (item);
-//        const int sig = senderSignalIndex ();
-//        const int role = m_signalIdxToRole.value (sig, -1);
-//        if (row >= 0 && role >= 0) {
-//            QModelIndex index = QAbstractListModel::index (row, 0, noParent ());
-//            QVector<int> rolesList;
-//            rolesList.append (role);
-//            if (m_roles.value (role) == m_dispRoleName) {
-//                rolesList.append (Qt::DisplayRole);
-//            }
-//            emit dataChanged (index, index, rolesList);
-//        }
-//        if (!m_uidRoleName.isEmpty ()) {
-//            const QByteArray roleName = m_roles.value (role, emptyBA ());
-//            if (!roleName.isEmpty () && roleName == m_uidRoleName) {
-//                const QString key = m_indexByUid.key (item, emptyStr ());
-//                if (!key.isEmpty ()) {
-//                    m_indexByUid.remove (key);
-//                }
-//                const QString value = item->property (m_uidRoleName).toString ();
-//                if (!value.isEmpty ()) {
-//                    m_indexByUid.insert (value, item);
-//                }
-//            }
-//        }
-//    }
+
     inline void updateCounter (void) {
         if (m_count != m_items.count ()) {
             m_count = m_items.count ();
