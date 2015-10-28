@@ -68,6 +68,7 @@ public slots: // virtual methods API for QML
     virtual void move (int idx, int pos) = 0;
     virtual void remove (QVariant item) = 0;
     virtual void remove (int idx) = 0;
+    virtual void replace(int idx, QVariant item) = 0;
     virtual QVariant get (int idx) const = 0;
     virtual QVariant get (const QString & uid) const = 0;
     virtual QVariant getFirst (void) const = 0;
@@ -281,6 +282,15 @@ public: // C++ API
             updateCounter ();
         }
     }
+    void replace (int idx, ItemType item) {
+        if(idx >= 0 && idx < m_items.size()) {
+            if(item != m_items.at(idx)) {
+                m_items.replace(idx, item);
+                QModelIndex modelIndex = index(idx);
+                dataChanged(modelIndex, modelIndex, roleNames().keys().toVector());
+            }
+        }
+    }
     ItemType first (void) const {
         return m_items.first ();
     }
@@ -303,6 +313,9 @@ public: // QML slots implementation
     }
     void remove (QVariant item) {
         remove (item.value<ItemType>());
+    }
+    void replace (int idx, QVariant item) {
+        replace (idx, item.value<ItemType>());
     }
     bool contains (QVariant item) const {
         return contains (item.value<ItemType>());
