@@ -160,14 +160,14 @@ public:
     QHash<int, QByteArray> roleNames (void) const {
         return m_roles;
     }
-    typedef typename QList<ItemType *>::iterator iterator;
-    iterator begin (void) const {
+    typedef typename QList<ItemType>::iterator iterator;
+    iterator begin (void) {
         return m_items.begin ();
     }
-    iterator end (void) const {
+    iterator end (void) {
         return m_items.end ();
     }
-    typedef typename QList<ItemType *>::const_iterator const_iterator;
+    typedef typename QList<ItemType>::const_iterator const_iterator;
     const_iterator constBegin (void) const {
         return m_items.constBegin ();
     }
