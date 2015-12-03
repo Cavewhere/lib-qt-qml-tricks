@@ -37,9 +37,11 @@ template<typename T> QVariantList qListToVariant (const QList<T> & list) {
 }
 
 // custom foreach for QList, which uses no copy and check pointer non-null
-//#define FOREACH_PTR_IN_QLIST(_type_, _var_, _list_) \
-//    for (typename QList<_type_ *>::const_iterator it = _list_.begin (); it != _list_.end (); it++) \
-//        for (_type_ * _var_ = (_type_ *) (* it); _var_ != Q_NULLPTR; _var_ = Q_NULLPTR)
+/*
+#define FOREACH_PTR_IN_QLIST(_type_, _var_, _list_) \
+    for (typename QList<_type_ *>::const_iterator it = _list_.begin (); it != _list_.end (); it++) \
+        for (_type_ * _var_ = (_type_ *) (* it); _var_ != Q_NULLPTR; _var_ = Q_NULLPTR)
+*/
 
 class QQmlGadgetListModelBase : public QAbstractListModel { // abstract Qt base class
     Q_OBJECT
