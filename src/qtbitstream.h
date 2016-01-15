@@ -92,10 +92,10 @@ public:
             if (m_pos + count < m_len && count <= (sizeof (ret) * 8)) {
                 for (UInt bit = 0; bit < count; bit++, m_pos++) {
                     if (testBit (m_pos)) {
-                        ret |= (1 << bit);
+                        ret |= (IntegerType)(1 << bit);
                     }
                     else {
-                        ret &= ~(1 << bit);
+                        ret &= (IntegerType)~(1 << bit);
                     }
                 }
                 result = true;
